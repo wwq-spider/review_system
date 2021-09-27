@@ -9,8 +9,8 @@
 #RUN mvn package -DskipTests
 #
 FROM tomcat:8-jre8
-WORKDIR /app
+#WORKDIR /app
 MAINTAINER "errorlife <steffan.fan@foxmail.com>"
 #将war包添加进webapps中
-COPY target/review_system ./tomcat/webapps/
+COPY target/review_system.war ./webapps/
 CMD ["catalina.sh", "run"]
