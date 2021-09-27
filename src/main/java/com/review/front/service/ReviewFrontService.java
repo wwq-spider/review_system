@@ -61,4 +61,11 @@ public interface ReviewFrontService extends CommonService{
 	 * @return
 	 */
 	boolean register(ReviewUserEntity reviewUser);
+
+	/**
+	 * 用户信息是否已经完善
+	 * @param openid
+	 * @return
+	 */
+	boolean userIsRegister(String openid);
 }

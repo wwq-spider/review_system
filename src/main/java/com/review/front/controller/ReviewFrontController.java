@@ -1,32 +1,27 @@
 package com.review.front.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.review.common.CommonUtils;
+import com.review.common.Constants;
+import com.review.front.entity.ReviewReportResultEntity;
 import com.review.front.entity.ReviewResultEntity;
-import com.review.manage.project.service.IReviewProjectService;
+import com.review.front.service.ReviewFrontService;
+import com.review.manage.question.vo.QuestionVO;
+import com.review.manage.reviewClass.entity.ReviewClassEntity;
 import com.review.manage.reviewClass.service.ReviewClassService;
 import com.review.manage.reviewClass.vo.ReviewClassVO;
-import net.sf.json.JSONArray;
+import com.review.manage.userManage.entity.ReviewUserEntity;
+import com.review.manage.userManage.service.ReviewUserService;
 import net.sf.json.JSONObject;
-
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jeecgframework.core.common.controller.BaseController;
 import org.jeecgframework.core.util.IpUtil;
-import org.jeecgframework.core.util.MyBeanUtils;
 import org.jeecgframework.web.system.manager.ClientManager;
 import org.jeecgframework.web.system.pojo.base.Client;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,19 +29,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.review.common.CommonUtils;
-import com.review.common.Constants;
-import com.review.front.entity.ReviewReportResultEntity;
-import com.review.front.service.ReviewFrontService;
-import com.review.manage.question.vo.QuestionVO;
-import com.review.manage.reviewClass.entity.ReviewClassEntity;
-import com.review.manage.userManage.entity.ReviewUserEntity;
-import com.review.manage.userManage.service.ReviewUserService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Controller
 @RequestMapping("/reviewFront")
 public class ReviewFrontController extends BaseController{
-	
+
+	private Logger logger = LoggerFactory.getLogger(getClass());
+
 	@Autowired
 	private ReviewFrontService reviewFrontService;
 	
@@ -359,6 +354,25 @@ public class ReviewFrontController extends BaseController{
 		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
 	}
 
+	/**
+	 * 用户信息是否已经完善
+	 * @param response
+	 * @param openid
+	 */
+	@RequestMapping(value = "userIsRegister", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void userIsRegister(HttpServletResponse response, String openid) {
+		JSONObject json = new JSONObject();
+		json.put("code", 200);
+		json.put("result", reviewFrontService.userIsRegister(openid));
+		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+	}
+
+	/**
+	 * 用户信息注册
+	 * @param response
+	 * @param reviewUser
+	 */
 	@RequestMapping(value = "register", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public void register(HttpServletResponse response, @RequestBody ReviewUserEntity reviewUser) {
@@ -369,7 +383,20 @@ public class ReviewFrontController extends BaseController{
 			CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
 			return;
 		}
-
-
+		try {
+			boolean flag = reviewFrontService.register(reviewUser);
+			if (flag) {
+				json.put("code", 200);
+				json.put("msg", "用户信息注册成功");
+			} else {
+				json.put("code", 301);
+				json.put("msg", "不是系统测评用户");
+			}
+		} catch (Exception e) {
+			json.put("code", 302);
+			json.put("msg", "用户信息注册失败，");
+			logger.error("register error, ", e);
+		}
+		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
 	}
 }

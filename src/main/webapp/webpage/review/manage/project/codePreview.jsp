@@ -43,7 +43,6 @@
 				frameElement.api.close();
 			},
 			success : function(data) {
-				var d = data;
 				if (data.code == 200) {
 					$("#previewc").attr("src", data.result)
 				}else{

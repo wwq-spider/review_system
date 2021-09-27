@@ -9,8 +9,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.review.manage.userManage.entity.ReviewUserEntity;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +34,8 @@ import com.review.manage.variate.entity.ReviewVariateGradeEntity;
 @Service("reviewFrontService")
 @Transactional
 public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewFrontService{
+
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Override
 	public List<QuestionVO> getQuestionVOList(String classId) {
@@ -307,7 +313,20 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 
 	@Override
 	public boolean register(ReviewUserEntity reviewUser) {
+		List<ReviewUserEntity> reviewUserList = this.findHql("from ReviewUserEntity where mobilePhone=?", new Object[]{reviewUser.getMobilePhone()});
+		if (CollectionUtils.isEmpty(reviewUserList)) {
+			logger.warn("register failed, mobilephone" + reviewUser.getMobilePhone() + " not exists");
+			return false;
+		}
+		ReviewUserEntity reviewUserEntity = reviewUserList.get(0);
+		BeanUtils.copyProperties(reviewUser, reviewUserEntity);
+		this.saveOrUpdate(reviewUserEntity);
+		return true;
+	}
 
-		return false;
+	@Override
+	public boolean userIsRegister(String openid) {
+		long count = this.getCountForJdbc("select count(0) from review_user where openid='" + openid + "'");
+		return count > 0;
 	}
 }
