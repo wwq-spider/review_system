@@ -359,7 +359,17 @@ public class ReviewFrontController extends BaseController{
 		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
 	}
 
-	public void getOpenId() {
+	@RequestMapping(value = "register", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void register(HttpServletResponse response, @RequestBody ReviewUserEntity reviewUser) {
+		JSONObject json = new JSONObject();
+		if (reviewUser == null) {
+			json.put("code", 300);
+			json.put("msg", "用户信息为空");
+			CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+			return;
+		}
+
 
 	}
 }

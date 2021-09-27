@@ -203,8 +203,8 @@
 			<groupId>jxl</groupId>
 			<artifactId>jxl</artifactId>
 			<version>2.4.2</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/libs/jxl-2.4.2.jar</systemPath>
+<!--			<scope>system</scope>-->
+<!--			<systemPath>${project.basedir}/libs/jxl-2.4.2.jar</systemPath>-->
 		</dependency>
 
 		<!-- activation -->

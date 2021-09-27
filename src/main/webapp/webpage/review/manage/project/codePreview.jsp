@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@include file="/context/mytags.jsp"%>
+<%request.setAttribute("contextPath", request.getContextPath()); %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,7 +17,7 @@
 <script type="text/javascript">
 
 	let projectId = '${projectId}'
-	let qrcodeLink = '${codelink}'
+	let qrcodeLink = '${contextPath}${codelink}'
 	$(function() {
 		if (qrcodeLink && qrcodeLink != "") {
 			$("#previewc").attr("src", qrcodeLink)

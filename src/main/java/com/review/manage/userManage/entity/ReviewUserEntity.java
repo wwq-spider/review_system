@@ -52,6 +52,8 @@ public class ReviewUserEntity implements Serializable {
 	@Excel(exportName="手机号", exportConvertSign = 0, exportFieldWidth = 20, importConvertSign = 0)
 	private String mobilePhone;
 
+	private String openid;
+
 	
 	private List<ReportVO> reportVOList = new ArrayList<ReportVO>();
 	
@@ -132,6 +134,16 @@ public class ReviewUserEntity implements Serializable {
 	public void setMobilePhone(String mobilePhone) {
 		this.mobilePhone = mobilePhone;
 	}
+
+	@Column(name="openid")
+	public String getOpenid() {
+		return openid;
+	}
+
+	public void setOpenid(String openid) {
+		this.openid = openid;
+	}
+
 	@Transient
 	public List<ReportVO> getReportVOList() {
 		return reportVOList;

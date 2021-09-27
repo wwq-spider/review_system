@@ -3,6 +3,7 @@ package com.review.front.service;
 import java.util.List;
 
 import com.review.front.entity.ReviewResultEntity;
+import com.review.manage.userManage.entity.ReviewUserEntity;
 import org.jeecgframework.core.common.service.CommonService;
 
 import com.review.front.entity.ReviewReportResultEntity;
@@ -53,4 +54,11 @@ public interface ReviewFrontService extends CommonService{
 									  String userId, String userName);
 	
 	List<ReviewReportResultEntity> getReportResults(String userId, String classId);
+
+	/**
+	 * 注册用户信息
+	 * @param reviewUser
+	 * @return
+	 */
+	boolean register(ReviewUserEntity reviewUser);
 }

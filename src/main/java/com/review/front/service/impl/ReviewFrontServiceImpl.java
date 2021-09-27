@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.review.manage.userManage.entity.ReviewUserEntity;
 import org.apache.commons.lang.StringUtils;
 import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
 import org.springframework.stereotype.Service;
@@ -302,5 +303,11 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 				new Object[]{classId,userId});
 		return this.findHql("from ReviewReportResultEntity where resultId=? order by resultType,createTime ASC", 
 				new Object[]{list.get(0).getResultId()});
+	}
+
+	@Override
+	public boolean register(ReviewUserEntity reviewUser) {
+
+		return false;
 	}
 }
