@@ -9,9 +9,8 @@ COPY src ./src
 RUN mvn package -DskipTests
 
 FROM tomcat:8-jre8
-#WORKDIR /app
 MAINTAINER "errorlife <steffan.fan@foxmail.com>"
-#将war包添加进webapps中
+#将war包添加进webapps中 --from参数表示从上面构建的镜像builder中拷贝war包
 COPY --from=builder /app/target/review_system.war ./webapps/
 CMD ["catalina.sh", "run"]
 
