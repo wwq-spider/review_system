@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>ReviewSystem</groupId>
-	<artifactId>ReviewSystem</artifactId>
+	<groupId>review_system</groupId>
+	<artifactId>review_system</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name/>
@@ -909,7 +909,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<finalName>ReviewSystem</finalName>
+		<finalName>review_system</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/java</directory>

@@ -129,7 +129,7 @@ public class WxAppletsUtils {
 
     public static void main(String[] args) {
         String accessToken = geneAccessToken();
-        String rootPath = "/Library/prek/project/ReviewSystem/target/ReviewSystem";
+        String rootPath = "/Library/prek/project/review_system/target/review_system";
         String path = geneAppletsQrCode("pages/index/index", "projectId=5", rootPath);
         System.out.println(accessToken);
     }
