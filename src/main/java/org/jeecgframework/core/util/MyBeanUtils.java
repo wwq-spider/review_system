@@ -40,7 +40,9 @@ public class MyBeanUtils
               if (PropertyUtils.isWriteable(dest, name)) {
                   Object value = ( (DynaBean) orig).get(name);
                   try {
-                      copyProperty(dest, name, value);
+                      if (value != null) {
+                          copyProperty(dest, name, value);
+                      }
                   }
                   catch (Exception e) {
                       ; // Should not happen
@@ -56,7 +58,9 @@ public class MyBeanUtils
               if (PropertyUtils.isWriteable(dest, name)) {
                   Object value = ( (Map) orig).get(name);
                   try {
-                      copyProperty(dest, name, value);
+                      if (value != null) {
+                          copyProperty(dest, name, value);
+                      }
                   }
                   catch (Exception e) {
                       ; // Should not happen
@@ -80,7 +84,9 @@ public class MyBeanUtils
                   PropertyUtils.isWriteable(dest, name)) {
                   try {
                       Object value = PropertyUtils.getSimpleProperty(orig, name);
-                      copyProperty(dest, name, value);
+                      if (value != null) {
+                          copyProperty(dest, name, value);
+                      }
                   }
                   catch (java.lang.IllegalArgumentException ie) {
                       ; // Should not happen

@@ -334,19 +334,13 @@ public class ReviewFrontController extends BaseController{
 	/**
 	 * 获取测评分类
 	 * @param response
-	 * @param projectId
+	 * @param reviewClass
 	 */
-	@RequestMapping(value = "getReviewClassByProjectId", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "getReviewClass", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public void getReviewClassByProjectId(HttpServletResponse response, Long projectId) {
+	public void getReviewClassByProjectId(HttpServletResponse response, ReviewClassVO reviewClass) {
 		JSONObject json = new JSONObject();
-		if (projectId == null || projectId == 0) {
-			json.put("code", 300);
-			json.put("msg", "测评项目ID为空");
-			CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
-			return;
-		}
-
+		Long projectId = reviewClass.getProjectId();
 		List<ReviewClassVO> reviewClassList = reviewClassService.getReviewClassByProjectId(projectId);
 		json.put("code", 200);
 		json.put("rows", reviewClassList);
@@ -357,14 +351,14 @@ public class ReviewFrontController extends BaseController{
 	/**
 	 * 用户信息是否已经完善
 	 * @param response
-	 * @param openid
+	 * @param reviewUser
 	 */
-	@RequestMapping(value = "userIsRegister", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "getUserInfoByOpenid", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public void userIsRegister(HttpServletResponse response, String openid) {
+	public void getUserInfoByOpenid(HttpServletResponse response, @RequestBody ReviewUserEntity reviewUser) {
 		JSONObject json = new JSONObject();
 		json.put("code", 200);
-		json.put("result", reviewFrontService.userIsRegister(openid));
+		json.put("result", reviewFrontService.getUserInfo(reviewUser.getOpenid()));
 		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
 	}
 

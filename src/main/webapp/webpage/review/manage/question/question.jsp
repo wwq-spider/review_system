@@ -41,7 +41,7 @@
 							</td>
 							<td>
 							<input type="file" name="contentImg" id="contentImg" onchange="previewImage(this,'content')" style="display: none"></input>
-							<div id="contentpreview"></div>
+							<div id="previewcontent"></div>
 							<input type="button"  name="uploadBtn" onclick="uploadImg('contentImg');" value="上传图片"></input>
 							</td>
 						</tr>

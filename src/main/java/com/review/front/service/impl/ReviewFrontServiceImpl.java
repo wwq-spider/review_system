@@ -12,6 +12,7 @@ import com.review.manage.userManage.entity.ReviewUserEntity;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
+import org.jeecgframework.core.util.MyBeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -319,14 +320,22 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 			return false;
 		}
 		ReviewUserEntity reviewUserEntity = reviewUserList.get(0);
-		BeanUtils.copyProperties(reviewUser, reviewUserEntity);
+		try {
+			MyBeanUtils.copyBean2Bean(reviewUserEntity, reviewUser);
+		} catch (Exception e) {
+			logger.error("copyBean2Bean error, ", e);
+			return false;
+		}
 		this.saveOrUpdate(reviewUserEntity);
 		return true;
 	}
 
 	@Override
-	public boolean userIsRegister(String openid) {
-		long count = this.getCountForJdbc("select count(0) from review_user where openid='" + openid + "'");
-		return count > 0;
+	public ReviewUserEntity getUserInfo(String openid) {
+		List<ReviewUserEntity> reviewUserList = this.findHql("from ReviewUserEntity where openid=?", new Object[]{openid});
+		if (CollectionUtils.isEmpty(reviewUserList)) {
+			return null;
+		}
+		return reviewUserList.get(0);
 	}
 }

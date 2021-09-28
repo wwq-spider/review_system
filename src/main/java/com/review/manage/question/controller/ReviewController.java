@@ -65,13 +65,11 @@ public class ReviewController extends BaseController {
 	/**
 	 * 跳到题目添加
 	 * @param request
-	 * @param response
 	 * @return
 	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping(params="toAdd")
-	public ModelAndView toAdd(HttpServletRequest request,
-			HttpServletResponse response) throws UnsupportedEncodingException {
+	public ModelAndView toAdd(HttpServletRequest request) throws UnsupportedEncodingException {
 		String questionId = request.getParameter("questionId");
 		String classId = request.getParameter("classId");
 		String title = request.getParameter("title");
@@ -130,14 +128,12 @@ public class ReviewController extends BaseController {
 	/**
 	 * 添加/修改题目
 	 * @param request
-	 * @param response
 	 * @param question
 	 * @return
 	 */
 	@RequestMapping(params="add")
 	@ResponseBody
-	public AjaxJson addQuestion(HttpServletRequest request,
-			HttpServletResponse response, QuestionVO question) {
+	public AjaxJson addQuestion(HttpServletRequest request, QuestionVO question) {
 		AjaxJson ajax =  new AjaxJson();
 		
 		try {

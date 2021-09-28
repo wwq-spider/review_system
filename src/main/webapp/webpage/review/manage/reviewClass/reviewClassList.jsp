@@ -13,7 +13,8 @@
 					<th field="title" width="50">题库名称</th>
 					<th field="sortId" width="50">排序ID</th>
 					<th field="status" width="50">状态</th>
-					<th field="opt" width="100">操作</th>
+					<th field="type" width="50">是否热门</th>
+					<th field="opt" width="150">操作</th>
 				</tr>
 			</thead>
 		</table>
@@ -33,16 +34,27 @@
 			var total = data.total;
 			var puburl = "";
 			var statusText = "";
+			let typetext = "";
 
 			for(var i=0; i<data.rows.length; i++){
 				if(data.rows[i].status == 0) {
 					puburl = "[<a href=\"#\" onclick=\"publish('reviewClass.do?publish&pubType=1&classId="+
-							data.rows[i].classId+"','reviewClassList','发布')\">发布</a>]";
+							data.rows[i].classId+"','reviewClassList','发布')\">发布</a>]&nbsp;&nbsp;";
 					statusText = "停用中";
 				} else {
 					puburl = "[<a href=\"#\" onclick=\"publish('reviewClass.do?publish&pubType=0&classId="+
-							data.rows[i].classId+"','reviewClassList','停止')\">停止</a>]";
+							data.rows[i].classId+"','reviewClassList','停止')\">停止</a>]&nbsp;&nbsp;";
 					statusText = "已发布";
+				}
+
+				if(data.rows[i].type == 1) {
+					puburl += "[<a href=\"#\" onclick=\"publish('reviewClass.do?setUpHot&opt=2&classId="+
+							data.rows[i].classId+"','reviewClassList','置为热门')\">置为热门</a>]&nbsp;&nbsp;";
+					typetext = "否";
+				} else {
+					puburl += "[<a href=\"#\" onclick=\"publish('reviewClass.do?setUpHot&opt=1&classId="+
+							data.rows[i].classId+"','reviewClassList','取消热门')\">取消热门</a>]&nbsp;&nbsp;";
+					typetext = "是";
 				}
 
 				rows.push({
@@ -50,8 +62,9 @@
 					title: data.rows[i].title,
 					status: statusText,
 					sortId: data.rows[i].sortId,
-					opt: "[<a href=\"#\" onclick=\"pubOrSave('题目设置','reviewClass.do?toAdd&classId="+data.rows[i].classId+"','reviewClassList',700,500)\">题目设置</a>]&nbsp;&nbsp;"+
-						  puburl+"&nbsp;&nbsp;[<a href=\"#\" onclick=\"delObj('reviewClass.do?del&classId="+data.rows[i].classId+"','删除')\">删除</a>]"
+					type: typetext,
+					opt: "[<a href=\"#\" onclick=\"pubOrSave('题目设置','reviewClass.do?toAdd&classId="+data.rows[i].classId+"','reviewClassList',1000,700)\">题目设置</a>]&nbsp;&nbsp;"+
+						  puburl +"[<a href=\"#\" onclick=\"delObj('reviewClass.do?del&classId="+data.rows[i].classId+"','删除')\">删除</a>]"
 				});
 			}
 			var newData={"total":total,"rows":rows};

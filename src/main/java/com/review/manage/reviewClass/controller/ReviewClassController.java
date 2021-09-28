@@ -12,6 +12,8 @@ import org.apache.commons.lang.StringUtils;
 import org.jeecgframework.core.common.controller.BaseController;
 import org.jeecgframework.core.common.model.json.AjaxJson;
 import org.jeecgframework.core.common.model.json.DataGrid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +34,8 @@ import com.review.manage.variate.vo.VariateVO;
 @Controller
 @RequestMapping("/reviewClass")
 public class ReviewClassController extends BaseController {
+
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private ReviewClassService reviewClassService;
@@ -59,13 +63,11 @@ public class ReviewClassController extends BaseController {
 	
 	/**
 	 * datagrid分类数据
-	 * @param request
 	 * @param response
 	 * @param dataGrid
 	 */
 	@RequestMapping(params="datagrid")
-	public void datagrid(HttpServletRequest request,
-			HttpServletResponse response, DataGrid dataGrid, ReviewClassVO reviewClass) {
+	public void datagrid(HttpServletResponse response, DataGrid dataGrid, ReviewClassVO reviewClass) {
 		
 		//查询列表数据
 		List<Map<String, Object>> list = reviewClassService.getReviewClassList(reviewClass, dataGrid);
@@ -80,11 +82,10 @@ public class ReviewClassController extends BaseController {
 	/**
 	 * 跳到添加或修改页面
 	 * @param request
-	 * @param response
 	 * @return
 	 */
 	@RequestMapping(params="toAdd")
-	public ModelAndView toAdd(HttpServletRequest request, HttpServletResponse response) {
+	public ModelAndView toAdd(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView("review/manage/reviewClass/reviewClassAdd");
 		String classId = request.getParameter("classId");
 		
@@ -97,14 +98,11 @@ public class ReviewClassController extends BaseController {
 
 	/**
 	 * 添加或修改分类信息
-	 * @param request
-	 * @param response
 	 * @param reviewClass
 	 */
 	@RequestMapping(params="addorupdate")
 	@ResponseBody
-	public AjaxJson addorupdate(HttpServletRequest request,
-			HttpServletResponse response, ReviewClassVO reviewClass) {
+	public AjaxJson addorupdate(ReviewClassVO reviewClass) {
 		AjaxJson ajax =  new AjaxJson();
 		try {
 			if(reviewClass.getClassId() != null && !"".equals(reviewClass.getClassId())) {
@@ -165,12 +163,10 @@ public class ReviewClassController extends BaseController {
 	/**
 	 * 发布\停止分类
 	 * @param request
-	 * @param response
 	 */
 	@RequestMapping(params="publish")
 	@ResponseBody
-	public AjaxJson publish(HttpServletRequest request,
-			HttpServletResponse response) {
+	public AjaxJson publish(HttpServletRequest request) {
 		AjaxJson ajax =  new AjaxJson();
 		String classId = request.getParameter("classId");
 		String pubType = request.getParameter("pubType");
@@ -184,6 +180,34 @@ public class ReviewClassController extends BaseController {
 		} catch (Exception e) {
 			ajax.setMsg("操作失败!");
 			e.printStackTrace();
+		}
+		return ajax;
+	}
+
+	/**
+	 * 置为热门
+	 * @param classId
+	 * @param opt
+	 * @return
+	 */
+	@RequestMapping(params="setUpHot")
+	@ResponseBody
+	public AjaxJson setUpHot(String classId, int opt) {
+		AjaxJson ajax =  new AjaxJson();
+		try {
+			reviewClassService.setUpHot(classId, opt);
+			ajax.setSuccess(true);
+			if(opt == 2) {
+				ajax.setMsg("设置热门成功!");
+			} else if(opt == 1) {
+				ajax.setMsg("取消热门成功!");
+			} else {
+				ajax.setSuccess(false);
+				ajax.setMsg("非法操作!");
+			}
+		} catch (Exception e) {
+			ajax.setMsg("操作失败!");
+			logger.error("setUpHot error, ", e);
 		}
 		return ajax;
 	}

@@ -1,13 +1,10 @@
 package com.review.manage.reviewClass.entity; 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
  * 
@@ -39,7 +36,9 @@ public class ReviewClassEntity implements Serializable{
     @Column(name="create_time")
     private java.util.Date createTime;   
     @Column(name="create_by")
-    private java.lang.String createBy;      
+    private java.lang.String createBy;
+    @Column(name = "banner_img")
+    private String bannerImg;
     
     public void setClassId(java.lang.String classId){  
         this.classId=classId;   
@@ -95,6 +94,13 @@ public class ReviewClassEntity implements Serializable{
 
 	public void setCreateBy(java.lang.String createBy) {
 		this.createBy = createBy;
-	}    
-       
-} 
+	}
+
+    public String getBannerImg() {
+        return bannerImg;
+    }
+
+    public void setBannerImg(String bannerImg) {
+        this.bannerImg = bannerImg;
+    }
+}

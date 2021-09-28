@@ -1,5 +1,5 @@
 package com.review.manage.reviewClass.vo;
-
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 public class ReviewClassVO {
 
@@ -14,6 +14,14 @@ public class ReviewClassVO {
     private java.lang.String guide;
     
     private String questionIds;
+
+    private Long projectId;
+
+	private String bannerImg;
+
+	private CommonsMultipartFile contentImg;
+
+	private Integer type;
 
 	public java.lang.String getClassId() {
 		return classId;
@@ -62,5 +70,36 @@ public class ReviewClassVO {
 	public void setQuestionIds(String questionIds) {
 		this.questionIds = questionIds;
 	}
-    
+
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
+	}
+
+	public String getBannerImg() {
+		return bannerImg;
+	}
+
+	public void setBannerImg(String bannerImg) {
+		this.bannerImg = bannerImg;
+	}
+
+	public CommonsMultipartFile getContentImg() {
+		return contentImg;
+	}
+
+	public void setContentImg(CommonsMultipartFile contentImg) {
+		this.contentImg = contentImg;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
 }

@@ -54,5 +54,12 @@ public interface ReviewClassService extends CommonService{
 	 * @param classId
 	 * @param pubType
 	 */
-	public void publishClass(String classId, String pubType);
+	void publishClass(String classId, String pubType);
+
+	/**
+	 * 设置热门
+	 * @param classId
+	 * @param opt 1：置为热门 2：取消热门
+	 */
+	void setUpHot(String classId, Integer opt);
 }
