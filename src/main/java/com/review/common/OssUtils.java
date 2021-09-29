@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ResourceBundle;
 
 public class OssUtils {
@@ -41,6 +42,21 @@ public class OssUtils {
         ByteArrayInputStream is = null;
         try {
             is = new ByteArrayInputStream(bytes);
+            String filePath = String.format(fileName, DateUtil.getCurrentDate());
+            getOssClient().putObject(bucketName, filePath, is);
+            return filePath;
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+    }
+
+    /**
+     * 上传文件
+     * @param fileName
+     * @return
+     */
+    public static String uploadFile(String fileName, InputStream is) {
+        try {
             String filePath = String.format(fileName, DateUtil.getCurrentDate());
             getOssClient().putObject(bucketName, filePath, is);
             return filePath;

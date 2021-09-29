@@ -1,5 +1,6 @@
 package com.review.manage.project.service.impl;
 
+import com.review.common.WxAppletsUtils;
 import com.review.manage.project.entity.ReviewProjectClassEntity;
 import com.review.manage.project.entity.ReviewProjectEntity;
 import com.review.manage.project.service.IReviewProjectService;
@@ -40,6 +41,10 @@ public class ReviewProjcetServiceImpl extends CommonServiceImpl implements IRevi
         //保存项目关联分类
         this.batchInsertProjectClass(reviewProjectEntity);
 
+        //生成二维码
+        String qrCodePath = WxAppletsUtils.geneAppletsQrCode("pages/index/index", "projectId=" + reviewProjectEntity.getId());
+        reviewProjectEntity.setAppletsCrCodeLink(qrCodePath);
+        this.saveOrUpdate(reviewProjectEntity);
         return true;
     }
 

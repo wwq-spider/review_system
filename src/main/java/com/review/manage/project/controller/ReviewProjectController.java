@@ -184,8 +184,7 @@ public class ReviewProjectController extends BaseController {
         }
 
         //生成二维码
-        String rootPath = ContextHolderUtils.getSession().getServletContext().getRealPath("/");
-        String qrCodePath = WxAppletsUtils.geneAppletsQrCode("pages/index/index", "projectId=" + projectId, rootPath);
+        String qrCodePath = WxAppletsUtils.geneAppletsQrCode("pages/index/index", "projectId=" + projectId);
 
         reviewProject.setAppletsCrCodeLink(qrCodePath);
         reviewProject.setUpdateTime(new Date());

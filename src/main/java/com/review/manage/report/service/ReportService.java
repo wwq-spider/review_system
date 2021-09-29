@@ -3,6 +3,7 @@ package com.review.manage.report.service;
 import java.util.List;
 import java.util.Map;
 
+import com.review.front.entity.ReviewReportResultEntity;
 import net.sf.json.JSONArray;
 
 import org.jeecgframework.core.common.model.json.DataGrid;
@@ -78,33 +79,32 @@ public interface ReportService extends CommonService {
 	 * @param rows
 	 * @return
 	 */
-	public List<ReviewReportEntity> getReportList(int page, int rows);
+	List<ReviewReportEntity> getReportList(int page, int rows);
 	
 	/**
 	 * 查询因子报告及其积分信息
 	 * @param classId
 	 * @return
 	 */
-	public List<ReportVO> getReportVOList(String classId);
+	List<ReportVO> getReportVOList(String classId);
 	
 	/**
 	 * 添加积分设置
 	 * @param report
 	 */
-	public void addReportSet(ReportVO report);
+	void addReportSet(ReportVO report);
 	
 	/**
 	 * 根据报告ID 查询因子列表
 	 * @param reportId
 	 * @return
 	 */
-	public List<ReviewReportVariateEntity> getReportVariateList(String reportId);
+	List<ReviewReportVariateEntity> getReportVariateList(String reportId);
 	
 	/**
 	 * 根据报告ID查询分类名称
 	 * @param reportId
 	 * @return
 	 */
-	public String getClassName(String reportId);
-
+	String getClassName(String reportId);
 }

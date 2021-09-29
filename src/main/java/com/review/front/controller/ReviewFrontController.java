@@ -5,7 +5,9 @@ import com.review.common.Constants;
 import com.review.front.entity.ReviewReportResultEntity;
 import com.review.front.entity.ReviewResultEntity;
 import com.review.front.service.ReviewFrontService;
+import com.review.front.vo.ReviewResultVO;
 import com.review.manage.question.vo.QuestionVO;
+import com.review.manage.report.service.ReportService;
 import com.review.manage.reviewClass.entity.ReviewClassEntity;
 import com.review.manage.reviewClass.service.ReviewClassService;
 import com.review.manage.reviewClass.vo.ReviewClassVO;
@@ -50,6 +52,9 @@ public class ReviewFrontController extends BaseController{
 
 	@Autowired
 	private ReviewClassService reviewClassService;
+
+	@Autowired
+	private ReportService reportService;
 	
 	/**
 	 * 跳到登录页面
@@ -391,6 +396,48 @@ public class ReviewFrontController extends BaseController{
 			json.put("msg", "用户信息注册失败，");
 			logger.error("register error, ", e);
 		}
+		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+	}
+
+	/**
+	 * 获取我的测评记录/测评报告
+	 * @param response
+	 * @param reviewUser
+	 */
+	@RequestMapping(value = "getReviewRecords", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void getReviewRecords(HttpServletResponse response, @RequestBody ReviewUserEntity reviewUser) {
+		JSONObject json = new JSONObject();
+		if (reviewUser == null || StringUtils.isBlank(reviewUser.getUserId())) {
+			json.put("code", 300);
+			json.put("msg", "用户信息为空");
+			CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+			return;
+		}
+		List<ReviewResultVO> reviewResultList = reviewFrontService.getReportResults(reviewUser.getUserId());
+		json.put("code", 200);
+		json.put("rows", reviewResultList);
+		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+	}
+
+	/**
+	 * 查询报告详情
+	 * @param response
+	 * @param reviewResult
+	 */
+	@RequestMapping(value = "getReviewReportDetail", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void getReviewReportDetail(HttpServletResponse response, @RequestBody ReviewResultVO reviewResult) {
+		JSONObject json = new JSONObject();
+		if (reviewResult == null || StringUtils.isBlank(reviewResult.getResultId())) {
+			json.put("code", 300);
+			json.put("msg", "报告id为空");
+			CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+			return;
+		}
+		ReviewResultEntity result = reportService.get(ReviewResultEntity.class, reviewResult.getResultId());
+		json.put("code", 200);
+		json.put("result", result);
 		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
 	}
 }

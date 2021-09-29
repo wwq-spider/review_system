@@ -1,9 +1,6 @@
 package com.review.common;
 
 import net.sf.json.JSONObject;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.UUID;
 
 public class WxAppletsUtils {
 
@@ -38,7 +34,7 @@ public class WxAppletsUtils {
         return null;
     }
 
-    public static String geneAppletsQrCode(String pagePath, String params, String rootPath) {
+    public static String geneAppletsQrCode(String pagePath, String params) {
         String accessToken = geneAccessToken();
         JSONObject paramObj = new JSONObject();
         paramObj.put("scene", params);
@@ -47,13 +43,8 @@ public class WxAppletsUtils {
         paramObj.put("is_hyaline", true);
         paramObj.put("auto_color", true);
 
-        File file = new File(rootPath + "/upload/qrcode/");
-        if (!file.exists()) {
-            file.mkdir();
-        }
-        String filePath = "/upload/qrcode/" + params.split("=")[1] + "_" + System.currentTimeMillis() + ".jpg";
-        postFile(String.format(qrCodeUrl, accessToken), paramObj.toString(), rootPath + filePath);
-        return filePath;
+        String filePath = "qrcode/%s/" + params.split("=")[1] + "_" + System.currentTimeMillis() + ".jpg";
+        return postFile(String.format(qrCodeUrl, accessToken), paramObj.toString(), filePath);
     }
 
     public static HttpURLConnection getConnection(String url, String params) throws IOException {
@@ -73,23 +64,24 @@ public class WxAppletsUtils {
         return connection;
     }
 
-    public static void postFile(String url, String params, String filePath) {
-        BufferedInputStream inputStream = null;
+    public static String postFile(String url, String params, String filePath) {
+        InputStream inputStream = null;
         HttpURLConnection connection = null;
-        BufferedOutputStream out = null;
+        //BufferedOutputStream out = null;
         try {
             //初始化连接
             connection = getConnection(url, params);
 
             //读返回流
-            inputStream = new BufferedInputStream(connection.getInputStream());
-            out = new BufferedOutputStream(new FileOutputStream(filePath));
-            byte[] bytes = new byte[1024];
-            int length;
-            while ((length = inputStream.read(bytes)) != -1) {
-                out.write(bytes, 0, length);
-            }
-            out.flush();
+            inputStream = connection.getInputStream();
+            return OssUtils.uploadFile(String.format(filePath, DateUtil.getCurrentDateStr()), inputStream);
+//            out = new BufferedOutputStream(new FileOutputStream(filePath));
+//            byte[] bytes = new byte[1024];
+//            int length;
+//            while ((length = inputStream.read(bytes)) != -1) {
+//                out.write(bytes, 0, length);
+//            }
+//            out.flush();
         } catch (Exception e) {
             logger.error("post error, ", e);
         } finally {
@@ -97,8 +89,8 @@ public class WxAppletsUtils {
                 connection.disconnect();
             }
             IOUtils.closeQuietly(inputStream);
-            IOUtils.closeQuietly(out);
         }
+        return null;
     }
 
     public static String postString(String url, String params) {
@@ -131,7 +123,7 @@ public class WxAppletsUtils {
     public static void main(String[] args) {
         String accessToken = geneAccessToken();
         String rootPath = "/Library/prek/project/review_system/target/review_system";
-        String path = geneAppletsQrCode("pages/index/index", "projectId=5", rootPath);
+        String path = geneAppletsQrCode("pages/index/index", "projectId=5");
         System.out.println(accessToken);
     }
 }

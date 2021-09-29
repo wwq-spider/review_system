@@ -113,11 +113,14 @@
 					<list>
 						<value>reviewFront.do?login</value>
 						<value>reviewFront.do?toReviewLogin</value>
-						<value>reviewFront/getQuestionsByClassID.do</value>
-						<value>reviewFront/completeReview.do</value>
-						<value>reviewFront/getReviewClass.do</value>
 						<value>reviewFront/register.do</value>
 						<value>reviewFront/getUserInfoByOpenid.do</value>
+						<value>reviewFront/getReviewClass.do</value>
+
+						<!--<value>reviewFront/getQuestionsByClassID.do</value>
+						<value>reviewFront/completeReview.do</value>
+						<value>reviewFront/getReviewRecords.do</value>
+						<value>reviewFront/getReviewReportDetail.do</value>-->
 
 						<value>review.do?previewImg.dp</value>
 						<value>reviewClass.do?datagrid</value>

@@ -42,7 +42,7 @@
 					updateTime: data.rows[i].updateTime,
 					creator: data.rows[i].creator,
 					opt: "[<a href=\"#\" onclick=\"viewInfo('二维码预览','reviewProject.do?previewQrCode&projectId="
-							+data.rows[i].id + "&codelink=" + data.rows[i].appletsCrCodeLink + "','reviewProjectList',500,500)\">查看二维码</a>]&nbsp;&nbsp;"+
+							+data.rows[i].id + "&codelink=" + data.rows[i].appletsCrCodeLink + "','reviewProjectList',500,800)\">查看二维码</a>]&nbsp;&nbsp;"+
 							edit+"&nbsp;&nbsp;[<a href=\"#\" onclick=\"delObj('reviewProject.do?del&projectId="+data.rows[i].id+"','删除')\">删除</a>]"
 				});
 			}
@@ -50,7 +50,7 @@
 			$('.datagrid-cell-c1-name').css("text-align","center");
 			return newData;
 		}
-	    // 刷新
+	    //刷新
 	    function reloadTable(){
 	    	$('#reviewProjectList').datagrid('reload');
 	    }

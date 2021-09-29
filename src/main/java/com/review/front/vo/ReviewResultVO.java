@@ -1,7 +1,17 @@
 package com.review.front.vo;
 
 
-public class ReviewResultVO {
+import java.io.Serializable;
+
+public class ReviewResultVO implements Serializable {
+
+	private String classId;
+
+	private String classTitle;
+
+	private String createTime;
+
+	private String classCover;
 
 	private String resultId;
 	
@@ -10,6 +20,38 @@ public class ReviewResultVO {
 	private String reportResult;
 	
 	private String reportGrade;
+
+	public String getClassId() {
+		return classId;
+	}
+
+	public void setClassId(String classId) {
+		this.classId = classId;
+	}
+
+	public String getClassTitle() {
+		return classTitle;
+	}
+
+	public void setClassTitle(String classTitle) {
+		this.classTitle = classTitle;
+	}
+
+	public String getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+
+	public String getClassCover() {
+		return classCover;
+	}
+
+	public void setClassCover(String classCover) {
+		this.classCover = classCover;
+	}
 
 	public String getResultId() {
 		return resultId;

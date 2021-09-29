@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.review.front.vo.ReviewResultVO;
 import com.review.manage.userManage.entity.ReviewUserEntity;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -310,6 +311,22 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 				new Object[]{classId,userId});
 		return this.findHql("from ReviewReportResultEntity where resultId=? order by resultType,createTime ASC", 
 				new Object[]{list.get(0).getResultId()});
+	}
+
+	@Override
+	public List<ReviewResultVO> getReportResults(String userId) {
+		String sql = "select r.result_id resultId, " +
+				"       r.class_id classId, " +
+				"       DATE_FORMAT(r.`create_time`,'%Y-%m-%e %H:%i:%S') createTime," +
+				//"       r.review_result reportResult," +
+				"       r.grade_total reportGrade," +
+				"       c.banner_img classCover," +
+				"       c.title classTitle" +
+				" from review_result r, review_class c " +
+				" where r.class_id=c.class_id and r.user_id=:userId";
+		Map<String, String> paramMap = new HashMap<>();
+		paramMap.put("userId", userId);
+		return this.getObjectList(sql, paramMap, ReviewResultVO.class);
 	}
 
 	@Override

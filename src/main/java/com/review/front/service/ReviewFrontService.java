@@ -3,6 +3,7 @@ package com.review.front.service;
 import java.util.List;
 
 import com.review.front.entity.ReviewResultEntity;
+import com.review.front.vo.ReviewResultVO;
 import com.review.manage.userManage.entity.ReviewUserEntity;
 import org.jeecgframework.core.common.service.CommonService;
 
@@ -52,8 +53,21 @@ public interface ReviewFrontService extends CommonService{
 	 */
 	ReviewResultEntity completeReview(List<QuestionVO> resultList, String classId,
 									  String userId, String userName);
-	
+
+	/**
+	 * 查询测评报告
+	 * @param userId
+	 * @param classId
+	 * @return
+	 */
 	List<ReviewReportResultEntity> getReportResults(String userId, String classId);
+
+	/**
+	 * 查询我的报告/测评记录
+	 * @param userId
+	 * @return
+	 */
+	List<ReviewResultVO> getReportResults(String userId);
 
 	/**
 	 * 注册用户信息

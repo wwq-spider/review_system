@@ -10,8 +10,8 @@
 </head>
 <body style="overflow-y: auto;overflow-x:hidden" scroll="no">
 <form method="post">
-	<div><span>双击更新二维码</span></div>
-<img alt="图片" id="previewc" width="95%" height="95%" src="" ondblclick="refreshQrCode()"/>
+	<div><button onclick="refreshQrCode()">更新二维码</button></div>
+<img alt="图片" id="previewc" width="95%" height="95%" src=""/>
 </form>
 
 <script type="text/javascript">
@@ -20,7 +20,7 @@
 	let qrcodeLink = '${contextPath}${codelink}'
 	$(function() {
 		if (qrcodeLink && qrcodeLink != "") {
-			$("#previewc").attr("src", qrcodeLink)
+			$("#previewc").attr("src", "https://review-images.oss-cn-beijing.aliyuncs.com/" + qrcodeLink)
 		} else {
 			geneOrUpdQrCode(projectId, true)
 		}
@@ -44,7 +44,7 @@
 			},
 			success : function(data) {
 				if (data.code == 200) {
-					$("#previewc").attr("src", data.result)
+					$("#previewc").attr("src", "https://review-images.oss-cn-beijing.aliyuncs.com/" + data.result)
 				}else{
 					alert("二维码刷新失败")
 				}
