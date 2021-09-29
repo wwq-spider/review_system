@@ -2,7 +2,6 @@
 FROM maven:3.6-jdk-8 as builder
 # 将代码复制到容器内
 WORKDIR /app
-COPY libs ./libs
 COPY pom.xml .
 COPY src ./src
 # 构建项目
