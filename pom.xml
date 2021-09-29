@@ -220,6 +220,12 @@
 			<groupId>org.jeecgframework</groupId>
 			<artifactId>minidao</artifactId>
 			<version>${minidao.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-asm</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- ckfinder start -->
 		<dependency>

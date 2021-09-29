@@ -105,8 +105,10 @@ function pubOrSave(title,addurl,gname,width,height) {
 function createwindowPubOrSave(title, addurl,width,height) {
 	width = width?width:700;
 	height = height?height:400;
-	if(width=="100%" || height=="100%"){
-		width = window.top.document.body.offsetWidth;
+	if(width=="100%") {
+        width = window.top.document.body.offsetWidth;
+	}
+	if(height=="100%"){
 		height =window.top.document.body.offsetHeight-100;
 	}
     //--author：JueYue---------date：20140427---------for：弹出bug修改,设置了zindex()函数
@@ -603,16 +605,18 @@ function createwindow(title, addurl,width,height) {
 function viewInfo(title, addurl,width,height) {
 	width = width?width:700;
 	height = height?height:400;
-	if(width=="100%" || height=="100%"){
+	if(width=="100%"){
 		width = window.top.document.body.offsetWidth;
-		height =window.top.document.body.offsetHeight-100;
 	}
+    if(height=="100%"){
+        height =window.top.document.body.offsetHeight-100;
+    }
 	//--author：JueYue---------date：20140427---------for：弹出bug修改,设置了zindex()函数
 	if(typeof(windowapi) == 'undefined'){
 		$.dialog({
 			content: 'url:'+addurl,
 			lock : true,
-			//zIndex:1990,
+			zIndex:1990,
 			width:width,
 			height:height,
 			title:title,
@@ -626,9 +630,9 @@ function viewInfo(title, addurl,width,height) {
 			content: 'url:'+addurl,
 			lock : true,
 			width:width,
-			//zIndex:1990,
+			zIndex:1990,
 			height:height,
-			parent:windowapi,
+			//parent:windowapi,
 			title:title,
 			opacity : 0.3,
 			cache:false,

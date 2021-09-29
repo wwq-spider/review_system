@@ -7,3 +7,4 @@ String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path;
 %>
 <c:set var="webRoot" value="<%=basePath%>" />
+<c:set var="aliyunOssHost" value="https://review-images.oss-cn-beijing.aliyuncs.com/" />

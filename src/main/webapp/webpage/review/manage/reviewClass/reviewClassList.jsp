@@ -26,7 +26,7 @@
 			</div>
 		</div>
 	<script type="text/javascript">
-
+        let width = window.top.document.body.offsetWidth * 0.65;
 	    // 编辑初始化数据
 		function getData(data){
 			$('.datagrid-header-inner .datagrid-cell ').css("text-align","center"); 
@@ -63,7 +63,7 @@
 					status: statusText,
 					sortId: data.rows[i].sortId,
 					type: typetext,
-					opt: "[<a href=\"#\" onclick=\"pubOrSave('题目设置','reviewClass.do?toAdd&classId="+data.rows[i].classId+"','reviewClassList',1000,700)\">题目设置</a>]&nbsp;&nbsp;"+
+					opt: "[<a href=\"#\" onclick=\"pubOrSave('题目设置','reviewClass.do?toAdd&classId="+data.rows[i].classId+"','reviewClassList',width,'100%')\">题目设置</a>]&nbsp;&nbsp;"+
 						  puburl +"[<a href=\"#\" onclick=\"delObj('reviewClass.do?del&classId="+data.rows[i].classId+"','删除')\">删除</a>]"
 				});
 			}
