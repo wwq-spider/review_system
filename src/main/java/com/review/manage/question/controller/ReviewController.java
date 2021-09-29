@@ -203,42 +203,42 @@ public class ReviewController extends BaseController {
 	@RequestMapping(params="previewImg")
 	public void previewImg(HttpServletRequest request,
 			HttpServletResponse response) {
-		BufferedInputStream bis = null;  
-		BufferedOutputStream bos = null;
-		InputStream in = null;
-		OutputStream out = null;
-		String answerId = request.getParameter("answerId");
-		String questionId = request.getParameter("questionId");
-		byte[] attach = new byte[0];
-		if(!"".equals(StringUtils.trimToEmpty(questionId))) {
-			ReviewQuestionEntity questionEntity = reviewService.get(ReviewQuestionEntity.class, Integer.parseInt(questionId));
-			attach = questionEntity.getPictureAttach();
-		} else if(!"".equals(StringUtils.trimToEmpty(answerId))) {
-			ReviewAnswerEntity answerEntity = reviewService.get(ReviewAnswerEntity.class, answerId);
-			attach = answerEntity.getPictureAttach();
-		}
-		
-		try { 
-			response.setContentType("image/jpeg");
-			out = response.getOutputStream();
-			in = new ByteArrayInputStream(attach);
-			bis = new BufferedInputStream(in);
-			bos = new BufferedOutputStream(out);  
-			byte[] buff = new byte[8 * 1024];  
-			int bytesRead;  
-			while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {  
-			    bos.write(buff, 0, bytesRead);  
-			    bos.flush();
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			IOUtils.closeQuietly(in);
-			IOUtils.closeQuietly(out);
-			IOUtils.closeQuietly(bis);
-			IOUtils.closeQuietly(bos);
-		}
+//		BufferedInputStream bis = null;
+//		BufferedOutputStream bos = null;
+//		InputStream in = null;
+//		OutputStream out = null;
+//		String answerId = request.getParameter("answerId");
+//		String questionId = request.getParameter("questionId");
+//		byte[] attach = new byte[0];
+//		if(!"".equals(StringUtils.trimToEmpty(questionId))) {
+//			ReviewQuestionEntity questionEntity = reviewService.get(ReviewQuestionEntity.class, Integer.parseInt(questionId));
+//			attach = questionEntity.getPictureAttach();
+//		} else if(!"".equals(StringUtils.trimToEmpty(answerId))) {
+//			ReviewAnswerEntity answerEntity = reviewService.get(ReviewAnswerEntity.class, answerId);
+//			attach = answerEntity.getPictureAttach();
+//		}
+//
+//		try {
+//			response.setContentType("image/jpeg");
+//			out = response.getOutputStream();
+//			in = new ByteArrayInputStream(attach);
+//			bis = new BufferedInputStream(in);
+//			bos = new BufferedOutputStream(out);
+//			byte[] buff = new byte[8 * 1024];
+//			int bytesRead;
+//			while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
+//			    bos.write(buff, 0, bytesRead);
+//			    bos.flush();
+//			}
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//			IOUtils.closeQuietly(in);
+//			IOUtils.closeQuietly(out);
+//			IOUtils.closeQuietly(bis);
+//			IOUtils.closeQuietly(bos);
+//		}
 	}
 	
 	/**

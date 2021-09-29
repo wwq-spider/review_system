@@ -14,7 +14,9 @@ public class SelectVO {
     
     private String isAttach;
 
-    private CommonsMultipartFile pictureAttach;
+    private String pictureAttach;
+
+	private CommonsMultipartFile contentImg;
     
 	public String getSelectId() {
 		return selectId;
@@ -56,13 +58,19 @@ public class SelectVO {
 		this.isAttach = isAttach;
 	}
 
-	public CommonsMultipartFile getPictureAttach() {
+	public String getPictureAttach() {
 		return pictureAttach;
 	}
 
-	public void setPictureAttach(CommonsMultipartFile pictureAttach) {
+	public void setPictureAttach(String pictureAttach) {
 		this.pictureAttach = pictureAttach;
 	}
-    
-    
+
+	public CommonsMultipartFile getContentImg() {
+		return contentImg;
+	}
+
+	public void setContentImg(CommonsMultipartFile contentImg) {
+		this.contentImg = contentImg;
+	}
 }

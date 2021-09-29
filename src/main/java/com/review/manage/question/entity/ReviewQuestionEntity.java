@@ -43,7 +43,7 @@ public class ReviewQuestionEntity implements Serializable{
     private java.lang.String createBy;   
     
     @Column(name="picture_attach")
-    private byte[] pictureAttach;
+    private String pictureAttach;
     
     public void setQuestionId(Integer questionId){  
         this.questionId=questionId;   
@@ -110,11 +110,11 @@ public class ReviewQuestionEntity implements Serializable{
         return this.createBy;    
     }
 
-	public byte[] getPictureAttach() {
+	public String getPictureAttach() {
 		return pictureAttach;
 	}
 
-	public void setPictureAttach(byte[] pictureAttach) {
+	public void setPictureAttach(String pictureAttach) {
 		this.pictureAttach = pictureAttach;
 	}    
        

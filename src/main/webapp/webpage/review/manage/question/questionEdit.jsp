@@ -44,8 +44,8 @@
 							<td>
 							<input type="file" name="contentImg" id="contentImg" onchange="previewImage(this,'content')" style="display: none"></input>
 							<div id="previewcontent">
-								<c:if test="${question.isAttach == 'Y' }">
-									<img alt="图片预览" id="preview" width="50px" height="50px" src="<%=path%>/review.do?previewImg&questionId=${question.questionId}"></img>
+								<c:if test="${question.pictureAttach != null &&  question.pictureAttach != '' }">
+									<img alt="图片预览" id="preview" width="50px" height="50px" src="https://review-images.oss-cn-beijing.aliyuncs.com/${question.pictureAttach}"></img>
 								</c:if>
 							</div>
 								<input type="button"  name="uploadBtn" onclick="uploadImg('contentImg');" value="上传图片"></input>
@@ -84,13 +84,13 @@
 									<span class="Validform_checktip"></span><label class="Validform_label" style="display: none;">分值</label></td>
 								</td>
 								<td align="center">
-									<input type="file" name="selectList[${i.index }].pictureAttach" id="selectList[${i.index }].pictureAttach" onchange="previewImage(this,'${i.index }')" style="display: none"></input>
+									<input type="file" name="selectList[${i.index }].contentImg" id="selectList[${i.index }].contentImg" onchange="previewImage(this,'${i.index }')" style="display: none"></input>
 									<div id="preview${i.index }">
-										<c:if test="${answer.isAttach == 'Y' }">
-											<img alt="图片预览" id="preview" width="50px" height="50px" src="<%=path%>/review.do?previewImg&answerId=${answer.answerId}"></img>
+										<c:if test="${answer.pictureAttach != null &&  answer.pictureAttach != ''}">
+											<img alt="图片预览" id="preview" width="50px" height="50px" src="https://review-images.oss-cn-beijing.aliyuncs.com/${answer.pictureAttach}"></img>
 										</c:if>
 									</div>
-									<input type="button"  name="uploadBtn" onclick="uploadImg('selectList[${i.index }].pictureAttach');" value="上传图片"></input>
+									<input type="button"  name="uploadBtn" onclick="uploadImg('selectList[${i.index }].contentImg');" value="上传图片"></input>
 								</td>
 							</tr>
 							</c:forEach>
@@ -181,10 +181,10 @@
 							+ "<input  id=\"selectList["+ tr.length+ "].selectGrade\" name=\"selectList["+ tr.length
 							+ "].selectGrade\" value=\"\" dataType=\"n\" type=\"number\" style=\"width: 50px;\" class=\"inputxt\">"
 							+ "<span class=\"Validform_checktip\"></span><label class=\"Validform_label\" style=\"display: none;\">"
-							+ "分值</label></td></td><td align=\"center\"><input type=\"file\" name=\"selectList["+tr.length+"].pictureAttach\" id=\"selectList["+tr.length+
-							"].pictureAttach\" onchange=\"previewImage(this,'"+tr.length+"')\" style=\"display: none\"></input><div id=\"preview"+tr.length
+							+ "分值</label></td></td><td align=\"center\"><input type=\"file\" name=\"selectList["+tr.length+"].contentImg\" id=\"selectList["+tr.length+
+							"].contentImg\" onchange=\"previewImage(this,'"+tr.length+"')\" style=\"display: none\"></input><div id=\"preview"+tr.length
 							+"\"></div><input type=\"button\"  name=\"uploadBtn\" onclick=\"uploadImg('selectList["+tr.length+
-							"].pictureAttach');\" value=\"上传图片\"></input></td></tr>";
+							"].contentImg');\" value=\"上传图片\"></input></td></tr>";
 						$("#selectTable").append(thtml);
 					
 				}

@@ -38,7 +38,7 @@
 				<input type="file" name="contentImg" id="contentImg" onchange="previewImage(this,'content')" style="display: none"></input>
 				<div id="previewcontent">
 					<c:if test="${reviewClass.bannerImg != null && reviewClass.bannerImg != '' }">
-						<img alt="图片预览" id="preview" width="50px" height="50px" src="<%=path%>${reviewClass.bannerImg}"></img>
+						<img alt="图片预览" id="preview" width="50px" height="50px" src="https://review-images.oss-cn-beijing.aliyuncs.com/${reviewClass.bannerImg}"></img>
 					</c:if>
 				</div>
 				<input type="button"  name="uploadBtn" onclick="uploadImg('contentImg');" value="上传封面"></input>

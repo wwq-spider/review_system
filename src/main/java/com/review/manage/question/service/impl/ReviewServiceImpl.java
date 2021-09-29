@@ -12,10 +12,13 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.review.common.OssUtils;
+import com.review.manage.reviewClass.entity.ReviewClassEntity;
 import org.apache.commons.lang.StringUtils;
 import org.jeecgframework.core.common.model.json.DataGrid;
 import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
 import org.jeecgframework.core.util.ResourceUtil;
+import org.jeecgframework.core.util.UUIDGenerator;
 import org.jeecgframework.poi.excel.ExcelUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +31,7 @@ import com.review.manage.question.entity.ReviewQuestionEntity;
 import com.review.manage.question.service.ReviewService;
 import com.review.manage.question.vo.QuestionVO;
 import com.review.manage.reviewClass.entity.ReviewQuestionClassEntity;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 @SuppressWarnings("deprecation")
 @Service("reviewService")
@@ -45,7 +49,8 @@ public class ReviewServiceImpl extends CommonServiceImpl implements ReviewServic
 		sb.append("   q.`is_important` isImportant,");
 		sb.append("   DATE_FORMAT(q.`create_time`,'%Y-%m-%e %H:%i:%S') AS createTime,");
 		sb.append("   q.`create_by` createBy,");
-		sb.append("   q.`question_type` questionType");
+		sb.append("   q.`question_type` questionType,");
+		sb.append("   q.`picture_attach` pictureAttach");
 		//sb.append("   q.`review_type` reviewType ");
 		sb.append(" FROM  ");
 		sb.append("   review_question q LEFT JOIN review_question_class c ");
@@ -91,15 +96,10 @@ public class ReviewServiceImpl extends CommonServiceImpl implements ReviewServic
 			reviewQuestion.setQuestionType(question.getQuestionType());
 			reviewQuestion.setQuestionNum(question.getQuestionNum());
 			reviewQuestion.setRightAnswer(question.getRightAnswer());
-			if(question.getContentImg() != null) {
-				if(question.getContentImg().getSize() > 0) {
-					reviewQuestion.setPictureAttach(question.getContentImg().getBytes());
-				}
-			}
+			this.saveAttach(question.getContentImg(), reviewQuestion);
 			this.save(reviewQuestion);
 			
 			//添加题目分类
-			
 			ReviewQuestionClassEntity questionClass = new ReviewQuestionClassEntity();
 			questionClass.setClassId(classId);
 			questionClass.setQuestionId(reviewQuestion.getQuestionId());
@@ -117,11 +117,7 @@ public class ReviewServiceImpl extends CommonServiceImpl implements ReviewServic
 				if(!"".equals(StringUtils.trimToEmpty(select.getSelectGrade()))) {
 					answerEntity.setGrade(Double.valueOf(select.getSelectGrade()));
 				}
-				if(select.getPictureAttach() != null) {
-					if(select.getPictureAttach().getSize() > 0) {
-						answerEntity.setPictureAttach(select.getPictureAttach().getBytes());
-					}
-				}
+				this.saveAnswerAttach(select.getContentImg(), answerEntity);
 				this.save(answerEntity);
 			}
 			return "succ";
@@ -149,31 +145,6 @@ public class ReviewServiceImpl extends CommonServiceImpl implements ReviewServic
 		}
 	}
 	
-	/**
-	 * 添加问题
-	 * @param selText
-	 * @param selGrade
-	 * @param selCode
-	 * @param questionId
-	 * @param isRight
-	 * @param imgBytes
-	 */
-	@SuppressWarnings("unused")
-	private void addReviewAnswer(String selText,Integer selGrade, 
-			String selCode, Integer questionId,String isRight, byte[] imgBytes) {
-		ReviewAnswerEntity reviewAnswer = new ReviewAnswerEntity();
-		reviewAnswer.setAnswerCode(selCode);
-		reviewAnswer.setAnswerContent(selText);
-		if(selGrade != null) {
-			reviewAnswer.setGrade(Double.valueOf(selGrade));
-		}
-
-		reviewAnswer.setQuestionId(questionId);
-		reviewAnswer.setIsRight(isRight);
-		reviewAnswer.setPictureAttach(imgBytes);
-		this.save(reviewAnswer);
-	}
-	
 	@Override
 	public void updateQuestion(QuestionVO question,HttpServletRequest request) throws IOException {
 		
@@ -185,11 +156,7 @@ public class ReviewServiceImpl extends CommonServiceImpl implements ReviewServic
 		reviewQuestion.setIsImportant(question.getIsImportant());
 		reviewQuestion.setQuestionType(question.getQuestionType());
 		reviewQuestion.setRightAnswer(question.getRightAnswer());
-		if(question.getContentImg() != null) {
-			if(question.getContentImg().getSize() > 0) {
-				reviewQuestion.setPictureAttach(question.getContentImg().getBytes());
-			}
-		}
+		this.saveAttach(question.getContentImg(), reviewQuestion);
 		this.saveOrUpdate(reviewQuestion);
 		
 		//删除选项
@@ -219,12 +186,41 @@ public class ReviewServiceImpl extends CommonServiceImpl implements ReviewServic
 				answerEntity.setGrade(Double.valueOf(select.getSelectGrade()));
 			}
 			
-			if(select.getPictureAttach() != null) {
-				if(select.getPictureAttach().getSize() > 0) {
-					answerEntity.setPictureAttach(select.getPictureAttach().getBytes());
-				}
-			}
+			this.saveAnswerAttach(select.getContentImg(), answerEntity);
+
 			this.saveOrUpdate(answerEntity);
+		}
+	}
+
+	/**
+	 * 保存封面图片
+	 * @param contentImg
+	 * @param reviewAnswer
+	 * @throws IOException
+	 */
+	private void saveAnswerAttach(CommonsMultipartFile contentImg, ReviewAnswerEntity reviewAnswer) {
+		//上传封面图片
+		if (contentImg != null && !contentImg.isEmpty()) {
+			String path = OssUtils.uploadFile("review-answer/%s/" + UUIDGenerator.generate() + ".jpg", contentImg.getBytes());
+			if (StringUtils.isNotBlank(path)) {
+				reviewAnswer.setPictureAttach(path);
+			}
+		}
+	}
+
+	/**
+	 * 保存封面图片
+	 * @param contentImg
+	 * @param reviewQuestion
+	 * @throws IOException
+	 */
+	private void saveAttach(CommonsMultipartFile contentImg, ReviewQuestionEntity reviewQuestion) {
+		//上传封面图片
+		if (contentImg != null && !contentImg.isEmpty()) {
+			String path = OssUtils.uploadFile("review-question/%s/" + UUIDGenerator.generate() + ".jpg", contentImg.getBytes());
+			if (StringUtils.isNotBlank(path)) {
+				reviewQuestion.setPictureAttach(path);
+			}
 		}
 	}
 
@@ -323,7 +319,7 @@ public class ReviewServiceImpl extends CommonServiceImpl implements ReviewServic
 		sb.append(" SELECT    ");
 		sb.append("  q.`content` content,");
 		sb.append("  q.`is_important` isImportant,");
-		sb.append("  (CASE ISNULL(q.`picture_attach`) WHEN 1 THEN  'N' ELSE 'Y' END) AS isAttach,");
+		sb.append("  q.`picture_attach` pictureAttach,");
 		sb.append("  q.`question_id` questionId,");
 		sb.append("  q.`question_num` questionNum,");
 		sb.append("  q.`question_type` questionType,");
@@ -343,7 +339,7 @@ public class ReviewServiceImpl extends CommonServiceImpl implements ReviewServic
 		sb.append("  a.`answer_id` answerId,");
 		sb.append("  a.`grade` selectGrade,");
 		sb.append("  a.`answer_content` selectContent,");
-		sb.append("  (CASE ISNULL(a.`picture_attach`) WHEN 1 THEN  'N' ELSE 'Y' END) AS isAttach,");
+		sb.append("  a.`picture_attach` pictureAttach,");
 		sb.append("  a.`answer_code` selCode ");
 		sb.append(" FROM     ");
 		sb.append("  review_answer a ");

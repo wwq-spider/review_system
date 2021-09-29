@@ -53,6 +53,8 @@ public class QuestionVO implements Serializable {
     
     private String isAttach;
 
+	private String pictureAttach;
+
     private String isLastQuestion;
     
     private String multiple;     //可多选
@@ -264,5 +266,12 @@ public class QuestionVO implements Serializable {
 	public void setGradeMap(Map<String, Double> gradeMap) {
 		this.gradeMap = gradeMap;
 	}
-	
+
+	public String getPictureAttach() {
+		return pictureAttach;
+	}
+
+	public void setPictureAttach(String pictureAttach) {
+		this.pictureAttach = pictureAttach;
+	}
 }

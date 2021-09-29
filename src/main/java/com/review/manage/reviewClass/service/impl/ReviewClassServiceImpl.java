@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.review.common.OssUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jeecgframework.core.common.model.json.DataGrid;
 import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
 import org.jeecgframework.core.util.ContextHolderUtils;
@@ -42,13 +44,17 @@ public class ReviewClassServiceImpl extends CommonServiceImpl implements ReviewC
 	private void saveBannerImg(CommonsMultipartFile contentImg, ReviewClassEntity reviewClassEntity) throws IOException {
 		//上传封面图片
 		if (contentImg != null && !contentImg.isEmpty()) {
+			String path = OssUtils.uploadFile("review-class/%s/" + UUIDGenerator.generate() + ".jpg", contentImg.getBytes());
+			if (StringUtils.isNotBlank(path)) {
+				reviewClassEntity.setBannerImg(path);
+			}
 			//生成二维码
-			String rootPath = ContextHolderUtils.getSession().getServletContext().getRealPath("/");
-			String filePath = "/upload/banner/" + UUIDGenerator.generate() + ".jpg";
-			File dir = new File(rootPath + filePath).getParentFile();
-			if (!dir.exists()) dir.mkdir();
-			FileUtils.writeByteArrayToFile(new File(rootPath + filePath), contentImg.getBytes());
-			reviewClassEntity.setBannerImg(filePath);
+//			String rootPath = ContextHolderUtils.getSession().getServletContext().getRealPath("/");
+//			String filePath = "/upload/banner/" + UUIDGenerator.generate() + ".jpg";
+//			File dir = new File(rootPath + filePath).getParentFile();
+//			if (!dir.exists()) dir.mkdir();
+//			FileUtils.writeByteArrayToFile(new File(rootPath + filePath), contentImg.getBytes());
+//			reviewClassEntity.setBannerImg(filePath);
 		}
 	}
 
