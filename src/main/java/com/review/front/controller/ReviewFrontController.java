@@ -383,10 +383,11 @@ public class ReviewFrontController extends BaseController{
 			return;
 		}
 		try {
-			boolean flag = reviewFrontService.register(reviewUser);
-			if (flag) {
+			String userId = reviewFrontService.register(reviewUser);
+			if (userId != null) {
 				json.put("code", 200);
 				json.put("msg", "用户信息注册成功");
+				json.put("result", userId);
 			} else {
 				json.put("code", 301);
 				json.put("msg", "不是系统测评用户");

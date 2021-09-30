@@ -74,7 +74,7 @@ public interface ReviewFrontService extends CommonService{
 	 * @param reviewUser
 	 * @return
 	 */
-	boolean register(ReviewUserEntity reviewUser);
+	String register(ReviewUserEntity reviewUser);
 
 	/**
 	 * 查询用户信息

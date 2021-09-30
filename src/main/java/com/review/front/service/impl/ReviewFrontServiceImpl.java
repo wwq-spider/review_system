@@ -323,28 +323,28 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 				"       c.banner_img classCover," +
 				"       c.title classTitle" +
 				" from review_result r, review_class c " +
-				" where r.class_id=c.class_id and r.user_id=:userId";
+				" where r.class_id=c.class_id and r.user_id=:userId order by r.`create_time` desc";
 		Map<String, String> paramMap = new HashMap<>();
 		paramMap.put("userId", userId);
 		return this.getObjectList(sql, paramMap, ReviewResultVO.class);
 	}
 
 	@Override
-	public boolean register(ReviewUserEntity reviewUser) {
+	public String register(ReviewUserEntity reviewUser) {
 		List<ReviewUserEntity> reviewUserList = this.findHql("from ReviewUserEntity where mobilePhone=?", new Object[]{reviewUser.getMobilePhone()});
 		if (CollectionUtils.isEmpty(reviewUserList)) {
 			logger.warn("register failed, mobilephone" + reviewUser.getMobilePhone() + " not exists");
-			return false;
+			return null;
 		}
 		ReviewUserEntity reviewUserEntity = reviewUserList.get(0);
 		try {
 			MyBeanUtils.copyBean2Bean(reviewUserEntity, reviewUser);
 		} catch (Exception e) {
 			logger.error("copyBean2Bean error, ", e);
-			return false;
+			return null;
 		}
 		this.saveOrUpdate(reviewUserEntity);
-		return true;
+		return reviewUserEntity.getUserId();
 	}
 
 	@Override
