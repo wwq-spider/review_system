@@ -343,7 +343,7 @@ public class ReviewFrontController extends BaseController{
 	 */
 	@RequestMapping(value = "getReviewClass", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public void getReviewClassByProjectId(HttpServletResponse response, ReviewClassVO reviewClass) {
+	public void getReviewClassByProjectId(HttpServletResponse response, @RequestBody ReviewClassVO reviewClass) {
 		JSONObject json = new JSONObject();
 		Long projectId = reviewClass.getProjectId();
 		List<ReviewClassVO> reviewClassList = reviewClassService.getReviewClassByProjectId(projectId);
