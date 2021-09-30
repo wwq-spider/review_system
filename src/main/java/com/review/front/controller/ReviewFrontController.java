@@ -2,6 +2,7 @@ package com.review.front.controller;
 
 import com.review.common.CommonUtils;
 import com.review.common.Constants;
+import com.review.common.WxAppletsUtils;
 import com.review.front.entity.ReviewReportResultEntity;
 import com.review.front.entity.ReviewResultEntity;
 import com.review.front.service.ReviewFrontService;
@@ -439,6 +440,35 @@ public class ReviewFrontController extends BaseController{
 		ReviewResultEntity result = reportService.get(ReviewResultEntity.class, reviewResult.getResultId());
 		json.put("code", 200);
 		json.put("result", result);
+		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+	}
+
+	/**
+	 * 获取openid
+	 * @param response
+	 * @param paramJson
+	 */
+	@RequestMapping(value = "getOpenid", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void getOpenid(HttpServletResponse response, @RequestBody JSONObject paramJson) {
+		JSONObject json = new JSONObject();
+		if (paramJson == null || paramJson.isEmpty() || !paramJson.containsKey("code")) {
+			json.put("code", 300);
+			json.put("msg", "code为空");
+			CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+			return;
+		}
+
+		String code = paramJson.getString("code");
+		String openid = WxAppletsUtils.getOpenid(code);
+		if (openid == null) {
+			json.put("code", 301);
+			json.put("msg", "openid获取失败");
+		} else {
+			json.put("code", 200);
+			json.put("msg", "openid获取成功");
+			json.put("result", openid);
+		}
 		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
 	}
 }

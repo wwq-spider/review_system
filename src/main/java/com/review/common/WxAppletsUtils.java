@@ -2,6 +2,7 @@ package com.review.common;
 
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +21,8 @@ public class WxAppletsUtils {
     public final static String accessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s";
 
     public final static String qrCodeUrl = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=%s";
+
+    public final static String openidUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&grant_type=authorization_code&&js_code=%s";
 
     /**
      * 获取access_token
@@ -48,9 +51,8 @@ public class WxAppletsUtils {
     }
 
     public static HttpURLConnection getConnection(String url, String params) throws IOException {
-        HttpURLConnection connection = null;
         //初始化连接
-        connection = (HttpURLConnection)new URL(url).openConnection();
+        HttpURLConnection connection = (HttpURLConnection)new URL(url).openConnection();
         connection.setRequestMethod("POST");
         connection.setDoInput(true);
         connection.setDoOutput(true);
@@ -118,6 +120,22 @@ public class WxAppletsUtils {
             }
             IOUtils.closeQuietly(inputStream);
         }
+    }
+
+    /**
+     * 获取openid
+     * @param code
+     * @return
+     */
+    public static String getOpenid(String code) {
+        String responseStr = postString(String.format(openidUrl, appId, appSecret, code), "");
+        if (StringUtils.isNotBlank(responseStr)) {
+            JSONObject resJson = JSONObject.fromObject(responseStr);
+            if (resJson.containsKey("openid")) {
+                return resJson.getString("openid");
+            }
+        }
+        return null;
     }
 
     public static void main(String[] args) {
