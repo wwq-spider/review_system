@@ -26,7 +26,7 @@ public class QuestionVO implements Serializable {
     private String questionType;   	//题目类型
     
     private String classId;         //分类ID
-    
+
     private String answerId;
     
     private String variateName;     //因子名称

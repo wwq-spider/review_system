@@ -1,24 +1,26 @@
 package com.review.manage.userManage.controller;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.review.common.CommonUtils;
+import com.review.common.DateUtil;
+import com.review.manage.question.service.ReviewQuestionAnswerServiceI;
+import com.review.manage.reviewClass.entity.ReviewClassEntity;
+import com.review.manage.userManage.entity.ReviewUserEntity;
+import com.review.manage.userManage.service.ReviewUserService;
 import net.sf.json.JSONObject;
-
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jeecgframework.core.common.controller.BaseController;
 import org.jeecgframework.core.common.model.json.AjaxJson;
 import org.jeecgframework.core.common.model.json.DataGrid;
+import org.jeecgframework.core.util.BrowserUtils;
+import org.jeecgframework.core.util.ContextHolderUtils;
 import org.jeecgframework.core.util.ExceptionUtil;
+import org.jeecgframework.core.util.RoletoJson;
+import org.jeecgframework.web.system.pojo.base.TSDepart;
+import org.jeecgframework.web.system.service.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,10 +30,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.review.common.CommonUtils;
-import com.review.manage.reviewClass.entity.ReviewClassEntity;
-import com.review.manage.userManage.entity.ReviewUserEntity;
-import com.review.manage.userManage.service.ReviewUserService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/reviewUser")
@@ -44,6 +48,12 @@ public class ReviewUserController extends BaseController{
 	
 	@Autowired
 	private ReviewUserService reviewUserService;
+
+	@Autowired
+	private ReviewQuestionAnswerServiceI reviewQuestionAnswerService;
+
+	@Autowired
+	private SystemService systemService;
 	
 	/**
 	 * 跳到测评用户页面 
@@ -54,25 +64,37 @@ public class ReviewUserController extends BaseController{
 	@RequestMapping(params="toReviewUserList")
 	public ModelAndView toReviewUserList(HttpServletRequest request, 
 			HttpServletResponse response) {
+
+		List<TSDepart> departList = getReviewUserGroup();
+		if (CollectionUtils.isNotEmpty(departList)) {
+			request.setAttribute("departsReplace", RoletoJson.listToReplaceStr(departList, "departname", "id"));
+		}
 		ModelAndView model = new ModelAndView("review/manage/userManage/reviewUserList");
 		return model;
+	}
+
+	private List<TSDepart> getReviewUserGroup() {
+		List<TSDepart> departList = systemService.findByProperty(TSDepart.class, "departname", "测评用户组");
+		if (CollectionUtils.isNotEmpty(departList)) {
+			List<TSDepart> childDeparts = departList.get(0).getTSDeparts();
+			return childDeparts;
+		}
+		return null;
 	}
 	
 	/**
 	 * datagrid数据显示
-	 * @param request
 	 * @param response
 	 * @param dataGrid
 	 * @param reviewUser
 	 */
 	@RequestMapping(params="datagrid")
-	public void  datagrid(HttpServletRequest request, 
-			HttpServletResponse response, DataGrid dataGrid, ReviewUserEntity  reviewUser){
+	public void  datagrid(HttpServletResponse response, DataGrid dataGrid, ReviewUserEntity  reviewUser){
 		JSONObject jsonObject = new JSONObject();
 		List<Map<String, Object>> list = reviewUserService.getReviewUserList(reviewUser.getUserName(), 
-				reviewUser.getRealName(), dataGrid.getPage(), dataGrid.getRows());
+				reviewUser.getRealName(), reviewUser.getGroupId(), dataGrid.getPage(), dataGrid.getRows());
 		Long count = reviewUserService.getReviewUserCount(reviewUser.getUserName(), 
-				reviewUser.getRealName());
+				reviewUser.getRealName(), reviewUser.getGroupId());
 		jsonObject.put("rows", list);
 		jsonObject.put("total", count);
 		CommonUtils.responseDatagrid(response, jsonObject);
@@ -115,6 +137,8 @@ public class ReviewUserController extends BaseController{
 	public ModelAndView toAdd(HttpServletRequest request, 
 			HttpServletResponse response, ReviewUserEntity reviewUser) {
 		ModelAndView model = new ModelAndView("review/manage/userManage/reviewUserAdd");
+		List<TSDepart> groupList = getReviewUserGroup();
+		model.addObject("groupList", groupList);
 		if(!"".equals(StringUtils.trimToEmpty(reviewUser.getUserId()))) {
 			model.addObject("user", reviewUserService.get(ReviewUserEntity.class, reviewUser.getUserId()));
 		}
@@ -154,6 +178,8 @@ public class ReviewUserController extends BaseController{
 			HttpServletResponse response) {
 		List<ReviewClassEntity> classList = reviewUserService.findHql("from ReviewClassEntity order by createTime DESC");
 		ModelAndView model = new ModelAndView("review/manage/userManage/batchImport");
+		List<TSDepart> groupList = getReviewUserGroup();
+		model.addObject("groupList", groupList);
 		model.addObject("classList", classList);
 		return model;
 	}
@@ -226,31 +252,30 @@ public class ReviewUserController extends BaseController{
 	
 	/**
 	 * 跳到用户导入页面
-	 * @param request
-	 * @param response
 	 * @return
 	 */
 	@RequestMapping(params="toUserImport")
-	public  ModelAndView toUserImport(HttpServletRequest request,
-			HttpServletResponse response) {
+	public  ModelAndView toUserImport() {
 		ModelAndView model = new ModelAndView("review/manage/userManage/userImport");
+		List<TSDepart> groupList = getReviewUserGroup();
+		model.addObject("groupList", groupList);
 		return model;
 	}
 	
 	/**
 	 * 导入EXCEL
 	 * @param request
-	 * @param response
 	 * @return
 	 */
 	@RequestMapping(params = "importUser", method = RequestMethod.POST)
 	@ResponseBody
-	public AjaxJson importUser(HttpServletRequest request, HttpServletResponse response){
+	public AjaxJson importUser(HttpServletRequest request){
 		AjaxJson j = new AjaxJson();
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 		Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
 		try {
-			String userNames = reviewUserService.importUser(fileMap);
+			String groupId = request.getParameter("groupId");
+			String userNames = reviewUserService.importUser(fileMap, groupId);
 			if("".equals(userNames)) {
 				j.setMsg("导入成功！"); 
 			} else {
@@ -266,12 +291,10 @@ public class ReviewUserController extends BaseController{
 	/**
 	 * 跳到测评记录页面
 	 * @param request
-	 * @param response
 	 * @return
 	 */
 	@RequestMapping(params="toReviewRecord")
-	public ModelAndView toReviewRecord(HttpServletRequest request,
-			HttpServletResponse response) {
+	public ModelAndView toReviewRecord(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView("review/manage/userManage/reviewRecord");
 		model.addObject("userId", request.getParameter("userId"));
 		return model;
@@ -284,8 +307,7 @@ public class ReviewUserController extends BaseController{
 	 * @param dataGrid
 	 */
 	@RequestMapping(params="recordDatagrid")
-	public void  datagrid(HttpServletRequest request, 
-			HttpServletResponse response, DataGrid dataGrid){
+	public void  datagrid(HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid){
 		JSONObject jsonObject = new JSONObject();
 		String userId = request.getParameter("userId");
 		List<Map<String, Object>> list = reviewUserService.getReviewRecordList(userId,
@@ -299,13 +321,11 @@ public class ReviewUserController extends BaseController{
 	/**
 	 * 删除测评记录
 	 * @param request
-	 * @param response
 	 * @return
 	 */
 	@RequestMapping(params="delRecord")
 	@ResponseBody
-	public AjaxJson delRecord(HttpServletRequest request, 
-			HttpServletResponse response) {
+	public AjaxJson delRecord(HttpServletRequest request) {
 		AjaxJson ajax = new AjaxJson();
 		String resultId = request.getParameter("resultId");
 		try {
@@ -313,8 +333,42 @@ public class ReviewUserController extends BaseController{
 			ajax.setMsg("删除成功");
 		} catch (Exception e) {
 			ajax.setMsg("删除失败");
-			e.printStackTrace();
+			logger.error("delRecord error, ", e);
 		}
 		return ajax;
+	}
+
+	/**
+	 * 导出用户测评答案
+	 * @param response
+	 * @param groupId
+	 */
+	@RequestMapping(params = "exportQuestionAnswer")
+	public void exportQuestionAnswerByGroup(HttpServletResponse response, String groupId) {
+		List<Map<String, Object>> list = new ArrayList<>();
+		response.setContentType("application/vnd.ms-excel");
+		String codedFileName = null;
+		OutputStream fOut = null;
+		try {
+			codedFileName = "答题记录_" + DateUtil.getCurrentDateTimeStr1();
+			// 根据浏览器进行转码，使其支持中文文件名
+			if (BrowserUtils.isIE(ContextHolderUtils.getRequest())) {
+				response.setHeader("content-disposition", "attachment;filename=" + java.net.URLEncoder.encode(codedFileName,"UTF-8") + ".xls");
+			} else {
+				String newtitle = new String(codedFileName.getBytes("UTF-8"),
+						"ISO8859-1");
+				response.setHeader("content-disposition",
+						"attachment;filename=" + newtitle + ".xls");
+			}
+			// 产生工作簿对象
+			Workbook workbook = reviewQuestionAnswerService.getExportWorkbook(groupId);
+			fOut = response.getOutputStream();
+			workbook.write(fOut);
+			fOut.flush();
+		} catch (Exception e) {
+			logger.error("exportQuestionAnswerByGroup error, ", e);
+		} finally {
+			IOUtils.closeQuietly(fOut);
+		}
 	}
 }

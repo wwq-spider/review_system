@@ -1,38 +1,11 @@
 package org.jeecgframework.poi.excel;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.imageio.ImageIO;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Drawing;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.RichTextString;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.jeecgframework.core.util.ApplicationContextUtil;
 import org.jeecgframework.core.util.ContextHolderUtils;
@@ -46,6 +19,17 @@ import org.jeecgframework.poi.excel.entity.ExcelTitle;
 import org.jeecgframework.poi.excel.entity.TemplateExportParams;
 import org.jeecgframework.web.system.pojo.base.DictEntity;
 import org.jeecgframework.web.system.service.SystemService;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * excel 导出工具类
@@ -458,7 +442,7 @@ public final class ExcelExportUtil {
 		if(entity.getSecondTitle()!=null){
 			row = sheet.createRow(1);
 			HSSFCellStyle style = workbook.createCellStyle();
-			style.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+			//style.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
 			createStringCell(row, 0, entity.getSecondTitle(), style,null);
 			sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, feildWidth));
 			return 2;
@@ -681,9 +665,9 @@ public final class ExcelExportUtil {
 	public static HSSFCellStyle getTitleStyle(HSSFWorkbook workbook, ExcelTitle entity) {
 		HSSFCellStyle titleStyle = workbook.createCellStyle();
 		titleStyle.setFillForegroundColor(entity.getHeaderColor()); // 填充的背景颜色
-		titleStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		titleStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-		titleStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND); // 填充图案
+		//titleStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		//titleStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+		//titleStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND); // 填充图案
 		titleStyle.setWrapText(true);
 		return titleStyle;
 	}
@@ -698,33 +682,33 @@ public final class ExcelExportUtil {
 		font.setFontHeightInPoints((short) 24);
 		titleStyle.setFont(font);
 		titleStyle.setFillForegroundColor(entity.getColor()); 
-		titleStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		titleStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+//		titleStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+//		titleStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
 		return titleStyle;
 	}
 
 	public static HSSFCellStyle getTwoStyle(HSSFWorkbook workbook, boolean isWarp) {
 		HSSFCellStyle style = workbook.createCellStyle();
-		style.setBorderLeft((short) 1); // 左边框
-		style.setBorderRight((short) 1); // 右边框
-		style.setBorderBottom((short) 1);
-		style.setBorderTop((short) 1);
-		style.setFillForegroundColor(HSSFColor.LIGHT_TURQUOISE.index); // 填充的背景颜色
-		style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND); // 填充图案
-		style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+//		style.setBorderLeft((short) 1); // 左边框
+//		style.setBorderRight((short) 1); // 右边框
+//		style.setBorderBottom((short) 1);
+//		style.setBorderTop((short) 1);
+//		style.setFillForegroundColor(HSSFColor.LIGHT_TURQUOISE.index); // 填充的背景颜色
+//		style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND); // 填充图案
+//		style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+//		style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
 		if(isWarp){style.setWrapText(true);}
 		return style;
 	}
 
 	public static HSSFCellStyle getOneStyle(HSSFWorkbook workbook, boolean isWarp) {
 		HSSFCellStyle style = workbook.createCellStyle();
-		style.setBorderLeft((short) 1); // 左边框
-		style.setBorderRight((short) 1); // 右边框
-		style.setBorderBottom((short) 1);
-		style.setBorderTop((short) 1);
-		style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+//		style.setBorderLeft((short) 1); // 左边框
+//		style.setBorderRight((short) 1); // 右边框
+//		style.setBorderBottom((short) 1);
+//		style.setBorderTop((short) 1);
+//		style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+//		style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
 		if(isWarp){style.setWrapText(true);}
 		return style;
 	}

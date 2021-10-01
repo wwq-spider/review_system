@@ -272,8 +272,7 @@ public class ReviewFrontController extends BaseController{
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(params="complete")
-	public void commplete(HttpServletRequest request,
-			HttpServletResponse response) {
+	public void commplete(HttpServletRequest request, HttpServletResponse response) {
 		String classId = request.getParameter("classId");
 		HttpSession session = request.getSession();
 		//List<QuestionVO> list = reviewFrontService.getQuestionVOList(classId, 0, 99999999);
@@ -283,8 +282,7 @@ public class ReviewFrontController extends BaseController{
 		
 		String result = "";
 		if(resultList != null) {
-			reviewFrontService.completeReview(resultList, classId,
-					user.getUserId(), user.getUserName());
+			reviewFrontService.completeReview(resultList, classId, user);
 			result = "1";
 		} else {
 			result = "0";
@@ -313,11 +311,12 @@ public class ReviewFrontController extends BaseController{
 		ReviewResultEntity reviewResultEntity = null;
 		List<QuestionVO> resultList = Arrays.asList(resultArr);
 		if (user == null) {
-			reviewResultEntity = reviewFrontService.completeReview(resultList, resultArr[0].getClassId(), "000", "unknown");
+			reviewResultEntity = reviewFrontService.completeReview(resultList, resultArr[0].getClassId(), new ReviewUserEntity());
 		} else {
-			reviewResultEntity = reviewFrontService.completeReview(resultList, resultArr[0].getClassId(), user.getUserId(), user.getUserName());
+			reviewResultEntity = reviewFrontService.completeReview(resultList, resultArr[0].getClassId(), user);
 		}
 		json.put("code", 200);
+		reviewResultEntity.setReviewResult(null);
 		json.put("result", reviewResultEntity);
 		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
 	}

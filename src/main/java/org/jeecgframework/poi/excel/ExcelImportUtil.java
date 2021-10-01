@@ -98,9 +98,9 @@ public final class ExcelImportUtil {
 		if (POIFSFileSystem.hasPOIFSHeader(inputstream)) {
 			book =  new HSSFWorkbook(inputstream);
 			isXSSFWorkbook = false;
-		}else if (POIXMLDocument.hasOOXMLHeader(inputstream)) {
+		}/*else if (POIXMLDocument.hasOOXMLHeader(inputstream)) {
 			book =  new XSSFWorkbook(OPCPackage.open(inputstream));
-		}
+		}*/
 		Map<String,PictureData> pictures;
 		for (int i = 0; i < params.getSheetNum(); i++) {
 			if(isXSSFWorkbook){

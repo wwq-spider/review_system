@@ -47,12 +47,10 @@ public interface ReviewFrontService extends CommonService{
 	 * 完成测试
 	 * @param resultList
 	 * @param classId
-	 * @param userId
-	 * @param userName
+	 * @param reviewUser
 	 * @return
 	 */
-	ReviewResultEntity completeReview(List<QuestionVO> resultList, String classId,
-									  String userId, String userName);
+	ReviewResultEntity completeReview(List<QuestionVO> resultList, String classId, ReviewUserEntity reviewUser);
 
 	/**
 	 * 查询测评报告

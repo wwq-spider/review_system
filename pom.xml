@@ -60,7 +60,7 @@
 		<ehcache.version>2.4.3</ehcache.version>
 		<freemarker.version>2.3.19</freemarker.version>
 		<hibernate-validator.version>4.2.0.Final</hibernate-validator.version>
-		<poi.version>3.9</poi.version>
+		<poi.version>3.17</poi.version>
 		<antlr.version>3.5.2</antlr.version>
 		<openoffice.version>3.2.1</openoffice.version>
 		<jodconverter.version>3.0-beta-4</jodconverter.version>
@@ -180,6 +180,13 @@
 	</repositories>-->
 
 	<dependencies>
+
+		<dependency>
+			<groupId>cn.hutool</groupId>
+			<artifactId>hutool-poi</artifactId>
+			<version>4.6.13</version>
+		</dependency>
+
 		<!-- 阿里云存储jar包 -->
 		<dependency>
 			<groupId>com.aliyun.oss</groupId>

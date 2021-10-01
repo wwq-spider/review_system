@@ -9,14 +9,19 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.review.front.vo.ReviewResultVO;
+import com.review.manage.question.entity.ReviewAnswerEntity;
+import com.review.manage.question.entity.ReviewQuestionAnswerEntity;
+import com.review.manage.question.service.ReviewQuestionAnswerServiceI;
 import com.review.manage.userManage.entity.ReviewUserEntity;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
 import org.jeecgframework.core.util.MyBeanUtils;
+import org.jeecgframework.poi.excel.ExcelExportUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,12 +37,16 @@ import com.review.manage.report.entity.ReviewReportGradeEntity;
 import com.review.manage.report.entity.ReviewReportVariateEntity;
 import com.review.manage.variate.entity.ReviewVariateEntity;
 import com.review.manage.variate.entity.ReviewVariateGradeEntity;
+import org.testng.collections.Lists;
 
 @Service("reviewFrontService")
 @Transactional
 public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewFrontService{
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
+
+	@Autowired
+	private ReviewQuestionAnswerServiceI questionAnswerServiceI;
 
 	@Override
 	public List<QuestionVO> getQuestionVOList(String classId) {
@@ -51,8 +60,7 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		sb.append("   q.`content` content,");
 		sb.append("   q.`question_id` questionId,");
 		sb.append("   q.`question_num` questionNum,");
-		sb.append("   q.`question_num` questionNum,");
-		sb.append("  (CASE ISNULL(q.`picture_attach`) WHEN 1 THEN  'N' ELSE 'Y' END) AS isAttach,");
+		sb.append("   q.`picture_attach` pictureAttach,");
 		sb.append("   qc.`class_id` classId,");
 		sb.append("   (SELECT GROUP_CONCAT(r.variate_id) FROM review_grade_rule r WHERE r.question_id=q.question_id) variateId,");
 		sb.append("   (SELECT GROUP_CONCAT(v.variate_name) FROM review_grade_rule r,review_variate v WHERE r.variate_id=v.variate_id AND r.question_id=q.question_id) variateName");
@@ -106,23 +114,43 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 	}
 
 	@Override
-	public ReviewResultEntity completeReview(List<QuestionVO> resultList, String classId, String userId,String userName) {
+	public ReviewResultEntity completeReview(List<QuestionVO> resultList, String classId, ReviewUserEntity reviewUser) {
 		sort(resultList);
 		//存放变量因子对应的分值
 		Map<String, Double> map = new HashMap<String, Double>();
 		QuestionVO question = null;
 		Double totalGrade = 0.0;
 		String[] idArr = null;
+
+		List<ReviewQuestionAnswerEntity> reviewQuestionAnswerList = Lists.newArrayList(1200);
+
+		Date now = new Date();
 		//计算因子对应的分值
 		for(int i=0; i<resultList.size(); i++) {
 			question = resultList.get(i);
+
+			ReviewQuestionAnswerEntity reviewQuestionAnswer = new ReviewQuestionAnswerEntity();
+			try {
+				MyBeanUtils.copyBean2Bean(reviewQuestionAnswer, question);
+				reviewQuestionAnswer.setGroupId(reviewUser.getGroupId());
+				reviewQuestionAnswer.setUserId(reviewUser.getUserId());
+				reviewQuestionAnswer.setUserName(reviewUser.getUserName());
+				reviewQuestionAnswer.setMobilePhone(reviewUser.getMobilePhone());
+				reviewQuestionAnswer.setSex(reviewUser.getSex());
+				reviewQuestionAnswer.setAge(reviewUser.getAge());
+				reviewQuestionAnswer.setCreateTime(now);
+				reviewQuestionAnswerList.add(reviewQuestionAnswer);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+
 			if (StringUtils.isBlank(question.getSelectGrade())) {
 				continue;
 			}
 			double grade = Double.valueOf(question.getSelectGrade());
 			if(!"".equals(StringUtils.trimToEmpty(question.getVariateId()))) {
 				idArr = question.getVariateId().split(",");
-				for(int j=0; j<idArr.length; j++) {
+				for(int j = 0; j < idArr.length; j++) {
 					if(map.get(idArr[j]) != null) {
 						map.put(idArr[j], Arith.add(map.get(idArr[j]), grade));
 					} else {
@@ -131,6 +159,11 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 				}
 			}
 			totalGrade = Arith.add(totalGrade, grade);
+		}
+		//保存答题记录
+		if (reviewQuestionAnswerList.size() > 0) {
+			questionAnswerServiceI.batchSave(reviewQuestionAnswerList);
+			reviewQuestionAnswerList.clear();
 		}
 		
 		//查询某分类下的报告
@@ -144,10 +177,10 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		
 		//添加测评结果
 		ReviewResultEntity reviewResult = new ReviewResultEntity();
-		reviewResult.setUserId(userId);
+		reviewResult.setUserId(reviewUser.getUserId());
 		reviewResult.setClassId(classId);
 		reviewResult.setCreateTime(new Date());
-		reviewResult.setCreateBy(userName);
+		reviewResult.setCreateBy(reviewUser.getUserName());
 		reviewResult.setGradeTotal(totalGrade);
 		this.save(reviewResult);
 		
@@ -162,9 +195,7 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		ReviewVariateGradeEntity variateGrade = null;
 		ReviewVariateEntity variateEntity = null;
 		Double variateTotalGrade = 0.0;
-		
-		Date now = new Date();
-		
+
 		//遍历因子
 		for(Entry<String, Double> entry : map.entrySet()) {	
 			variateEntity = this.get(ReviewVariateEntity.class, entry.getKey());

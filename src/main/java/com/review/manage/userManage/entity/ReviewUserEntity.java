@@ -54,6 +54,8 @@ public class ReviewUserEntity implements Serializable {
 
 	private String openid;
 
+	private String groupId;
+
 	
 	private List<ReportVO> reportVOList = new ArrayList<ReportVO>();
 	
@@ -142,6 +144,15 @@ public class ReviewUserEntity implements Serializable {
 
 	public void setOpenid(String openid) {
 		this.openid = openid;
+	}
+
+	@Column(name="group_id")
+	public String getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
 	}
 
 	@Transient

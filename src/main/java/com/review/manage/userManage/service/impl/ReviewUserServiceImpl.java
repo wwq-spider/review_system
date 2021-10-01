@@ -65,8 +65,7 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 	}
 
 	@Override
-	public List<Map<String, Object>> getReviewUserList(String userName,
-			String realName, int page, int rows) {
+	public List<Map<String, Object>> getReviewUserList(String userName, String realName, String groupId, int page, int rows) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(" SELECT  ");
 		sb.append("   u.user_name userName,");
@@ -80,12 +79,15 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 		if(!"".equals(StringUtils.trimToEmpty(realName))) {
 			sb.append(" AND real_name='"+realName+"'");
 		}
+		if(StringUtils.isNotBlank(groupId)) {
+			sb.append(" AND group_id='"+groupId+"'");
+		}
 		sb.append(" ORDER BY u.user_id desc");
 		return this.findForJdbc(sb.toString(), page, rows);
 	}
 
 	@Override
-	public Long getReviewUserCount(String userName, String realName) {
+	public Long getReviewUserCount(String userName,  String groupId, String realName) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(" SELECT  ");
 		sb.append("   COUNT(u.user_id)");
@@ -96,6 +98,9 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 		}
 		if(!"".equals(StringUtils.trimToEmpty(realName))) {
 			sb.append(" AND real_name='"+realName+"'");
+		}
+		if(StringUtils.isNotBlank(groupId)) {
+			sb.append(" AND group_id='"+groupId+"'");
 		}
 		return this.getCountForJdbc(sb.toString());
 	}
@@ -127,6 +132,7 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 			HttpServletResponse response) {
 		String strTempPath = "";
 		String classId = request.getParameter("classId");
+		String groupId = request.getParameter("groupId");
 		
 		String questionNum = null;
 		String titleText = "";
@@ -202,6 +208,7 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 							}
 							if(k > 0) {
 								reviewUser = new ReviewUserEntity();
+								reviewUser.setGroupId(groupId);
 								reportVOList = new ArrayList<ReportVO>();
 								variateMap = new HashMap<String, VariateVO>();
 							}
@@ -588,7 +595,7 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 
 	@SuppressWarnings({ "unchecked"})
 	@Override
-	public String importUser(Map<String, MultipartFile> fileMap) throws IOException {
+	public String importUser(Map<String, MultipartFile> fileMap, String groupId) throws IOException {
 		String userNames = "";
 		MultipartFile file = null;
 		List<ReviewUserEntity> userList;
@@ -599,6 +606,7 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 			userList = (List<ReviewUserEntity>) ExcelUtil.importExcelByIs(file.getInputStream(), ReviewUserEntity.class);
 			
 			for(ReviewUserEntity user : userList) {
+				user.setGroupId(groupId);
 				userEntity= this.findUniqueByProperty(ReviewUserEntity.class, "userName", user.getUserName());
 				if(userEntity == null) {
 					this.save(user);
@@ -649,6 +657,4 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 		this.executeSql(sql, new Object[]{resultId});
 		this.deleteEntityById(ReviewResultEntity.class, resultId);
 	}
-	
-	
 }

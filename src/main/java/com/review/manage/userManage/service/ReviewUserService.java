@@ -20,24 +20,26 @@ public interface ReviewUserService extends CommonService {
 	 * @return
 	 */
 	public ReviewUserEntity getUserByUserName(String userName);
-	
+
 	/**
 	 * 分页查询用户列表
 	 * @param userName
 	 * @param realName
+	 * @param groupId
 	 * @param page
 	 * @param rows
 	 * @return
 	 */
-	public List<Map<String, Object>> getReviewUserList(String userName, String realName, int page, int rows);
-	
+	List<Map<String, Object>> getReviewUserList(String userName, String realName, String groupId, int page, int rows);
+
 	/**
 	 * 查询 用户数量
 	 * @param userName
+	 * @param groupId
 	 * @param realName
 	 * @return
 	 */
-	public Long getReviewUserCount(String userName, String realName);
+	Long getReviewUserCount(String userName, String groupId, String realName);
 	
 	/**
 	 * 删除用户
@@ -64,7 +66,7 @@ public interface ReviewUserService extends CommonService {
 	 * @param fileMap
 	 * @return
 	 */
-	public String importUser(Map<String, MultipartFile> fileMap) throws IOException;
+	String importUser(Map<String, MultipartFile> fileMap, String groupId) throws IOException;
 	
 	/**
 	 * 查询测评记录
@@ -86,5 +88,5 @@ public interface ReviewUserService extends CommonService {
 	 * 删除测评记录
 	 * @param resultId
 	 */
-	public void delReviewRecord(String resultId);
+	void delReviewRecord(String resultId);
 }
