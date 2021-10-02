@@ -1,43 +1,34 @@
 package com.review.front.service.impl;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import com.review.front.vo.ReviewResultVO;
-import com.review.manage.question.entity.ReviewAnswerEntity;
-import com.review.manage.question.entity.ReviewQuestionAnswerEntity;
-import com.review.manage.question.service.ReviewQuestionAnswerServiceI;
-import com.review.manage.userManage.entity.ReviewUserEntity;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
-import org.jeecgframework.core.util.MyBeanUtils;
-import org.jeecgframework.poi.excel.ExcelExportUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.review.common.Arith;
 import com.review.common.DateUtil;
 import com.review.front.entity.ReviewReportResultEntity;
 import com.review.front.entity.ReviewResultEntity;
 import com.review.front.service.ReviewFrontService;
+import com.review.front.vo.ReviewResultVO;
 import com.review.front.vo.SelectVO;
+import com.review.manage.question.entity.ReviewQuestionAnswerEntity;
+import com.review.manage.question.service.ReviewQuestionAnswerServiceI;
 import com.review.manage.question.vo.QuestionVO;
 import com.review.manage.report.entity.ReviewReportEntity;
 import com.review.manage.report.entity.ReviewReportGradeEntity;
 import com.review.manage.report.entity.ReviewReportVariateEntity;
+import com.review.manage.userManage.entity.ReviewUserEntity;
 import com.review.manage.variate.entity.ReviewVariateEntity;
 import com.review.manage.variate.entity.ReviewVariateGradeEntity;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
+import org.jeecgframework.core.util.MyBeanUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.testng.collections.Lists;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 @Service("reviewFrontService")
 @Transactional
@@ -122,6 +113,15 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		Double totalGrade = 0.0;
 		String[] idArr = null;
 
+		//添加测评结果
+		ReviewResultEntity reviewResult = new ReviewResultEntity();
+		reviewResult.setUserId(reviewUser.getUserId());
+		reviewResult.setClassId(classId);
+		reviewResult.setCreateTime(new Date());
+		reviewResult.setCreateBy(reviewUser.getUserName());
+		reviewResult.setGradeTotal(totalGrade);
+		this.save(reviewResult);
+
 		List<ReviewQuestionAnswerEntity> reviewQuestionAnswerList = Lists.newArrayList(1200);
 
 		Date now = new Date();
@@ -139,6 +139,7 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 				reviewQuestionAnswer.setSex(reviewUser.getSex());
 				reviewQuestionAnswer.setAge(reviewUser.getAge());
 				reviewQuestionAnswer.setCreateTime(now);
+				reviewQuestionAnswer.setResultId(reviewResult.getResultId());
 				reviewQuestionAnswerList.add(reviewQuestionAnswer);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
@@ -160,6 +161,7 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 			}
 			totalGrade = Arith.add(totalGrade, grade);
 		}
+
 		//保存答题记录
 		if (reviewQuestionAnswerList.size() > 0) {
 			questionAnswerServiceI.batchSave(reviewQuestionAnswerList);
@@ -174,15 +176,6 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		
 		//报告结果分值范围
 		List<ReviewReportGradeEntity> gradeList = null;
-		
-		//添加测评结果
-		ReviewResultEntity reviewResult = new ReviewResultEntity();
-		reviewResult.setUserId(reviewUser.getUserId());
-		reviewResult.setClassId(classId);
-		reviewResult.setCreateTime(new Date());
-		reviewResult.setCreateBy(reviewUser.getUserName());
-		reviewResult.setGradeTotal(totalGrade);
-		this.save(reviewResult);
 		
 		ReviewReportResultEntity reportResult = null;
 		Double grade = null;
@@ -210,13 +203,14 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 			//System.out.println("2："+variateTotalGrade);
 			
 			variateTotalGrade = calVariateGrade(variateEntity.getCalSymbol(), variateTotalGrade, variateEntity.getCalTotal());
-			
+
 			//System.out.println("3："+variateTotalGrade);
 			
 			for(int i=0; i< variateGradeList.size();i++) {
 				variateGrade = variateGradeList.get(i);
 				if(variateGrade.getGradeSmall() <= variateTotalGrade && variateTotalGrade <= variateGrade.getGradeBig()) {
 					variateResultExplain = variateGrade.getResultExplain();
+					break;
 				}
 			}
 			

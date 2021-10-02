@@ -24,6 +24,8 @@ public class ReviewQuestionAnswerEntity implements java.io.Serializable {
 	private Long id;
 	/**分类id*/
 	private String classId;
+	/**结果id*/
+	private String resultId;
 	/**量表标题*/
 	//private String classTitle;
 	/**问题id*/
@@ -51,6 +53,10 @@ public class ReviewQuestionAnswerEntity implements java.io.Serializable {
 	private String variateId;
 	/**因子名称*/
 	private String variateName;
+	/**变量因子得分*/
+	private String variateGrade;
+	/**变量因子总得分*/
+	private String variateTotalGrade;
 	/**创建时间*/
 	private Date createTime;
 	
@@ -317,5 +323,32 @@ public class ReviewQuestionAnswerEntity implements java.io.Serializable {
 	 */
 	public void setCreateTime(Date createTime){
 		this.createTime = createTime;
+	}
+
+	@Column(name ="RESULT_ID",nullable=true,length=32)
+	public String getResultId() {
+		return resultId;
+	}
+
+	public void setResultId(String resultId) {
+		this.resultId = resultId;
+	}
+
+	@Column(name ="VARIATE_GRADE",nullable=true,length=50)
+	public String getVariateGrade() {
+		return variateGrade;
+	}
+
+	public void setVariateGrade(String variateGrade) {
+		this.variateGrade = variateGrade;
+	}
+
+	@Column(name ="VARIATE_TOTAL_GRADE",nullable=true,length=50)
+	public String getVariateTotalGrade() {
+		return variateTotalGrade;
+	}
+
+	public void setVariateTotalGrade(String variateTotalGrade) {
+		this.variateTotalGrade = variateTotalGrade;
 	}
 }

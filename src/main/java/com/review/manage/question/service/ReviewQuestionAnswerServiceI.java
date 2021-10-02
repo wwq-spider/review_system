@@ -11,12 +11,12 @@ public interface ReviewQuestionAnswerServiceI extends CommonService{
      * @param groupId
      * @return
      */
-    Workbook getExportWorkbook(String groupId);
+    Workbook getExportWorkbook(String groupId, String startTime);
 
     /**
      * 获取答题记录列表
      * @param groupId
      * @return
      */
-    List<ReviewQuestionAnswerVO> getListByGroupId(String groupId);
+    List<ReviewQuestionAnswerVO> getListByGroupId(String groupId, String startTime);
 }

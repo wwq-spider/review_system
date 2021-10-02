@@ -14,12 +14,7 @@
 	}
 
 	function exportRecord() {
-		let groupId = $("select[name='groupId']").find("option:selected").val();
-		if (!groupId || groupId == "---请选择---") {
-			$.messager.alert("提示","请您先选择查询栏中的用户组","info");
-			return
-		}
-		window.location.href = "${webRoot}/reviewUser.do?exportQuestionAnswer&groupId=" + groupId
+		createwindow('导出答题记录', 'reviewUser.do?toExportRecord', 300, 300)
 	}
 </script>
 <t:base type="jquery,easyui,tools,DatePicker"></t:base>

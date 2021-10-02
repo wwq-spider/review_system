@@ -36,6 +36,8 @@ public class ReviewQuestionAnswerVO implements Serializable {
     private String selectGrade;
     /**变量id*/
     private String variateId;
+
+    private String resultId;
     /**因子名称*/
     private String variateName;
     /**创建时间*/
@@ -144,5 +146,13 @@ public class ReviewQuestionAnswerVO implements Serializable {
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
+    }
+
+    public String getResultId() {
+        return resultId;
+    }
+
+    public void setResultId(String resultId) {
+        this.resultId = resultId;
     }
 }

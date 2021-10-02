@@ -144,6 +144,20 @@ public class ReviewUserController extends BaseController{
 		}
 		return model;
 	}
+
+	/**
+	 * 跳到导出选择时间页面
+	 * @param groupId
+	 * @return
+	 */
+	@RequestMapping(params="toExportRecord")
+	public ModelAndView toExportRecord(String groupId) {
+		ModelAndView model = new ModelAndView("review/manage/userManage/exportRecord");
+		List<TSDepart> groupList = getReviewUserGroup();
+		model.addObject("groupList", groupList);
+		model.addObject("groupId", groupId);
+		return model;
+	}
 	
 	/**
 	 * 删除用户
@@ -344,7 +358,7 @@ public class ReviewUserController extends BaseController{
 	 * @param groupId
 	 */
 	@RequestMapping(params = "exportQuestionAnswer")
-	public void exportQuestionAnswerByGroup(HttpServletResponse response, String groupId) {
+	public void exportQuestionAnswerByGroup(HttpServletResponse response, String groupId, String startTime) {
 		List<Map<String, Object>> list = new ArrayList<>();
 		response.setContentType("application/vnd.ms-excel");
 		String codedFileName = null;
@@ -361,7 +375,7 @@ public class ReviewUserController extends BaseController{
 						"attachment;filename=" + newtitle + ".xls");
 			}
 			// 产生工作簿对象
-			Workbook workbook = reviewQuestionAnswerService.getExportWorkbook(groupId);
+			Workbook workbook = reviewQuestionAnswerService.getExportWorkbook(groupId, startTime);
 			fOut = response.getOutputStream();
 			workbook.write(fOut);
 			fOut.flush();
