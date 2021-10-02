@@ -422,6 +422,27 @@ public class ReviewFrontController extends BaseController{
 	}
 
 	/**
+	 * 查询测评分类详情
+	 * @param response
+	 * @param reviewClass
+	 */
+	@RequestMapping(value = "getReviewClassDetail", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void getReviewClassDetail(HttpServletResponse response, @RequestBody ReviewClassVO reviewClass) {
+		JSONObject json = new JSONObject();
+		if (reviewClass == null || StringUtils.isBlank(reviewClass.getClassId())) {
+			json.put("code", 300);
+			json.put("msg", "分类ID为空");
+			CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+			return;
+		}
+		ReviewClassEntity reviewClassInfo = reviewClassService.get(ReviewClassEntity.class, reviewClass.getClassId());
+		json.put("code", 200);
+		json.put("result", reviewClassInfo);
+		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+	}
+
+	/**
 	 * 查询报告详情
 	 * @param response
 	 * @param reviewResult

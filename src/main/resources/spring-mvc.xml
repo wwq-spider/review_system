@@ -117,6 +117,7 @@
 						<value>reviewFront/getUserInfoByOpenid.do</value>
 						<value>reviewFront/getReviewClass.do</value>
 						<value>reviewFront/getOpenid.do</value>
+						<value>reviewFront/getReviewClassDetail.do</value>
 						<!--<value>reviewFront/getQuestionsByClassID.do</value>
 						<value>reviewFront/completeReview.do</value>
 						<value>reviewFront/getReviewRecords.do</value>

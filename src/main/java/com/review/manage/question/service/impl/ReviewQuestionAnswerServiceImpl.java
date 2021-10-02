@@ -27,9 +27,7 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
     @Override
     public Workbook getExportWorkbook(String groupId) {
 
-
         List<ReviewQuestionAnswerVO> list = this.getListByGroupId(groupId);
-
 
         Map<String, Map<String, Map<String, Object>>> classMap = new HashMap<>();
 
@@ -38,6 +36,7 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
         headerAlias.put("0_性别", "性别");
         headerAlias.put("0_年龄", "年龄");
         headerAlias.put("0_手机号", "手机号");
+        headerAlias.put("0_完成时间", "完成时间");
 
         Map<String, String> nameMap = new HashMap<>();
 
@@ -51,18 +50,20 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
             String qNum = sortStr.append("a").toString();
             headerAlias.put(qNum, answerQuestion.getContent());
 
+            String userKey = answerQuestion.getUserId() + answerQuestion.getCreateTime();
             Map<String, Object> userClassMap = null;
             if (classMap.containsKey(classId)) { //是否包含量表id
                 singleClassMap = classMap.get(classId);
-                if(singleClassMap.get(answerQuestion.getUserId()) != null) {
-                    userClassMap = singleClassMap.get(answerQuestion.getUserId());
+                if(singleClassMap.get(userKey) != null) {
+                    userClassMap = singleClassMap.get(userKey);
                 } else {
                     userClassMap = new HashMap<>();
                     userClassMap.put("0_姓名", answerQuestion.getUserName());
                     userClassMap.put("0_性别", "1".equals(answerQuestion.getSex()) ? "男":"女");
                     userClassMap.put("0_年龄", answerQuestion.getAge());
                     userClassMap.put("0_手机号", answerQuestion.getMobilePhone());
-                    singleClassMap.put(answerQuestion.getUserId(), userClassMap);
+                    userClassMap.put("0_完成时间", answerQuestion.getCreateTime());
+                    singleClassMap.put(userKey, userClassMap);
                 }
             } else {
                 singleClassMap = new HashMap<>();
@@ -75,7 +76,8 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
                 userClassMap.put("0_性别", "1".equals(answerQuestion.getSex()) ? "男":"女");
                 userClassMap.put("0_年龄", answerQuestion.getAge());
                 userClassMap.put("0_手机号", answerQuestion.getMobilePhone());
-                singleClassMap.put(answerQuestion.getUserId(), userClassMap);
+                userClassMap.put("0_完成时间", answerQuestion.getCreateTime());
+                singleClassMap.put(userKey, userClassMap);
             }
             userClassMap.put(qNum, answerQuestion.getSelectGrade());
         }
@@ -91,7 +93,9 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
             }
             excelWriter.write(classMap.get(classId).values(), true);
         }
-        excelWriter.getWorkbook().removeSheetAt(0);
+        if (classMap.size() > 0) {
+            excelWriter.getWorkbook().removeSheetAt(0);
+        }
         return excelWriter.getWorkbook();
     }
 

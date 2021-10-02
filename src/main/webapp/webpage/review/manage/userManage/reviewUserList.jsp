@@ -14,7 +14,7 @@
 	}
 
 	function exportRecord() {
-		let groupId = $("select[name='groupId']").find("option:selected").text();
+		let groupId = $("select[name='groupId']").find("option:selected").val();
 		if (!groupId || groupId == "---请选择---") {
 			$.messager.alert("提示","请您先选择查询栏中的用户组","info");
 			return
