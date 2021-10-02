@@ -88,7 +88,7 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 	}
 
 	@Override
-	public Long getReviewUserCount(String userName,  String groupId, String realName) {
+	public Long getReviewUserCount(String userName,  String realName, String groupId) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(" SELECT  ");
 		sb.append("   COUNT(u.user_id)");
