@@ -17,7 +17,7 @@
 				$.messager.alert("提示","请您用户组","info");
 				return
 			}
-			window.location.href = "${path}/reviewUser.do?exportQuestionAnswer&groupId=" + $("#groupId").val() + "&startTime=" + $("#startTime").val()
+			window.location.href = "${realPath}/reviewUser.do?exportQuestionAnswer&groupId=" + $("#groupId").val() + "&startTime=" + $("#startTime").val()
 		}
 	</script>
 </head>
