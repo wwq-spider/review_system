@@ -119,7 +119,6 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		reviewResult.setClassId(classId);
 		reviewResult.setCreateTime(new Date());
 		reviewResult.setCreateBy(reviewUser.getUserName());
-		reviewResult.setGradeTotal(totalGrade);
 		this.save(reviewResult);
 
 		List<ReviewQuestionAnswerEntity> reviewQuestionAnswerList = Lists.newArrayList(1200);
@@ -161,6 +160,7 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 			}
 			totalGrade = Arith.add(totalGrade, grade);
 		}
+		reviewResult.setGradeTotal(totalGrade);
 
 		//保存答题记录
 		if (reviewQuestionAnswerList.size() > 0) {

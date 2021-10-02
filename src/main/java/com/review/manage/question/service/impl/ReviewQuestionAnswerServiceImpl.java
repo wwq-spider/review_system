@@ -27,6 +27,16 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
     @Autowired
     private ReviewClassService reviewClassService;
 
+    private TreeMap<String, String> getBaseHeader() {
+        TreeMap<String, String> headerAlias = new TreeMap<>();
+        headerAlias.put("00_姓名", "姓名");
+        headerAlias.put("00_性别", "性别");
+        headerAlias.put("00_年龄", "年龄");
+        headerAlias.put("00_手机号", "手机号");
+        headerAlias.put("00_完成时间", "完成时间");
+        return headerAlias;
+    }
+
     @Override
     public Workbook getExportWorkbook(String groupId, String startTime) {
 
@@ -34,23 +44,32 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
 
         Map<String, TreeMap<String, Map<String, Object>>> classMap = new HashMap<>();
 
-        TreeMap<String, String> headerAlias = new TreeMap<>();
-        headerAlias.put("0_姓名", "姓名");
-        headerAlias.put("0_性别", "性别");
-        headerAlias.put("0_年龄", "年龄");
-        headerAlias.put("0_手机号", "手机号");
-        headerAlias.put("0_完成时间", "完成时间");
+        Map<String, TreeMap<String, String>> headerClassMap = new HashMap<>();
 
         Map<String, String> nameMap = new HashMap<>();
+        Map<String, StringBuilder> prefixCLassMap = new HashMap<>();
 
-        StringBuilder sortStr = new StringBuilder("0");
+        //StringBuilder sortStr = new StringBuilder("0");
         //封装导出列表数据
         for (int i=0; i < list.size(); i++) {
             ReviewQuestionAnswerVO answerQuestion = list.get(i);
             String classId = answerQuestion.getClassId();
 
             TreeMap<String, Map<String, Object>> singleClassMap = null;
+
+            StringBuilder sortStr = prefixCLassMap.get(classId);
+            if (sortStr == null) {
+                sortStr = new StringBuilder("0");
+                prefixCLassMap.put(classId, sortStr);
+            }
+
             String qNum = sortStr.append("a").toString();
+
+            TreeMap<String, String> headerAlias = headerClassMap.get(classId);
+            if (headerAlias == null) {
+                headerAlias = getBaseHeader();
+                headerClassMap.put(classId, headerAlias);
+            }
             headerAlias.put(qNum, answerQuestion.getContent());
 
             String userKey = answerQuestion.getUserId() + answerQuestion.getCreateTime();
@@ -76,12 +95,13 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
         }
 
         ExcelWriter excelWriter = ExcelUtil.getWriter();
-        excelWriter.setHeaderAlias(headerAlias);
+
         excelWriter.getSheets().clear();
         for (String classId : classMap.keySet()) {
             excelWriter.setSheet(nameMap.get(classId));
+            excelWriter.setHeaderAlias(headerClassMap.get(classId));
             excelWriter.setColumnWidth(1, 40);
-            for (int i = 4; i<headerAlias.size(); i++) {
+            for (int i = 4; i< headerClassMap.get(classId).size(); i++) {
                 excelWriter.setColumnWidth(i, 60);
             }
             excelWriter.write(classMap.get(classId).values(), true);
@@ -99,11 +119,11 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
      */
     private Map<String, Object> geneUserRow(ReviewQuestionAnswerVO answerQuestion, TreeMap<String, String> headerAlias) {
         Map<String, Object> userClassMap = new HashMap<>();
-        userClassMap.put("0_姓名", answerQuestion.getUserName());
-        userClassMap.put("0_性别", "1".equals(answerQuestion.getSex()) ? "男":"女");
-        userClassMap.put("0_年龄", answerQuestion.getAge());
-        userClassMap.put("0_手机号", answerQuestion.getMobilePhone());
-        userClassMap.put("0_完成时间", answerQuestion.getCreateTime());
+        userClassMap.put("00_姓名", answerQuestion.getUserName());
+        userClassMap.put("00_性别", "1".equals(answerQuestion.getSex()) ? "男":"女");
+        userClassMap.put("00_年龄", answerQuestion.getAge());
+        userClassMap.put("00_手机号", answerQuestion.getMobilePhone());
+        userClassMap.put("00_完成时间", answerQuestion.getCreateTime());
 
         List<ReviewReportResultEntity> reportResultList = reviewClassService.findHql("from ReviewReportResultEntity where resultId=? order by resultType asc",
                 new Object[]{answerQuestion.getResultId()});
