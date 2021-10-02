@@ -70,7 +70,8 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 		sb.append(" SELECT  ");
 		sb.append("   u.user_name userName,");
 		sb.append("   u.real_Name realName,");
-		sb.append("   u.user_id id");
+		sb.append("   u.user_id id, ");
+		sb.append("   u.group_id groupId ");
 		sb.append(" FROM review_user u  ");
 		sb.append(" WHERE 1=1");
 		if(!"".equals(StringUtils.trimToEmpty(userName))) {

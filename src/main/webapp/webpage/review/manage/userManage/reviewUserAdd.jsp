@@ -19,6 +19,20 @@
 				<span class="Validform_checktip">用户名范围在2~10位字符</span>
 			</c:if></td>
 		</tr>
+
+		<tr>
+			<td align="right" width="10%" nowrap><label class="Validform_label"> 用户组: </label></td>
+			<td class="value" width="10%">
+			<select  id="groupId" name="groupId">
+				<option value="" selected="selected">--请选择--</option>
+				<c:forEach items="${groupList }" var="userGroup">
+					<option  value="${userGroup.id }">${userGroup.departname }</option>
+				</c:forEach>
+			</select>
+			<span class="Validform_checktip" id="groupIdTip"></span>
+			</td>
+		</tr>
+
 		<tr>
 			<td align="right" width="10%" nowrap><label class="Validform_label"> 真实姓名: </label></td>
 			<td class="value" width="10%"><input id="realName" class="inputxt" name="realName" value="${user.realName }" datatype="s2-10"> <span class="Validform_checktip">填写个人真实姓名</span></td>

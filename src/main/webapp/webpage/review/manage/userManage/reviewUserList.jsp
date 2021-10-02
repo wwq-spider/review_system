@@ -27,7 +27,7 @@
 	<t:dgCol title="编号" field="id" hidden="false"></t:dgCol>
 	<t:dgCol title="用户名" sortable="false" field="userName" query="true"></t:dgCol>
 	<t:dgCol title="真实姓名" field="realName" query="true"></t:dgCol>
-	<t:dgCol title="用户组" hidden="false" sortable="false" field="groupId" query="true" replace="${departsReplace}" formatter="formatterGroupId"></t:dgCol>
+	<t:dgCol title="用户组" sortable="false" field="groupId" query="true" replace="${departsReplace}" formatter="formatterGroupId"></t:dgCol>
 	<t:dgCol title="操作" field="opt"></t:dgCol>
 	<t:dgFunOpt funname="viewRecord(id)" title="查看测评记录"></t:dgFunOpt>
 	<t:dgDelOpt title="删除" url="reviewUser.do?del&userId={id}" />
