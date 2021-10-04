@@ -7,6 +7,8 @@ import com.review.manage.question.service.ReviewQuestionAnswerServiceI;
 import com.review.manage.question.vo.ReviewQuestionAnswerVO;
 import com.review.manage.reviewClass.entity.ReviewClassEntity;
 import com.review.manage.reviewClass.service.ReviewClassService;
+import com.review.manage.userManage.entity.ReviewUserEntity;
+import com.review.manage.userManage.service.ReviewUserService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -27,9 +29,13 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
     @Autowired
     private ReviewClassService reviewClassService;
 
+    @Autowired
+    private ReviewUserService reviewUserService;
+
     private TreeMap<String, String> getBaseHeader() {
         TreeMap<String, String> headerAlias = new TreeMap<>();
         headerAlias.put("00_姓名", "姓名");
+        headerAlias.put("00_真实姓名", "真实姓名");
         headerAlias.put("00_性别", "性别");
         headerAlias.put("00_年龄", "年龄");
         headerAlias.put("00_手机号", "手机号");
@@ -119,12 +125,21 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
      */
     private Map<String, Object> geneUserRow(ReviewQuestionAnswerVO answerQuestion, TreeMap<String, String> headerAlias) {
         Map<String, Object> userClassMap = new HashMap<>();
-        userClassMap.put("00_姓名", answerQuestion.getUserName());
-        userClassMap.put("00_性别", "1".equals(answerQuestion.getSex()) ? "男":"女");
-        userClassMap.put("00_年龄", answerQuestion.getAge());
-        userClassMap.put("00_手机号", answerQuestion.getMobilePhone());
+        ReviewUserEntity reviewUser = reviewUserService.get(ReviewUserEntity.class, answerQuestion.getUserId());
+        if (reviewUser != null) {
+            userClassMap.put("00_姓名", reviewUser.getUserName());
+            userClassMap.put("00_真实姓名", reviewUser.getRealName());
+            userClassMap.put("00_性别", "1".equals(reviewUser.getSex()) ? "男":"女");
+            userClassMap.put("00_年龄", reviewUser.getAge());
+            userClassMap.put("00_手机号", reviewUser.getMobilePhone());
+        } else {
+            userClassMap.put("00_姓名", answerQuestion.getUserName());
+            userClassMap.put("00_真实姓名", "");
+            userClassMap.put("00_性别", "1".equals(answerQuestion.getSex()) ? "男":"女");
+            userClassMap.put("00_年龄", answerQuestion.getAge());
+            userClassMap.put("00_手机号", answerQuestion.getMobilePhone());
+        }
         userClassMap.put("00_完成时间", answerQuestion.getCreateTime());
-
         List<ReviewReportResultEntity> reportResultList = reviewClassService.findHql("from ReviewReportResultEntity where resultId=? order by resultType asc",
                 new Object[]{answerQuestion.getResultId()});
         //导出报告因子得分
@@ -144,7 +159,7 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
 
         StringBuilder sql = new StringBuilder(
                 "select class_id classId,\n" +
-                        "       user_id                   userID,\n" +
+                        "       user_id                   userId,\n" +
                         "       result_id                 resultId,\n" +
                         "       user_name                 userName,\n" +
                         "       sex                       sex,\n" +
