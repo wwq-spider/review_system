@@ -18,6 +18,8 @@ public class ReviewQuestionAnswerVO implements Serializable {
     @Excel(exportName="姓名", exportConvertSign = 0, exportFieldWidth = 50, importConvertSign = 0)
     private String userName;
 
+    private String realName;
+
     @Excel(exportName="手机号", exportConvertSign = 0, exportFieldWidth = 20, importConvertSign = 0)
     private String mobilePhone;
 
@@ -154,5 +156,13 @@ public class ReviewQuestionAnswerVO implements Serializable {
 
     public void setResultId(String resultId) {
         this.resultId = resultId;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
     }
 }

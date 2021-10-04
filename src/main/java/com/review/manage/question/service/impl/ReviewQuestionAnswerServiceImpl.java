@@ -125,20 +125,11 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
      */
     private Map<String, Object> geneUserRow(ReviewQuestionAnswerVO answerQuestion, TreeMap<String, String> headerAlias) {
         Map<String, Object> userClassMap = new HashMap<>();
-        ReviewUserEntity reviewUser = reviewUserService.get(ReviewUserEntity.class, answerQuestion.getUserId());
-        if (reviewUser != null) {
-            userClassMap.put("00_姓名", reviewUser.getUserName());
-            userClassMap.put("00_真实姓名", reviewUser.getRealName());
-            userClassMap.put("00_性别", "1".equals(reviewUser.getSex()) ? "男":"女");
-            userClassMap.put("00_年龄", reviewUser.getAge());
-            userClassMap.put("00_手机号", reviewUser.getMobilePhone());
-        } else {
-            userClassMap.put("00_姓名", answerQuestion.getUserName());
-            userClassMap.put("00_真实姓名", "");
-            userClassMap.put("00_性别", "1".equals(answerQuestion.getSex()) ? "男":"女");
-            userClassMap.put("00_年龄", answerQuestion.getAge());
-            userClassMap.put("00_手机号", answerQuestion.getMobilePhone());
-        }
+        userClassMap.put("00_姓名", answerQuestion.getUserName());
+        userClassMap.put("00_真实姓名", answerQuestion.getRealName());
+        userClassMap.put("00_性别", "1".equals(answerQuestion.getSex()) ? "男":"女");
+        userClassMap.put("00_年龄", answerQuestion.getAge());
+        userClassMap.put("00_手机号", answerQuestion.getMobilePhone());
         userClassMap.put("00_完成时间", answerQuestion.getCreateTime());
         List<ReviewReportResultEntity> reportResultList = reviewClassService.findHql("from ReviewReportResultEntity where resultId=? order by resultType asc",
                 new Object[]{answerQuestion.getResultId()});
@@ -159,25 +150,26 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
 
         StringBuilder sql = new StringBuilder(
                 "select class_id classId,\n" +
-                        "       user_id                   userId,\n" +
-                        "       result_id                 resultId,\n" +
-                        "       user_name                 userName,\n" +
-                        "       sex                       sex,\n" +
-                        "       age                       age,\n" +
-                        "       mobile_phone              mobilePhone,\n" +
-                        "       group_id                  groupId,\n" +
-                        "       question_num              questionNum,\n" +
-                        "       concat(question_num, '.', content)              as content,\n" +
-                        "       sel_code                                           selCode,\n" +
-                        "       select_grade                                       selectGrade,\n" +
-                        "       DATE_FORMAT(`create_time`, '%Y-%m-%e %H:%i:%S') AS createTime\n" +
-                        " from review_question_answer\n" +
-                        " where group_id = :groupId");
+                        "       q.user_id                   userId,\n" +
+                        "       q.result_id                 resultId,\n" +
+                        "       u.user_name                 userName,\n" +
+                        "       u.real_name                 realName,\n" +
+                        "       u.sex                       sex,\n" +
+                        "       u.age                       age,\n" +
+                        "       u.mobile_phone              mobilePhone,\n" +
+                        "       u.group_id                  groupId,\n" +
+                        "       q.question_num              questionNum,\n" +
+                        "       concat(q.question_num, '.', q.content)              as content,\n" +
+                        "       q.sel_code                                           selCode,\n" +
+                        "       q.select_grade                                       selectGrade,\n" +
+                        "       DATE_FORMAT(q.`create_time`, '%Y-%m-%e %H:%i:%S') AS createTime\n" +
+                        " from review_question_answer q, review_user u" +
+                        " where q.user_id=u.user_id and u.group_id = :groupId");
         if(StringUtils.isNotBlank(startTime)) {
-            sql.append(" and create_time >= :startTime");
+            sql.append(" and q.create_time >= :startTime");
             paramMap.put("startTime", startTime);
         }
-        sql.append(" order by class_id, user_id, create_time asc");
+        sql.append(" order by q.class_id, q.user_id, q.create_time asc");
         return this.getObjectList(sql.toString(), paramMap, ReviewQuestionAnswerVO.class);
     }
 
