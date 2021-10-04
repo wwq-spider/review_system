@@ -26,7 +26,7 @@
 			<select  id="groupId" name="groupId">
 				<option value="" selected="selected">--请选择--</option>
 				<c:forEach items="${groupList }" var="userGroup">
-					<option  value="${userGroup.id }">${userGroup.departname }</option>
+				<option <c:if test="${userGroup.id == user.groupId}"> selected</c:if>  value="${userGroup.id }">${userGroup.departname }</option>
 				</c:forEach>
 			</select>
 			<span class="Validform_checktip" id="groupIdTip"></span>

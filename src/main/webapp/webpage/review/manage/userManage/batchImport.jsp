@@ -47,7 +47,7 @@
 		<div class="form">
 			<label class="Validform_label"> 用户组: </label>
 			<select  id="groupId" name="groupId">
-				<option value="" selected="selected">--请选择--</option>
+				<option value="无" selected="selected">--请选择--</option>
 				<c:forEach items="${groupList }" var="userGroup">
 					<option  value="${userGroup.id }">${userGroup.departname }</option>
 				</c:forEach>

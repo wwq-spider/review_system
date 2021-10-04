@@ -33,6 +33,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
+import org.jeecgframework.core.util.MyBeanUtils;
 import org.jeecgframework.poi.excel.ExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -116,13 +117,12 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 		ReviewUserEntity user = new ReviewUserEntity();
 		if(!"".equals(StringUtils.trimToEmpty(reviewUser.getUserId()))) { //修改用户信息
 			user = this.get(ReviewUserEntity.class, reviewUser.getUserId());
-			user.setAge(reviewUser.getAge());
-			user.setMobilePhone(reviewUser.getMobilePhone());
-			user.setPassword(reviewUser.getPassword());
-			user.setRealName(reviewUser.getRealName());
-			user.setSex(reviewUser.getSex());
-			user.setUserName(reviewUser.getUserName());
-			this.saveOrUpdate(user);
+			try {
+				MyBeanUtils.copyBean2Bean(user, reviewUser);
+				this.saveOrUpdate(user);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		} else { //新增用户
 			this.save(reviewUser);
 		}
