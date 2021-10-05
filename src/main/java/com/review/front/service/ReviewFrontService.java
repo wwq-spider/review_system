@@ -5,6 +5,7 @@ import java.util.List;
 import com.review.front.entity.ReviewResultEntity;
 import com.review.front.vo.ReviewResultVO;
 import com.review.manage.userManage.entity.ReviewUserEntity;
+import net.sf.json.JSONObject;
 import org.jeecgframework.core.common.service.CommonService;
 
 import com.review.front.entity.ReviewReportResultEntity;
@@ -72,7 +73,7 @@ public interface ReviewFrontService extends CommonService{
 	 * @param reviewUser
 	 * @return
 	 */
-	String register(ReviewUserEntity reviewUser);
+	JSONObject register(ReviewUserEntity reviewUser);
 
 	/**
 	 * 查询用户信息

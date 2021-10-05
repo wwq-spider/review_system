@@ -16,6 +16,7 @@ import com.review.manage.report.entity.ReviewReportVariateEntity;
 import com.review.manage.userManage.entity.ReviewUserEntity;
 import com.review.manage.variate.entity.ReviewVariateEntity;
 import com.review.manage.variate.entity.ReviewVariateGradeEntity;
+import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
@@ -355,21 +356,35 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 	}
 
 	@Override
-	public String register(ReviewUserEntity reviewUser) {
+	public JSONObject register(ReviewUserEntity reviewUser) {
 		List<ReviewUserEntity> reviewUserList = this.findHql("from ReviewUserEntity where mobilePhone=?", new Object[]{reviewUser.getMobilePhone()});
+		JSONObject jsonObject = new JSONObject();
 		if (CollectionUtils.isEmpty(reviewUserList)) {
 			logger.warn("register failed, mobilephone" + reviewUser.getMobilePhone() + " not exists");
-			return null;
+			jsonObject.put("code", 1000);
+			jsonObject.put("msg", "不是系统测评用户");
+			return jsonObject;
 		}
 		ReviewUserEntity reviewUserEntity = reviewUserList.get(0);
+
+		if(StringUtils.isNotBlank(reviewUserEntity.getOpenid()) && !reviewUserEntity.getOpenid().equals(reviewUser.getOpenid())) { //注册用户已存在
+			jsonObject.put("code", 1001);
+			jsonObject.put("msg", "用户已注册");
+			return jsonObject;
+		}
+
 		try {
 			MyBeanUtils.copyBean2Bean(reviewUserEntity, reviewUser);
 		} catch (Exception e) {
 			logger.error("copyBean2Bean error, ", e);
-			return null;
+			jsonObject.put("code", 500);
+			jsonObject.put("msg", "注册失败");
+			return jsonObject;
 		}
 		this.saveOrUpdate(reviewUserEntity);
-		return reviewUserEntity.getUserId();
+		jsonObject.put("code", 200);
+		jsonObject.put("userId", reviewUserEntity.getUserId());
+		return jsonObject;
 	}
 
 	@Override

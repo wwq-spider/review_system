@@ -383,14 +383,14 @@ public class ReviewFrontController extends BaseController{
 			return;
 		}
 		try {
-			String userId = reviewFrontService.register(reviewUser);
-			if (userId != null) {
+			JSONObject jsonObject = reviewFrontService.register(reviewUser);
+			if (jsonObject.getInt("code") == 200) {
 				json.put("code", 200);
 				json.put("msg", "用户信息注册成功");
-				json.put("result", userId);
+				json.put("result", jsonObject.get("userId"));
 			} else {
 				json.put("code", 301);
-				json.put("msg", "不是系统测评用户");
+				json.put("msg", jsonObject.get("msg"));
 			}
 		} catch (Exception e) {
 			json.put("code", 302);
