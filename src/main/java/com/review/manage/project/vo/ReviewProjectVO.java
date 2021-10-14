@@ -1,8 +1,11 @@
 package com.review.manage.project.vo;
+
 import com.review.manage.project.entity.ReviewProjectClassEntity;
+import com.review.manage.project.entity.ReviewProjectUserGroupEntity;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ReviewProjectVO implements Serializable {
@@ -23,7 +26,19 @@ public class ReviewProjectVO implements Serializable {
 
     private String classIds;
 
+    private Integer showReport;
+
+    private String cover;
+
+    private Integer isOpen;
+
+    private String groupId;
+
+    private CommonsMultipartFile contentImg;
+
     private List<ReviewProjectClassEntity> reviewProjectClassList = new ArrayList<>();
+
+    private List<ReviewProjectUserGroupEntity> reviewProjectUserGroupList = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -89,11 +104,59 @@ public class ReviewProjectVO implements Serializable {
         this.classIds = classIds;
     }
 
+    public CommonsMultipartFile getContentImg() {
+        return contentImg;
+    }
+
+    public void setContentImg(CommonsMultipartFile contentImg) {
+        this.contentImg = contentImg;
+    }
+
     public List<ReviewProjectClassEntity> getReviewProjectClassList() {
         return reviewProjectClassList;
     }
 
     public void setReviewProjectClassList(List<ReviewProjectClassEntity> reviewProjectClassList) {
         this.reviewProjectClassList = reviewProjectClassList;
+    }
+
+    public Integer getShowReport() {
+        return showReport;
+    }
+
+    public void setShowReport(Integer showReport) {
+        this.showReport = showReport;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
+    public Integer getIsOpen() {
+        return isOpen;
+    }
+
+    public void setIsOpen(Integer isOpen) {
+        this.isOpen = isOpen;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public List<ReviewProjectUserGroupEntity> getReviewProjectUserGroupList() {
+        return reviewProjectUserGroupList;
+    }
+
+    public void setReviewProjectUserGroupList(List<ReviewProjectUserGroupEntity> reviewProjectUserGroupList) {
+        this.reviewProjectUserGroupList = reviewProjectUserGroupList;
     }
 }

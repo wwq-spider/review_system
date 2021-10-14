@@ -1,4 +1,5 @@
 package com.review.manage.project.controller;
+
 import com.review.common.CommonUtils;
 import com.review.common.WxAppletsUtils;
 import com.review.manage.project.entity.ReviewProjectEntity;
@@ -6,7 +7,9 @@ import com.review.manage.project.service.IReviewProjectService;
 import com.review.manage.project.vo.ReviewProjectVO;
 import com.review.manage.report.service.ReportService;
 import com.review.manage.reviewClass.entity.ReviewClassEntity;
+import com.review.manage.userManage.service.ReviewUserService;
 import net.sf.json.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jeecgframework.core.common.controller.BaseController;
 import org.jeecgframework.core.common.model.json.AjaxJson;
@@ -14,6 +17,7 @@ import org.jeecgframework.core.common.model.json.DataGrid;
 import org.jeecgframework.core.util.ContextHolderUtils;
 import org.jeecgframework.core.util.ExceptionUtil;
 import org.jeecgframework.web.system.manager.ClientManager;
+import org.jeecgframework.web.system.pojo.base.TSDepart;
 import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +45,9 @@ public class ReviewProjectController extends BaseController {
     @Autowired
     private ReportService reportService;
 
+    @Autowired
+    private ReviewUserService reviewUserService;
+
     /**
      * 项目列表列表
      * @return
@@ -62,9 +69,15 @@ public class ReviewProjectController extends BaseController {
         List<ReviewClassEntity> classList = reportService.findHql("from ReviewClassEntity order by createTime DESC");
         ModelAndView model = new ModelAndView("review/manage/project/projectAdd");
         if(!"".equals(StringUtils.trimToEmpty(projectId))) {
-            ReviewProjectEntity project = reviewProjectService.get(Long.valueOf(projectId));
+            ReviewProjectVO project = reviewProjectService.get(Long.valueOf(projectId));
             model.addObject("project", project);
         }
+
+        List<TSDepart> departList = reviewUserService.getReviewUserGroup();
+        if (CollectionUtils.isNotEmpty(departList)) {
+            request.setAttribute("groupList", departList);
+        }
+
         model.addObject("classList", classList);
         return model;
     }
@@ -76,15 +89,12 @@ public class ReviewProjectController extends BaseController {
      */
     @RequestMapping(params = "addorupdate")
     @ResponseBody
-    public AjaxJson addOrUpdate(ReviewProjectEntity reviewProject) {
+    public AjaxJson addOrUpdate(ReviewProjectVO reviewProject) {
         boolean result;
         if (reviewProject.getId() != null && reviewProject.getId() > 0) {
-            reviewProject.setUpdateTime(new Date());
             result = reviewProjectService.update(reviewProject);
         } else {
             TSUser tsUser = ClientManager.getInstance().getClient(ContextHolderUtils.getSession().getId()).getUser();
-            reviewProject.setCreateTime(new Date());
-            reviewProject.setUpdateTime(new Date());
             reviewProject.setCreator(tsUser.getUserName());
             result = reviewProjectService.add(reviewProject);
         }

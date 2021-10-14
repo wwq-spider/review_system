@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jeecgframework.core.common.service.CommonService;
+import org.jeecgframework.web.system.pojo.base.TSDepart;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.review.manage.userManage.entity.ReviewUserEntity;
@@ -89,4 +90,10 @@ public interface ReviewUserService extends CommonService {
 	 * @param resultId
 	 */
 	void delReviewRecord(String resultId);
+
+	/**
+	 * 获取测评用户组
+	 * @return
+	 */
+	List<TSDepart> getReviewUserGroup();
 }

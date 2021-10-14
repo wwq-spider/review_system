@@ -14,7 +14,7 @@
 	}
 
 	function exportRecord() {
-		createwindow('导出答题记录', 'reviewUser.do?toExportRecord', 300, 300)
+		createwindow('导出答题记录', 'reviewUser.do?toExportRecord', 500, 300)
 	}
 </script>
 <t:base type="jquery,easyui,tools,DatePicker"></t:base>

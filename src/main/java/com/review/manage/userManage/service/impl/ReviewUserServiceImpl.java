@@ -26,6 +26,7 @@ import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -35,6 +36,8 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
 import org.jeecgframework.core.util.MyBeanUtils;
 import org.jeecgframework.poi.excel.ExcelUtil;
+import org.jeecgframework.web.system.pojo.base.TSDepart;
+import org.jeecgframework.web.system.service.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -58,6 +61,9 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 
 	@Autowired
 	private ReviewFrontService reviewFrontService;
+
+	@Autowired
+	private SystemService systemService;
 	
 	@Override
 	public ReviewUserEntity getUserByUserName(String userName) {
@@ -657,5 +663,15 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 		String sql = "delete from review_report_result where result_id=?";
 		this.executeSql(sql, new Object[]{resultId});
 		this.deleteEntityById(ReviewResultEntity.class, resultId);
+	}
+
+	@Override
+	public List<TSDepart> getReviewUserGroup() {
+		List<TSDepart> departList = systemService.findByProperty(TSDepart.class, "departname", "测评用户组");
+		if (CollectionUtils.isNotEmpty(departList)) {
+			List<TSDepart> childDeparts = departList.get(0).getTSDeparts();
+			return childDeparts;
+		}
+		return null;
 	}
 }

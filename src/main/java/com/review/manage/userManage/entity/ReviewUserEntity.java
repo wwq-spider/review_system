@@ -56,6 +56,8 @@ public class ReviewUserEntity implements Serializable {
 
 	private String groupId;
 
+	private transient Long projectId;
+
 	
 	private List<ReportVO> reportVOList = new ArrayList<ReportVO>();
 	
@@ -170,5 +172,14 @@ public class ReviewUserEntity implements Serializable {
 
 	public void setVariateMap(Map<String, VariateVO> variateMap) {
 		this.variateMap = variateMap;
+	}
+
+	@Transient
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
 	}
 }

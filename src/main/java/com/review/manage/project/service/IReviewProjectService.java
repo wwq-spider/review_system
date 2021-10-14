@@ -17,21 +17,21 @@ public interface IReviewProjectService extends CommonService {
      * @param projectId
      * @return
      */
-    ReviewProjectEntity get(Long projectId);
+    ReviewProjectVO get(Long projectId);
 
     /**
      * 添加项目
-     * @param reviewProjectEntity
+     * @param reviewProject
      * @return
      */
-    boolean add(ReviewProjectEntity reviewProjectEntity);
+    boolean add(ReviewProjectVO reviewProject);
 
     /**
      * 修改项目
-     * @param reviewProjectEntity
+     * @param reviewProject
      * @return
      */
-    boolean update(ReviewProjectEntity reviewProjectEntity);
+    boolean update(ReviewProjectVO reviewProject);
 
     /**
      * 查询项目列表

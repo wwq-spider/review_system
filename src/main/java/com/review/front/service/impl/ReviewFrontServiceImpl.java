@@ -7,6 +7,8 @@ import com.review.front.entity.ReviewResultEntity;
 import com.review.front.service.ReviewFrontService;
 import com.review.front.vo.ReviewResultVO;
 import com.review.front.vo.SelectVO;
+import com.review.manage.project.entity.ReviewProjectEntity;
+import com.review.manage.project.service.IReviewProjectService;
 import com.review.manage.question.entity.ReviewQuestionAnswerEntity;
 import com.review.manage.question.service.ReviewQuestionAnswerServiceI;
 import com.review.manage.question.vo.QuestionVO;
@@ -39,6 +41,9 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 
 	@Autowired
 	private ReviewQuestionAnswerServiceI questionAnswerServiceI;
+
+	@Autowired
+	private IReviewProjectService reviewProjectService;
 
 	@Override
 	public List<QuestionVO> getQuestionVOList(String classId) {
@@ -120,6 +125,8 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		reviewResult.setClassId(classId);
 		reviewResult.setCreateTime(new Date());
 		reviewResult.setCreateBy(reviewUser.getUserName());
+		reviewResult.setProjectId(resultList.get(0).getProjectId()); //项目id
+		ReviewProjectEntity reviewProject = reviewProjectService.get(ReviewProjectEntity.class, reviewResult.getProjectId());
 		this.save(reviewResult);
 
 		List<ReviewQuestionAnswerEntity> reviewQuestionAnswerList = Lists.newArrayList(1200);
@@ -132,7 +139,7 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 			ReviewQuestionAnswerEntity reviewQuestionAnswer = new ReviewQuestionAnswerEntity();
 			try {
 				MyBeanUtils.copyBean2Bean(reviewQuestionAnswer, question);
-				reviewQuestionAnswer.setGroupId(reviewUser.getGroupId());
+				reviewQuestionAnswer.setGroupId(reviewProject.getGroupId());
 				reviewQuestionAnswer.setUserId(reviewUser.getUserId());
 				reviewQuestionAnswer.setUserName(reviewUser.getUserName());
 				reviewQuestionAnswer.setMobilePhone(reviewUser.getMobilePhone());
@@ -344,7 +351,6 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		String sql = "select r.result_id resultId, " +
 				"       r.class_id classId, " +
 				"       DATE_FORMAT(r.`create_time`,'%Y-%m-%e %H:%i:%S') createTime," +
-				//"       r.review_result reportResult," +
 				"       r.grade_total reportGrade," +
 				"       c.banner_img classCover," +
 				"       c.title classTitle" +
@@ -356,18 +362,46 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 	}
 
 	@Override
+	public List<ReviewResultVO> getReviewReports(String userId, Long projectId) {
+		Map<String, String> paramMap = new HashMap<>();
+		StringBuilder sql =new StringBuilder("select r.result_id                                  resultId,\n" +
+				"       r.class_id                                        classId,\n" +
+				"       DATE_FORMAT(r.`create_time`, '%Y-%m-%e %H:%i:%S') createTime,\n" +
+				"       r.grade_total                                     reportGrade,\n" +
+				"       c.banner_img                                      classCover,\n" +
+				"       c.title                                           classTitle,\n" +
+				" from review_result r\n" +
+				"         inner join review_class c on r.class_id = c.class_id\n" );
+
+		if (projectId != null && projectId > 0) {
+			sql.append(" inner join (select id from review_project where id=:projectId and show_report = 2) p on r.project_id = p.id ");
+			sql.append("where r.user_id =:userId");
+			paramMap.put("projectId", projectId.toString());
+		} else {
+			sql.append(" left join (select id from review_project where show_report = 2) p on r.project_id = p.id " +
+					" where r.user_id =:userId and (r.project_id is null or r.project_id = 0 or p.id != null)");
+		}
+		sql.append("order by r.`create_time` desc");
+		paramMap.put("userId", userId);
+		return this.getObjectList(sql.toString(), paramMap, ReviewResultVO.class);
+	}
+
+	@Override
 	public JSONObject register(ReviewUserEntity reviewUser) {
+
 		List<ReviewUserEntity> reviewUserList = this.findHql("from ReviewUserEntity where mobilePhone=?", new Object[]{reviewUser.getMobilePhone()});
 		JSONObject jsonObject = new JSONObject();
-		if (CollectionUtils.isEmpty(reviewUserList)) {
-			logger.warn("register failed, mobilephone" + reviewUser.getMobilePhone() + " not exists");
-			jsonObject.put("code", 1000);
-			jsonObject.put("msg", "不是系统测评用户");
-			return jsonObject;
-		}
-		ReviewUserEntity reviewUserEntity = reviewUserList.get(0);
 
-		if(StringUtils.isNotBlank(reviewUserEntity.getOpenid()) && !reviewUserEntity.getOpenid().equals(reviewUser.getOpenid())) { //注册用户已存在
+//		if (CollectionUtils.isEmpty(reviewUserList)) {
+//			logger.warn("register failed, mobilephone" + reviewUser.getMobilePhone() + " not exists");
+//			jsonObject.put("code", 1000);
+//			jsonObject.put("msg", "不是系统测评用户");
+//			return jsonObject;
+//		}
+
+		ReviewUserEntity reviewUserEntity = CollectionUtils.isNotEmpty(reviewUserList) ? reviewUserList.get(0) : new ReviewUserEntity();
+		//判断用户是否已经绑定过openid
+		if(StringUtils.isNotBlank(reviewUserEntity.getOpenid()) && !reviewUserEntity.getOpenid().equals(reviewUser.getOpenid())) {
 			jsonObject.put("code", 1001);
 			jsonObject.put("msg", "用户已注册");
 			return jsonObject;
@@ -381,10 +415,46 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 			jsonObject.put("msg", "注册失败");
 			return jsonObject;
 		}
-		this.saveOrUpdate(reviewUserEntity);
+
+		//设置用户组
+		boolean flag = setUserGroup(reviewUser.getProjectId(), reviewUserEntity);
+		if (!flag) {
+			jsonObject.put("code", 1000);
+			jsonObject.put("msg", "用户没有该项目测评权限，请联系管理员");
+		}
+		if (StringUtils.isBlank(reviewUserEntity.getUserId())) {
+			this.save(reviewUserEntity);
+		} else {
+			this.saveOrUpdate(reviewUserEntity);
+		}
 		jsonObject.put("code", 200);
 		jsonObject.put("userId", reviewUserEntity.getUserId());
 		return jsonObject;
+	}
+
+	/**
+	 * 设置用户组 同时判断 如果是指定项目测评 判断用户是否有测评权限
+	 * @param projectId
+	 * @param reviewUserEntity
+	 * @return
+	 */
+	private boolean setUserGroup(Long projectId, ReviewUserEntity reviewUserEntity) {
+		if (projectId != null && projectId > 0) { //是否加入用户组
+			ReviewProjectEntity reviewProject = reviewProjectService.get(ReviewProjectEntity.class, projectId);
+			if (reviewProject == null) {
+				return false;
+			}
+			if (reviewProject.getIsOpen() == 1) {
+				if (StringUtils.isBlank(reviewUserEntity.getGroupId())) {
+					reviewUserEntity.setGroupId(reviewUserEntity.getGroupId());
+				} else if (reviewUserEntity.getGroupId().indexOf(reviewProject.getGroupId()) == -1) {
+					reviewUserEntity.setGroupId(reviewUserEntity.getGroupId() +"," + reviewProject.getGroupId());
+				}
+			} else if (reviewUserEntity.getGroupId().indexOf(reviewProject.getGroupId()) == -1) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override

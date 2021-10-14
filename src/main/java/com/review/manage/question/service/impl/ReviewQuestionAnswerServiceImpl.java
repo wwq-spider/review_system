@@ -44,9 +44,9 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
     }
 
     @Override
-    public Workbook getExportWorkbook(String groupId, String startTime) {
+    public Workbook getExportWorkbook(String groupId, Long projectId, String startTime, String endTime) {
 
-        List<ReviewQuestionAnswerVO> list = this.getListByGroupId(groupId, startTime);
+        List<ReviewQuestionAnswerVO> list = this.getListByGroupId(groupId, projectId, startTime, endTime);
 
         Map<String, TreeMap<String, Map<String, Object>>> classMap = new HashMap<>();
 
@@ -144,7 +144,7 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
     }
 
     @Override
-    public List<ReviewQuestionAnswerVO> getListByGroupId(String groupId, String startTime) {
+    public List<ReviewQuestionAnswerVO> getListByGroupId(String groupId, Long projectId, String startTime, String endTime) {
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put("groupId", groupId);
 
@@ -164,10 +164,18 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
                         "       q.select_grade                                       selectGrade,\n" +
                         "       DATE_FORMAT(q.`create_time`, '%Y-%m-%e %H:%i:%S') AS createTime\n" +
                         " from review_question_answer q, review_user u" +
-                        " where q.user_id=u.user_id and u.group_id = :groupId");
+                        " where q.user_id=u.user_id and q.group_id = :groupId ");
+        if(projectId != null && projectId > 0) {
+            sql.append(" and q.project_id=:projectId");
+            paramMap.put("projectId", projectId.toString());
+        }
         if(StringUtils.isNotBlank(startTime)) {
             sql.append(" and q.create_time >= :startTime");
             paramMap.put("startTime", startTime);
+        }
+        if(StringUtils.isNotBlank(endTime)) {
+            sql.append(" and q.create_time <= :endTime");
+            paramMap.put("endTime", endTime);
         }
         sql.append(" order by q.class_id, q.user_id, q.create_time asc");
         return this.getObjectList(sql.toString(), paramMap, ReviewQuestionAnswerVO.class);

@@ -21,10 +21,16 @@
 		</tr>
 		<tr>
 			<td align="right"><label class="Validform_label">
-				分类名称: </label></td>
+				量表名称: </label></td>
 			<td class="value"><input datatype="*" id="title" name="title" value="${reviewClass.title }"
 									 type="text" style="width: 300px" class="inputxt"><span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">分类名称</label></td>
+				<label class="Validform_label" style="display: none;">量表名称</label></td>
+		</tr>
+		<tr>
+			<td align="right"><label class="Validform_label">
+				量表简介: </label></td>
+			<td class="value">
+				<textarea rows="3" cols="80" id="describe" name="describe" datatype="*">${reviewClass.describe }</textarea>
 		</tr>
 		<tr>
 			<td align="right"><label class="Validform_label">

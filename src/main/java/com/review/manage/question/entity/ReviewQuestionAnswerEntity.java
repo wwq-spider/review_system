@@ -26,6 +26,8 @@ public class ReviewQuestionAnswerEntity implements java.io.Serializable {
 	private String classId;
 	/**结果id*/
 	private String resultId;
+	/**关联项目ID**/
+	private Long projectId;
 	/**量表标题*/
 	//private String classTitle;
 	/**问题id*/
@@ -127,6 +129,16 @@ public class ReviewQuestionAnswerEntity implements java.io.Serializable {
 	public void setQuestionId(Integer questionId){
 		this.questionId = questionId;
 	}
+
+	@Column(name ="PROJECT_ID",nullable=true,precision=19,scale=0)
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
+	}
+
 	/**
 	 *方法: 取得java.lang.Integer
 	 *@return: java.lang.Integer  题目编号

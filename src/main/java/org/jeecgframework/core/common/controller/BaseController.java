@@ -1,14 +1,19 @@
 package org.jeecgframework.core.common.controller;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import com.review.common.CommonUtils;
+import net.sf.json.JSONObject;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.jeecgframework.core.common.service.CommonService;
 import org.jeecgframework.core.interceptors.DateConvertEditor;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -86,5 +91,18 @@ public class BaseController {
 		request.setAttribute("totalPage", totalPage);
 		return list;
 	}
-	
+
+	public void responseJson(HttpServletResponse response, Integer code, String msg) {
+		JSONObject json = new JSONObject();
+		json.put("code", code);
+		json.put("msg", msg);
+		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+	}
+
+	public void responseRowsJson(HttpServletResponse response, Integer code, Collection rows) {
+		JSONObject json = new JSONObject();
+		json.put("code", code);
+		json.put("rows", rows);
+		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+	}
 }

@@ -190,5 +190,13 @@ public final class Constants {
 	/**
 	 * 字母数组
 	 */
-	public final static String[] LETTER_ARR = new String[]{"A","B","C","D","E","F","G","H","I","J","K"}; 
+	public final static String[] LETTER_ARR = new String[]{"A","B","C","D","E","F","G","H","I","J","K"};
+
+	public final static String ReviewClassDir = "review-class";
+
+	public final static String ReviewProjectDir = "review-project";
+
+	public final static String ReviewAnswerDir = "review-answer";
+
+	public final static String ReviewQuestionDir = "review-question";
 }

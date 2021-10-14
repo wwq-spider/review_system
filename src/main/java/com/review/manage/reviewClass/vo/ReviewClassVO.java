@@ -12,6 +12,8 @@ public class ReviewClassVO {
     private java.lang.Integer status;   
 
     private java.lang.String guide;
+
+	private String describe;
     
     private String questionIds;
 
@@ -101,5 +103,13 @@ public class ReviewClassVO {
 
 	public void setType(Integer type) {
 		this.type = type;
+	}
+
+	public String getDescribe() {
+		return describe;
+	}
+
+	public void setDescribe(String describe) {
+		this.describe = describe;
 	}
 }

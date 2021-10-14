@@ -20,6 +20,18 @@ public class ReviewProjectEntity implements Serializable {
     @Column(name = "project_desc")
     private String projectDesc;
 
+    @Column(name = "show_report")
+    private Integer showReport;
+
+    @Column(name = "cover")
+    private String cover;
+
+    @Column(name = "is_open")
+    private Integer isOpen;
+
+    @Column(name = "group_id")
+    private String groupId;
+
     @Column(name = "applets_qr_code_link")
     private String appletsCrCodeLink;
 
@@ -31,9 +43,6 @@ public class ReviewProjectEntity implements Serializable {
 
     @Column(name = "creator")
     private String creator;
-
-    @Transient
-    private List<ReviewProjectClassEntity> reviewProjectClassList = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -91,11 +100,35 @@ public class ReviewProjectEntity implements Serializable {
         this.creator = creator;
     }
 
-    public List<ReviewProjectClassEntity> getReviewProjectClassList() {
-        return reviewProjectClassList;
+    public String getCover() {
+        return cover;
     }
 
-    public void setReviewProjectClassList(List<ReviewProjectClassEntity> reviewProjectClassList) {
-        this.reviewProjectClassList = reviewProjectClassList;
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
+    public Integer getShowReport() {
+        return showReport;
+    }
+
+    public void setShowReport(Integer showReport) {
+        this.showReport = showReport;
+    }
+
+    public Integer getIsOpen() {
+        return isOpen;
+    }
+
+    public void setIsOpen(Integer isOpen) {
+        this.isOpen = isOpen;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 }

@@ -2,6 +2,8 @@ package com.review.manage.userManage.controller;
 
 import com.review.common.CommonUtils;
 import com.review.common.DateUtil;
+import com.review.manage.project.entity.ReviewProjectEntity;
+import com.review.manage.project.service.IReviewProjectService;
 import com.review.manage.question.service.ReviewQuestionAnswerServiceI;
 import com.review.manage.reviewClass.entity.ReviewClassEntity;
 import com.review.manage.userManage.entity.ReviewUserEntity;
@@ -51,35 +53,21 @@ public class ReviewUserController extends BaseController{
 
 	@Autowired
 	private ReviewQuestionAnswerServiceI reviewQuestionAnswerService;
-
-	@Autowired
-	private SystemService systemService;
 	
 	/**
 	 * 跳到测评用户页面 
 	 * @param request
-	 * @param response
 	 * @return
 	 */
 	@RequestMapping(params="toReviewUserList")
-	public ModelAndView toReviewUserList(HttpServletRequest request, 
-			HttpServletResponse response) {
+	public ModelAndView toReviewUserList(HttpServletRequest request) {
 
-		List<TSDepart> departList = getReviewUserGroup();
+		List<TSDepart> departList = reviewUserService.getReviewUserGroup();
 		if (CollectionUtils.isNotEmpty(departList)) {
 			request.setAttribute("departsReplace", RoletoJson.listToReplaceStr(departList, "departname", "id"));
 		}
 		ModelAndView model = new ModelAndView("review/manage/userManage/reviewUserList");
 		return model;
-	}
-
-	private List<TSDepart> getReviewUserGroup() {
-		List<TSDepart> departList = systemService.findByProperty(TSDepart.class, "departname", "测评用户组");
-		if (CollectionUtils.isNotEmpty(departList)) {
-			List<TSDepart> childDeparts = departList.get(0).getTSDeparts();
-			return childDeparts;
-		}
-		return null;
 	}
 	
 	/**
@@ -137,13 +125,16 @@ public class ReviewUserController extends BaseController{
 	public ModelAndView toAdd(HttpServletRequest request, 
 			HttpServletResponse response, ReviewUserEntity reviewUser) {
 		ModelAndView model = new ModelAndView("review/manage/userManage/reviewUserAdd");
-		List<TSDepart> groupList = getReviewUserGroup();
+		List<TSDepart> groupList = reviewUserService.getReviewUserGroup();
 		model.addObject("groupList", groupList);
 		if(!"".equals(StringUtils.trimToEmpty(reviewUser.getUserId()))) {
 			model.addObject("user", reviewUserService.get(ReviewUserEntity.class, reviewUser.getUserId()));
 		}
 		return model;
 	}
+
+	@Autowired
+	private IReviewProjectService reviewProjectService;
 
 	/**
 	 * 跳到导出选择时间页面
@@ -153,8 +144,10 @@ public class ReviewUserController extends BaseController{
 	@RequestMapping(params="toExportRecord")
 	public ModelAndView toExportRecord(String groupId) {
 		ModelAndView model = new ModelAndView("review/manage/userManage/exportRecord");
-		List<TSDepart> groupList = getReviewUserGroup();
+		List<TSDepart> groupList = reviewUserService.getReviewUserGroup();
+		List<ReviewProjectEntity> projectList = reviewProjectService.findHql("from ReviewProjectEntity order by createTime DESC");
 		model.addObject("groupList", groupList);
+		model.addObject("projectList", projectList);
 		model.addObject("groupId", groupId);
 		return model;
 	}
@@ -192,7 +185,7 @@ public class ReviewUserController extends BaseController{
 			HttpServletResponse response) {
 		List<ReviewClassEntity> classList = reviewUserService.findHql("from ReviewClassEntity order by createTime DESC");
 		ModelAndView model = new ModelAndView("review/manage/userManage/batchImport");
-		List<TSDepart> groupList = getReviewUserGroup();
+		List<TSDepart> groupList = reviewUserService.getReviewUserGroup();
 		model.addObject("groupList", groupList);
 		model.addObject("classList", classList);
 		return model;
@@ -271,7 +264,7 @@ public class ReviewUserController extends BaseController{
 	@RequestMapping(params="toUserImport")
 	public  ModelAndView toUserImport() {
 		ModelAndView model = new ModelAndView("review/manage/userManage/userImport");
-		List<TSDepart> groupList = getReviewUserGroup();
+		List<TSDepart> groupList = reviewUserService.getReviewUserGroup();
 		model.addObject("groupList", groupList);
 		return model;
 	}
@@ -356,9 +349,12 @@ public class ReviewUserController extends BaseController{
 	 * 导出用户测评答案
 	 * @param response
 	 * @param groupId
+	 * @param projectId
+	 * @param startTime
+	 * @param endTime
 	 */
 	@RequestMapping(params = "exportQuestionAnswer")
-	public void exportQuestionAnswerByGroup(HttpServletResponse response, String groupId, String startTime) {
+	public void exportQuestionAnswerByGroup(HttpServletResponse response, String groupId, Long projectId, String startTime, String endTime) {
 		List<Map<String, Object>> list = new ArrayList<>();
 		response.setContentType("application/vnd.ms-excel");
 		String codedFileName = null;
@@ -375,7 +371,7 @@ public class ReviewUserController extends BaseController{
 						"attachment;filename=" + newtitle + ".xls");
 			}
 			// 产生工作簿对象
-			Workbook workbook = reviewQuestionAnswerService.getExportWorkbook(groupId, startTime);
+			Workbook workbook = reviewQuestionAnswerService.getExportWorkbook(groupId, projectId, startTime, endTime);
 			fOut = response.getOutputStream();
 			workbook.write(fOut);
 			fOut.flush();

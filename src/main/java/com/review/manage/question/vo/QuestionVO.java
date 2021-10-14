@@ -27,6 +27,8 @@ public class QuestionVO implements Serializable {
     
     private String classId;         //分类ID
 
+	private Long projectId;    //关联项目ID
+
     private String answerId;
     
     private String variateName;     //因子名称
@@ -273,5 +275,13 @@ public class QuestionVO implements Serializable {
 
 	public void setPictureAttach(String pictureAttach) {
 		this.pictureAttach = pictureAttach;
+	}
+
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
 	}
 }

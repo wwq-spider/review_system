@@ -20,7 +20,7 @@
 			 <div class="datagrid-toolbar" style="height:30px;">
 				<span style="float:left;">
 					<a href="#" id='add' class="easyui-linkbutton" plain="true" icon="icon-add"
-					onclick="add('添加项目','reviewProject.do?toAdd','reviewProjectList', 800, 430)" id="">添加项目</a></span>
+					onclick="add('添加项目','reviewProject.do?toAdd','reviewProjectList', 800, 700)" id="">添加项目</a></span>
 			</div>
 		</div>
 	<script type="text/javascript">
@@ -33,7 +33,7 @@
 
 			for(let i=0; i<data.rows.length; i++){
 				let edit = "[<a href=\"#\" onclick=\"createwindow('编辑', 'reviewProject.do?toAdd&projectId="+
-						data.rows[i].id+"', 800, 430)\">编辑</a>]";
+						data.rows[i].id+"', 800, 750)\">编辑</a>]";
 				rows.push({
 					id: data.rows[i].id,
 					projectName: data.rows[i].projectName,

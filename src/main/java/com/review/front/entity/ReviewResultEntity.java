@@ -31,6 +31,9 @@ public class ReviewResultEntity implements Serializable {
 	
 	@Column(name="class_id")
 	private String classId;
+
+	@Column(name="project_id")
+	private Long projectId;
 	
 	@Column(name="grade_total")
 	private Double gradeTotal;
@@ -83,6 +86,14 @@ public class ReviewResultEntity implements Serializable {
 
 	public void setClassId(String classId) {
 		this.classId = classId;
+	}
+
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
 	}
 
 	public Double getGradeTotal() {

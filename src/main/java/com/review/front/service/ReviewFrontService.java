@@ -69,6 +69,14 @@ public interface ReviewFrontService extends CommonService{
 	List<ReviewResultVO> getReportResults(String userId);
 
 	/**
+	 * 获取测评报告
+	 * @param userId
+	 * @param projectId
+	 * @return
+	 */
+	List<ReviewResultVO> getReviewReports(String userId, Long projectId);
+
+	/**
 	 * 注册用户信息
 	 * @param reviewUser
 	 * @return

@@ -681,7 +681,8 @@ label.iPhoneCheckLabelOff span {
 	opacity:0;
 	filter:alpha(opacity=0);
 	
-	border: 5px #f4f4f4 solid;
+	/*border: 5px #f4f4f4 solid;*/
+	border: 5px #f0e4c8 solid;
 	min-width:200px;
 	border-radius: 15px;
 	-webkit-border-radius: 15px;
@@ -705,8 +706,9 @@ label.iPhoneCheckLabelOff span {
 	margin-left: 70px;
 }
 #login .inner {
-	background-color:#FFF;
-	border: 1px #cccccc solid;
+	/*background-color:#FFF;*/
+	background-color: #fdfcf7;
+	/*border: 1px #cccccc solid;*/
     /*update-begin--Author:zhangguoming  Date:20140226 for：添加验证码*/
 	/*min-height: 230px;*/
 	min-height: 350px;
@@ -727,7 +729,8 @@ label.iPhoneCheckLabelOff span {
 	left: 25%;
 	margin-left: -95px;
 	z-index: 11;
-	background-color: #FFF;
+	/*background-color: #FFF;*/
+	background-color: #fdfcf7;
 }
 #login .formLogin {
 	width:100%;

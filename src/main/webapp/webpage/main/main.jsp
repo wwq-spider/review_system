@@ -126,14 +126,14 @@ a:hover {
 </head>
 <body class="easyui-layout" style="overflow-y: hidden" scroll="no">
 <!-- 顶部-->
-<div region="north" border="false" title="测评系统" style="BACKGROUND: #E6E6FA; height: 85px; padding: 1px; overflow: hidden;">
+<div region="north" border="false" title="测评系统" style="BACKGROUND: #fef8df; height: 85px; padding: 1px; overflow: hidden;">
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td align="left" style="vertical-align: text-bottom;"><img src="plug-in/weixin/logo/logo_weixin.png"></td>
 		<td align="right" nowrap>
 		<table>
 			<tr>
-				<td valign="top" height="50"><span style="color: #CC33FF">当前用户:</span><span style="color: #666633">(${userName }) <span style="color: #CC33FF">职务</span>:<span style="color: #666633">${roleName
+				<td valign="top" height="50"><span style="color: #CC33FF">当前用户:</span><span style="color: #CC33FF">(${userName }) <span style="color: #CC33FF">职务</span>:<span style="color: #CC33FF">${roleName
 				}</span></td>
 			</tr>
 			<td>

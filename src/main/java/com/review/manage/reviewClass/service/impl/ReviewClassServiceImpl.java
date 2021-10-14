@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.review.common.CommonUtils;
+import com.review.common.Constants;
 import com.review.common.OssUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -31,31 +33,8 @@ public class ReviewClassServiceImpl extends CommonServiceImpl implements ReviewC
 	public void addReviewClass(ReviewClassVO reviewClass) throws Exception {
 		ReviewClassEntity reviewClassEntity = new ReviewClassEntity();
 		MyBeanUtils.copyBean2Bean(reviewClassEntity, reviewClass);
-		this.saveBannerImg(reviewClass.getContentImg(), reviewClassEntity);
+		reviewClassEntity.setBannerImg(CommonUtils.saveCoverImg(reviewClass.getContentImg(), Constants.ReviewClassDir));
 		this.save(reviewClassEntity);
-	}
-
-	/**
-	 * 保存封面图片
-	 * @param contentImg
-	 * @param reviewClassEntity
-	 * @throws IOException
-	 */
-	private void saveBannerImg(CommonsMultipartFile contentImg, ReviewClassEntity reviewClassEntity) throws IOException {
-		//上传封面图片
-		if (contentImg != null && !contentImg.isEmpty()) {
-			String path = OssUtils.uploadFile("review-class/%s/" + UUIDGenerator.generate() + ".jpg", contentImg.getBytes());
-			if (StringUtils.isNotBlank(path)) {
-				reviewClassEntity.setBannerImg(path);
-			}
-			//生成二维码
-//			String rootPath = ContextHolderUtils.getSession().getServletContext().getRealPath("/");
-//			String filePath = "/upload/banner/" + UUIDGenerator.generate() + ".jpg";
-//			File dir = new File(rootPath + filePath).getParentFile();
-//			if (!dir.exists()) dir.mkdir();
-//			FileUtils.writeByteArrayToFile(new File(rootPath + filePath), contentImg.getBytes());
-//			reviewClassEntity.setBannerImg(filePath);
-		}
 	}
 
 	@Override
@@ -64,10 +43,12 @@ public class ReviewClassServiceImpl extends CommonServiceImpl implements ReviewC
 		ReviewClassEntity reviewClassEntity = this.get(ReviewClassEntity.class, reviewClass.getClassId());
 		MyBeanUtils.copyBean2Bean(reviewClassEntity, reviewClass);
 
-		this.saveBannerImg(reviewClass.getContentImg(), reviewClassEntity);
+		String path = CommonUtils.saveCoverImg(reviewClass.getContentImg(), Constants.ReviewClassDir);
+		if (StringUtils.isNotBlank(path)) {
+			reviewClassEntity.setBannerImg(path);
+		}
 		//先删除题目-分类信息
 		/*delQuestionClass(reviewClass.getClassId());
-		
 		//再添加题目- 分类信息
 		String[] questionIdArr = reviewClass.getQuestionIds().split(",");
 		ReviewQuestionClassEntity questionClass = null;
@@ -117,6 +98,7 @@ public class ReviewClassServiceImpl extends CommonServiceImpl implements ReviewC
 		sb.append("   c.`status`,");
 		sb.append("   c.`type`,");
 		sb.append("   c.`title`,");
+		sb.append("   c.`describe`,");
 		sb.append("   c.`guide` ");
 		sb.append(" FROM  ");
 		HashMap<String, String> paramMap = new HashMap<>();

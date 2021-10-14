@@ -7,6 +7,8 @@ import com.review.front.entity.ReviewReportResultEntity;
 import com.review.front.entity.ReviewResultEntity;
 import com.review.front.service.ReviewFrontService;
 import com.review.front.vo.ReviewResultVO;
+import com.review.manage.project.entity.ReviewProjectEntity;
+import com.review.manage.project.service.IReviewProjectService;
 import com.review.manage.question.vo.QuestionVO;
 import com.review.manage.report.service.ReportService;
 import com.review.manage.reviewClass.entity.ReviewClassEntity;
@@ -76,8 +78,7 @@ public class ReviewFrontController extends BaseController{
 	 * @param response
 	 */
 	@RequestMapping(params="login")
-	public void login(HttpServletRequest request,
-			HttpServletResponse response) {
+	public void login(HttpServletRequest request, HttpServletResponse response) {
 		String userName = request.getParameter("userName");
 		String password = request.getParameter("password");
 		HttpSession session = request.getSession();
@@ -363,7 +364,8 @@ public class ReviewFrontController extends BaseController{
 	public void getUserInfoByOpenid(HttpServletResponse response, @RequestBody ReviewUserEntity reviewUser) {
 		JSONObject json = new JSONObject();
 		json.put("code", 200);
-		json.put("result", reviewFrontService.getUserInfo(reviewUser.getOpenid()));
+		ReviewUserEntity reviewUserEntity = reviewFrontService.getUserInfo(reviewUser.getOpenid());
+		json.put("result", reviewUserEntity);
 		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
 	}
 
@@ -400,6 +402,57 @@ public class ReviewFrontController extends BaseController{
 		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
 	}
 
+	@Autowired
+	private IReviewProjectService reviewProjectService;
+
+
+	/**
+	 * 设置用户组
+	 * @param response
+	 * @param reviewUser
+	 */
+	@RequestMapping(value = "joinUserGroup", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void joinUserGroup(HttpServletResponse response, @RequestBody ReviewUserEntity reviewUser) {
+		if (reviewUser.getProjectId() == null || reviewUser.getProjectId() == 0 || StringUtils.isBlank(reviewUser.getUserId())) {
+			responseJson(response, 300, "项目/用户ID为空");
+			return;
+		}
+
+		ReviewUserEntity reviewUserEntity = reviewUserService.get(ReviewUserEntity.class, reviewUser.getUserId());
+		if (reviewUserEntity == null) {
+			responseJson(response, 301, "用户不存在");
+			return;
+		}
+
+		ReviewProjectEntity reviewProject = reviewProjectService.get(ReviewProjectEntity.class, reviewUser.getProjectId());
+		if (reviewProject == null) {
+			responseJson(response, 302, "项目不存在");
+			return;
+		}
+
+		if (StringUtils.isBlank(reviewProject.getGroupId())) {
+			responseJson(response, 303, "项目未绑定用户组");
+			return;
+		}
+
+		if (reviewProject.getIsOpen() == 1) {
+			responseJson(response, 304, "非开放项目，您没有测评权限");
+			return;
+		}
+
+		if (StringUtils.isBlank(reviewUserEntity.getGroupId())) {
+			reviewUserEntity.setGroupId(reviewProject.getGroupId());
+			reviewUserService.saveOrUpdate(reviewUserEntity);
+		} else if(reviewUserEntity.getGroupId().indexOf(reviewProject.getGroupId()) == -1) {
+			reviewUserEntity.setGroupId(reviewUserEntity.getGroupId() + "," + reviewProject.getGroupId());
+			reviewUserService.saveOrUpdate(reviewUserEntity);
+		}
+		responseJson(response, 200, "加入成功");
+	}
+
+
+
 	/**
 	 * 获取我的测评记录/测评报告
 	 * @param response
@@ -419,6 +472,22 @@ public class ReviewFrontController extends BaseController{
 		json.put("code", 200);
 		json.put("rows", reviewResultList);
 		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+	}
+
+	/**
+	 * 获取测评报告
+	 * @param response
+	 * @param reviewUser
+	 */
+	@RequestMapping(value = "getReviewReports", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void getReviewReports(HttpServletResponse response, @RequestBody ReviewUserEntity reviewUser) {
+		if (reviewUser == null || StringUtils.isBlank(reviewUser.getUserId())) {
+			responseJson(response, 300, "用户信息为空");
+			return;
+		}
+		List<ReviewResultVO> reviewResultList = reviewFrontService.getReviewReports(reviewUser.getUserId(), reviewUser.getProjectId());
+		responseRowsJson(response, 200, reviewResultList);
 	}
 
 	/**

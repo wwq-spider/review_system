@@ -61,24 +61,34 @@ label.iPhoneCheckLabelOn span {
 	width: 500px;
 	height: 51px;
 }
+
+.wrapper{
+    background:#fbfaee;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    overflow: hidden;
+}
 </style>
 </head>
-<body>
+<body class="wrapper">
     <div id="alertMessage"></div>
     <div id="successLogin"></div>
     <div class="text_success"><img src="plug-in/login/images/loader_green.gif" alt="Please wait" /> <span>登陆成功!请稍后....</span></div>
+    <div style="position: absolute; top: 24%; left: 11%;"><img src="plug-in/login/images/logo4.png" style="width: 75%"/></div>
     <div id="login">
-        <div class="ribbon" style="background-image: url(plug-in/login/images/typelogin2.png);"></div>
+<%--        <div class="ribbon" style="background-image: url(plug-in/login/images/typelogin2.png);"></div>--%>
         <div class="inner">
-            <div class="logo"><img src="plug-in/login/images/logo1.png" style="padding-bottom: 10px;"/></div>
+            <div class="logo"><%--<img src="plug-in/login/images/logo1.png" style="padding-bottom: 10px;"/>--%></div>
             <div class="formLogin">
                 <form name="formLogin" id="formLogin" action="loginController.do?login" check="loginController.do?checkuser" method="post">
                     <input name="userKey" type="hidden" id="userKey" value="D1B5CC2FE46C4CC983C073BCA897935608D926CD32992B5900" />
                     <div class="tip">
-                        <input class="userName" name="userName" type="text" id="userName" title="用户名" iscookie="true" value="admin" nullmsg="请输入用户名!" />
+                        <input class="userName" name="userName" type="text" id="userName" title="用户名" iscookie="true" value="" nullmsg="请输入用户名!" />
                     </div>
                     <div class="tip">
-                        <input class="password" name="password" type="password" id="password" title="密码" value="123456" nullmsg="请输入密码!" />
+                        <input class="password" name="password" type="password" id="password" title="密码" value="" nullmsg="请输入密码!" />
                     </div>
                     <div class="tip">
                         <input class="randCode" name="randCode" type="text" id="randCode" title="" value="" nullmsg="请输入验证码!" />
@@ -110,7 +120,7 @@ label.iPhoneCheckLabelOn span {
     </div>
     <!--Login div-->
     <div class="clear"></div>
-    <div id="versionBar">
+    <div>
         <div class="copyright"></div>
     </div>
     <!-- Link JScript-->

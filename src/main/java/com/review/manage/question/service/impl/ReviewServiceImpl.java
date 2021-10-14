@@ -12,6 +12,8 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.review.common.CommonUtils;
+import com.review.common.Constants;
 import com.review.common.OssUtils;
 import com.review.manage.reviewClass.entity.ReviewClassEntity;
 import org.apache.commons.lang.StringUtils;
@@ -96,7 +98,7 @@ public class ReviewServiceImpl extends CommonServiceImpl implements ReviewServic
 			reviewQuestion.setQuestionType(question.getQuestionType());
 			reviewQuestion.setQuestionNum(question.getQuestionNum());
 			reviewQuestion.setRightAnswer(question.getRightAnswer());
-			this.saveAttach(question.getContentImg(), reviewQuestion);
+			reviewQuestion.setPictureAttach(CommonUtils.saveCoverImg(question.getContentImg(), Constants.ReviewQuestionDir));
 			this.save(reviewQuestion);
 			
 			//添加题目分类
@@ -117,7 +119,7 @@ public class ReviewServiceImpl extends CommonServiceImpl implements ReviewServic
 				if(!"".equals(StringUtils.trimToEmpty(select.getSelectGrade()))) {
 					answerEntity.setGrade(Double.valueOf(select.getSelectGrade()));
 				}
-				this.saveAnswerAttach(select.getContentImg(), answerEntity);
+				answerEntity.setPictureAttach(CommonUtils.saveCoverImg(select.getContentImg(), Constants.ReviewAnswerDir));
 				this.save(answerEntity);
 			}
 			return "succ";
@@ -156,7 +158,11 @@ public class ReviewServiceImpl extends CommonServiceImpl implements ReviewServic
 		reviewQuestion.setIsImportant(question.getIsImportant());
 		reviewQuestion.setQuestionType(question.getQuestionType());
 		reviewQuestion.setRightAnswer(question.getRightAnswer());
-		this.saveAttach(question.getContentImg(), reviewQuestion);
+
+		String path = CommonUtils.saveCoverImg(question.getContentImg(), Constants.ReviewQuestionDir);
+		if (StringUtils.isNotBlank(path)) {
+			reviewQuestion.setPictureAttach(path);
+		}
 		this.saveOrUpdate(reviewQuestion);
 		
 		//删除选项
@@ -185,42 +191,12 @@ public class ReviewServiceImpl extends CommonServiceImpl implements ReviewServic
 			if(!"".equals(StringUtils.trimToEmpty(select.getSelectGrade()))) {
 				answerEntity.setGrade(Double.valueOf(select.getSelectGrade()));
 			}
-			
-			this.saveAnswerAttach(select.getContentImg(), answerEntity);
+			String pathA = CommonUtils.saveCoverImg(select.getContentImg(), Constants.ReviewAnswerDir);
+			if (StringUtils.isNotBlank(pathA)) {
+				answerEntity.setPictureAttach(pathA);
+			}
 
 			this.saveOrUpdate(answerEntity);
-		}
-	}
-
-	/**
-	 * 保存封面图片
-	 * @param contentImg
-	 * @param reviewAnswer
-	 * @throws IOException
-	 */
-	private void saveAnswerAttach(CommonsMultipartFile contentImg, ReviewAnswerEntity reviewAnswer) {
-		//上传封面图片
-		if (contentImg != null && !contentImg.isEmpty()) {
-			String path = OssUtils.uploadFile("review-answer/%s/" + UUIDGenerator.generate() + ".jpg", contentImg.getBytes());
-			if (StringUtils.isNotBlank(path)) {
-				reviewAnswer.setPictureAttach(path);
-			}
-		}
-	}
-
-	/**
-	 * 保存封面图片
-	 * @param contentImg
-	 * @param reviewQuestion
-	 * @throws IOException
-	 */
-	private void saveAttach(CommonsMultipartFile contentImg, ReviewQuestionEntity reviewQuestion) {
-		//上传封面图片
-		if (contentImg != null && !contentImg.isEmpty()) {
-			String path = OssUtils.uploadFile("review-question/%s/" + UUIDGenerator.generate() + ".jpg", contentImg.getBytes());
-			if (StringUtils.isNotBlank(path)) {
-				reviewQuestion.setPictureAttach(path);
-			}
 		}
 	}
 

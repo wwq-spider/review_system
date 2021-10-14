@@ -32,7 +32,9 @@ public class ReviewClassEntity implements Serializable{
     @Column(name="status")
     private java.lang.Integer status;   
     @Column(name="guide")
-    private java.lang.String guide;   
+    private java.lang.String guide;
+    @Column(name="describe")
+    private String describe;
     @Column(name="create_time")
     private java.util.Date createTime;   
     @Column(name="create_by")
@@ -102,5 +104,13 @@ public class ReviewClassEntity implements Serializable{
 
     public void setBannerImg(String bannerImg) {
         this.bannerImg = bannerImg;
+    }
+
+    public String getDescribe() {
+        return describe;
+    }
+
+    public void setDescribe(String describe) {
+        this.describe = describe;
     }
 }
