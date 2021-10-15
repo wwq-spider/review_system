@@ -9,6 +9,7 @@ import com.review.front.service.ReviewFrontService;
 import com.review.front.vo.ReviewResultVO;
 import com.review.manage.project.entity.ReviewProjectEntity;
 import com.review.manage.project.service.IReviewProjectService;
+import com.review.manage.project.vo.ReviewProjectVO;
 import com.review.manage.question.vo.QuestionVO;
 import com.review.manage.report.service.ReportService;
 import com.review.manage.reviewClass.entity.ReviewClassEntity;
@@ -508,6 +509,27 @@ public class ReviewFrontController extends BaseController{
 		ReviewClassEntity reviewClassInfo = reviewClassService.get(ReviewClassEntity.class, reviewClass.getClassId());
 		json.put("code", 200);
 		json.put("result", reviewClassInfo);
+		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+	}
+
+	/**
+	 * 查询测评分类详情
+	 * @param response
+	 * @param reviewProject
+	 */
+	@RequestMapping(value = "getReviewProjectDetail", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void getReviewProjectDetail(HttpServletResponse response, @RequestBody ReviewProjectVO reviewProject) {
+		JSONObject json = new JSONObject();
+		if (reviewProject == null || reviewProject.getId() == null || reviewProject.getId() == 0) {
+			json.put("code", 300);
+			json.put("msg", "项目ID为空");
+			CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+			return;
+		}
+		ReviewProjectEntity reviewProjectEntity = reviewProjectService.get(ReviewProjectEntity.class, reviewProject.getId());
+		json.put("code", 200);
+		json.put("result", reviewProjectEntity);
 		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
 	}
 

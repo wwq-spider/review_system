@@ -70,7 +70,7 @@ function check() {
 <div class="w_centerwrapbox">
 	<div id="logincontent">
 		<h1>
-			<img src="<%=path%>/plug-in/review/images/welcome_text.jpg" alt="" />
+			<img src="<%=path%>/plug-in/review/images/logozxk.png" alt="" style="width: 160px; margin-left: 126%;"/>
 		</h1>
 	 <form action="<%=path%>/reviewFront.do?login" method="post" id="myloginform" onsubmit="return check();">
           <p class="usename">

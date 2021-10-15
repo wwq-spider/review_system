@@ -13,7 +13,7 @@ public class ReviewClassVO {
 
     private java.lang.String guide;
 
-	private String describe;
+	private String classDesc;
     
     private String questionIds;
 
@@ -105,11 +105,11 @@ public class ReviewClassVO {
 		this.type = type;
 	}
 
-	public String getDescribe() {
-		return describe;
+	public String getClassDesc() {
+		return classDesc;
 	}
 
-	public void setDescribe(String describe) {
-		this.describe = describe;
+	public void setClassDesc(String classDesc) {
+		this.classDesc = classDesc;
 	}
 }

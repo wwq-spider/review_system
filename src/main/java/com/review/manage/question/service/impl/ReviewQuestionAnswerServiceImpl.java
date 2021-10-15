@@ -177,7 +177,7 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
             sql.append(" and q.create_time <= :endTime");
             paramMap.put("endTime", endTime);
         }
-        sql.append(" order by q.class_id, q.user_id, q.create_time asc");
+        sql.append(" order by q.class_id, q.user_id, q.question_num asc");
         return this.getObjectList(sql.toString(), paramMap, ReviewQuestionAnswerVO.class);
     }
 

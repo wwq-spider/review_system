@@ -1,6 +1,7 @@
 package com.review.front.service.impl;
 
 import com.review.common.Arith;
+import com.review.common.Constants;
 import com.review.common.DateUtil;
 import com.review.front.entity.ReviewReportResultEntity;
 import com.review.front.entity.ReviewResultEntity;
@@ -126,7 +127,14 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		reviewResult.setCreateTime(new Date());
 		reviewResult.setCreateBy(reviewUser.getUserName());
 		reviewResult.setProjectId(resultList.get(0).getProjectId()); //项目id
-		ReviewProjectEntity reviewProject = reviewProjectService.get(ReviewProjectEntity.class, reviewResult.getProjectId());
+		ReviewProjectEntity reviewProject = null;
+		String groupId = "";
+		if(reviewResult.getProjectId() != null && reviewResult.getProjectId() > 0) {
+			reviewProject = reviewProjectService.get(ReviewProjectEntity.class, reviewResult.getProjectId());
+			groupId = reviewProject.getGroupId();
+		} else {
+			groupId = reviewUser.getGroupId().split(",")[0];
+		}
 		this.save(reviewResult);
 
 		List<ReviewQuestionAnswerEntity> reviewQuestionAnswerList = Lists.newArrayList(1200);
@@ -135,11 +143,10 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		//计算因子对应的分值
 		for(int i=0; i<resultList.size(); i++) {
 			question = resultList.get(i);
-
 			ReviewQuestionAnswerEntity reviewQuestionAnswer = new ReviewQuestionAnswerEntity();
 			try {
 				MyBeanUtils.copyBean2Bean(reviewQuestionAnswer, question);
-				reviewQuestionAnswer.setGroupId(reviewProject.getGroupId());
+				reviewQuestionAnswer.setGroupId(groupId);
 				reviewQuestionAnswer.setUserId(reviewUser.getUserId());
 				reviewQuestionAnswer.setUserName(reviewUser.getUserName());
 				reviewQuestionAnswer.setMobilePhone(reviewUser.getMobilePhone());
@@ -369,19 +376,19 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 				"       DATE_FORMAT(r.`create_time`, '%Y-%m-%e %H:%i:%S') createTime,\n" +
 				"       r.grade_total                                     reportGrade,\n" +
 				"       c.banner_img                                      classCover,\n" +
-				"       c.title                                           classTitle,\n" +
+				"       c.title                                           classTitle\n" +
 				" from review_result r\n" +
 				"         inner join review_class c on r.class_id = c.class_id\n" );
 
 		if (projectId != null && projectId > 0) {
 			sql.append(" inner join (select id from review_project where id=:projectId and show_report = 2) p on r.project_id = p.id ");
-			sql.append("where r.user_id =:userId");
+			sql.append(" where r.user_id =:userId");
 			paramMap.put("projectId", projectId.toString());
 		} else {
 			sql.append(" left join (select id from review_project where show_report = 2) p on r.project_id = p.id " +
 					" where r.user_id =:userId and (r.project_id is null or r.project_id = 0 or p.id != null)");
 		}
-		sql.append("order by r.`create_time` desc");
+		sql.append(" order by r.`create_time` desc");
 		paramMap.put("userId", userId);
 		return this.getObjectList(sql.toString(), paramMap, ReviewResultVO.class);
 	}
@@ -422,9 +429,16 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 			jsonObject.put("code", 1000);
 			jsonObject.put("msg", "用户没有该项目测评权限，请联系管理员");
 		}
+		if (StringUtils.isBlank(reviewUserEntity.getGroupId())) { //设置默认用户组
+			reviewUserEntity.setGroupId("1");
+		}
 		if (StringUtils.isBlank(reviewUserEntity.getUserId())) {
+			reviewUserEntity.setCreateTime(new Date());
+			reviewUserEntity.setUpdateTime(reviewUserEntity.getUpdateTime());
+			reviewUserEntity.setSource(Constants.UserSource.Register);
 			this.save(reviewUserEntity);
 		} else {
+			reviewUserEntity.setUpdateTime(new Date());
 			this.saveOrUpdate(reviewUserEntity);
 		}
 		jsonObject.put("code", 200);
@@ -444,13 +458,14 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 			if (reviewProject == null) {
 				return false;
 			}
-			if (reviewProject.getIsOpen() == 1) {
-				if (StringUtils.isBlank(reviewUserEntity.getGroupId())) {
-					reviewUserEntity.setGroupId(reviewUserEntity.getGroupId());
-				} else if (reviewUserEntity.getGroupId().indexOf(reviewProject.getGroupId()) == -1) {
+			String userGroupId = reviewUserEntity.getGroupId();
+			if (reviewProject.getIsOpen() == 2) {
+				if (StringUtils.isBlank(userGroupId)) {
+					reviewUserEntity.setGroupId(reviewProject.getGroupId());
+				} else if (userGroupId.indexOf(reviewProject.getGroupId()) == -1) {
 					reviewUserEntity.setGroupId(reviewUserEntity.getGroupId() +"," + reviewProject.getGroupId());
 				}
-			} else if (reviewUserEntity.getGroupId().indexOf(reviewProject.getGroupId()) == -1) {
+			} else if (StringUtils.isBlank(userGroupId) || userGroupId.indexOf(reviewProject.getGroupId()) == -1) {
 				return false;
 			}
 		}

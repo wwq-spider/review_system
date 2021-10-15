@@ -199,4 +199,13 @@ public final class Constants {
 	public final static String ReviewAnswerDir = "review-answer";
 
 	public final static String ReviewQuestionDir = "review-question";
+
+	public static class UserSource {
+
+		public final static Integer SystemAdd = 1; //系统录入
+
+		public final static Integer SystemImport = 2; //系统导入
+
+		public final static Integer Register = 3;  //前端注册
+	}
 }

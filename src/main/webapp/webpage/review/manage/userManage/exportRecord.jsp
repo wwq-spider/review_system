@@ -14,15 +14,15 @@
 
 		function exportData() {
 			let groupId = $("#groupId").val();
-			if (!groupId || groupId == "") {
-				$.messager.alert("提示","请您用户组","info");
-				return
-			}
 			let projectId = $("#projectId").val();
-			if (!projectId || projectId == "") {
-				$.messager.alert("提示","请您测评项目","info");
+			if ((!groupId || groupId == "") && (!projectId || projectId == "")) {
+				$.messager.alert("提示","项目和用户组不能都为空","info");
 				return
 			}
+			// if (!projectId || projectId == "") {
+			// 	$.messager.alert("提示","请您测评项目","info");
+			// 	return
+			// }
 
 			let startTime = $("#startTime").val()
 			if (!startTime || startTime == "" ) {
@@ -47,6 +47,7 @@
 		<label class="Validform_label"> 用户组: </label>
 		<select  id="groupId" name="groupId" style="width: 300px; height: 30px">
 			<option value="" selected="selected">--请选择--</option>
+			<option value="1">默认用户组</option>
 			<c:forEach items="${groupList }" var="userGroup">
 				<option  value="${userGroup.id }">${userGroup.departname }</option>
 			</c:forEach>

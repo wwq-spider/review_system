@@ -1,10 +1,7 @@
 package com.review.manage.userManage.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -55,6 +52,12 @@ public class ReviewUserEntity implements Serializable {
 	private String openid;
 
 	private String groupId;
+
+	private Integer source;
+
+	private Date createTime;
+
+	private Date updateTime;
 
 	private transient Long projectId;
 
@@ -181,5 +184,31 @@ public class ReviewUserEntity implements Serializable {
 
 	public void setProjectId(Long projectId) {
 		this.projectId = projectId;
+	}
+
+	@Column(name = "source")
+	public Integer getSource() {
+		return source;
+	}
+
+	public void setSource(Integer source) {
+		this.source = source;
+	}
+
+	@Column(name = "create_time")
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+	@Column(name = "update_time")
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
 	}
 }

@@ -2,23 +2,15 @@ package com.review.manage.userManage.service.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.review.common.Constants;
 import jxl.format.Colour;
 import jxl.format.UnderlineStyle;
 import jxl.write.Label;
@@ -125,11 +117,15 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 			user = this.get(ReviewUserEntity.class, reviewUser.getUserId());
 			try {
 				MyBeanUtils.copyBean2Bean(user, reviewUser);
+				reviewUser.setUpdateTime(new Date());
 				this.saveOrUpdate(user);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		} else { //新增用户
+			reviewUser.setSource(Constants.UserSource.SystemAdd);
+			reviewUser.setCreateTime(new Date());
+			reviewUser.setUpdateTime(reviewUser.getCreateTime());
 			this.save(reviewUser);
 		}
 	}
@@ -614,8 +610,11 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 			
 			for(ReviewUserEntity user : userList) {
 				user.setGroupId(groupId);
-				userEntity= this.findUniqueByProperty(ReviewUserEntity.class, "userName", user.getUserName());
+				userEntity= this.findUniqueByProperty(ReviewUserEntity.class, "mobilePhone", user.getMobilePhone());
 				if(userEntity == null) {
+					userEntity.setSource(Constants.UserSource.SystemImport);
+					userEntity.setCreateTime(new Date());
+					userEntity.setUpdateTime(userEntity.getUpdateTime());
 					this.save(user);
 				} else {
 					if("".equals(userNames)) {

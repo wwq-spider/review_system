@@ -286,7 +286,7 @@ public class ReviewUserController extends BaseController{
 			if("".equals(userNames)) {
 				j.setMsg("导入成功！"); 
 			} else {
-				j.setMsg("用户 "+userNames+"已存在");
+				j.setMsg("用户: "+userNames+"已存在");
 			}
 		} catch (Exception e) {
 			j.setMsg("导入失败！");

@@ -30,7 +30,7 @@
 			<td align="right"><label class="Validform_label">
 				量表简介: </label></td>
 			<td class="value">
-				<textarea rows="3" cols="80" id="describe" name="describe" datatype="*">${reviewClass.describe }</textarea>
+				<textarea rows="3" cols="80" id="classDesc" name="classDesc" datatype="*">${reviewClass.classDesc }</textarea>
 		</tr>
 		<tr>
 			<td align="right"><label class="Validform_label">

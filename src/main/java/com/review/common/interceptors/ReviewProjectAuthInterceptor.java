@@ -81,7 +81,7 @@ public class ReviewProjectAuthInterceptor implements HandlerInterceptor {
         if (reviewProject == null) {
             return false;
         }
-        if (userGroupId.indexOf(reviewProject.getGroupId()) > -1 && reviewProject.getIsOpen() == 2) {
+        if (StringUtils.isNotBlank(userGroupId) && userGroupId.indexOf(reviewProject.getGroupId()) > -1) {
             return true;
         }
         return false;

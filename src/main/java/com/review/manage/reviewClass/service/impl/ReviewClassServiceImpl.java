@@ -98,7 +98,7 @@ public class ReviewClassServiceImpl extends CommonServiceImpl implements ReviewC
 		sb.append("   c.`status`,");
 		sb.append("   c.`type`,");
 		sb.append("   c.`title`,");
-		sb.append("   c.`describe`,");
+		sb.append("   c.`class_desc` classDesc,");
 		sb.append("   c.`guide` ");
 		sb.append(" FROM  ");
 		HashMap<String, String> paramMap = new HashMap<>();
