@@ -69,9 +69,9 @@ function check() {
 <body>
 <div class="w_centerwrapbox">
 	<div id="logincontent">
-		<h1>
-			<img src="<%=path%>/plug-in/review/images/logozxk.png" alt="" style="width: 160px; margin-left: 126%;"/>
-		</h1>
+<%--		<h1>--%>
+<%--			<img src="<%=path%>/plug-in/review/images/logozxk.png" alt="" style="width: 160px; margin-left: 126%;"/>--%>
+<%--		</h1>--%>
 	 <form action="<%=path%>/reviewFront.do?login" method="post" id="myloginform" onsubmit="return check();">
           <p class="usename">
 			<input type="text" name="userName" id="userName" placeholder="请输入您的用户名"  class="inpclass" />
