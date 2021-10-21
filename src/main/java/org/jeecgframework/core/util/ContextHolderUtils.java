@@ -3,6 +3,9 @@ package org.jeecgframework.core.util;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.review.common.Constants;
+import org.jeecgframework.web.system.manager.ClientManager;
+import org.jeecgframework.web.system.pojo.base.Client;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 /**
@@ -32,6 +35,14 @@ public class ContextHolderUtils {
 		HttpSession session = getRequest().getSession();
 		return session;
 
+	}
+
+	public static String getLoginUserName() {
+		Client client = ClientManager.getInstance().getClient(getSession().getId());
+		if (client.getUser() != null) {
+			return client.getUser().getUserName();
+		}
+		return null;
 	}
 
 }

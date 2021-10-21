@@ -281,63 +281,6 @@
 						}
 					});
 		})
-
-		/*$(function() {
-			$("#addForm").Validform({
-				tiptype : 3,
-				btnSubmit : "#btn_sub",
-				btnReset : "#btn_reset",
-				ajaxPost : true,
-				usePlugin : {
-					passwordstrength : {
-						minLen : 6,
-						maxLen : 18,
-						trigger : function(obj, error) {
-							if (error) {
-								obj.parent().next().find(
-										".Validform_checktip")
-										.show();
-								obj.find(".passwordStrength")
-										.hide();
-							} else {
-								$(".passwordStrength").show();
-								obj.parent().next().find(
-										".Validform_checktip")
-										.hide();
-							}
-						}
-					}
-				},
-				beforeSubmit:function(curForm){
-					let classidArr = $("#classIds").val();
-					for (let i=0;i < classidArr.length; i++) {
-						let tmpInput=$("<input type='hidden' name='reviewProjectClassList["+ i +"].classId'/>");
-						tmpInput.attr("value", classidArr[i]);
-						$(curForm).append(tmpInput)
-					}
-					/!*let groupId = $("#groupIds:checked").val()
-					let tmpInput=$("<input type='hidden' name='reviewProjectUserGroupList[0].groupId'/>");
-					tmpInput.attr("value", groupId);
-					$(curForm).append(tmpInput)*!/
-					return true
-				},
-				callback : function(data) {
-					var win = frameElement.api.opener;
-					if (data.success == true) {
-						frameElement.api.close();
-						win.tip(data.msg);
-					} else {
-						if (data.responseText == ''
-								|| data.responseText == undefined)
-							$("#addForm").html(data.msg);
-						else
-							$("#addForm").html(data.responseText);
-						return false;
-					}
-					win.reloadTable();
-				}
-			});
-		});*/
 	</script>
 
 </form>

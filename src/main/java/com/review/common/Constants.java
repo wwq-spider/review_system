@@ -200,6 +200,8 @@ public final class Constants {
 
 	public final static String ReviewQuestionDir = "review-question";
 
+	public final static String ReviewExpertDir = "review-expert";
+
 	public static class UserSource {
 
 		public final static Integer SystemAdd = 1; //系统录入

@@ -8,7 +8,6 @@
 		<table id="reviewClassList" style="width: 700px; height: 300px">
 			<thead>
 				<tr>
-					
 					<th field="classId" hidden="hidden">编号</th>
 					<th field="title" width="50">题库名称</th>
 					<th field="sortId" width="50">排序ID</th>
