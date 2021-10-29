@@ -399,10 +399,10 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		List<ReviewUserEntity> reviewUserList = this.findHql("from ReviewUserEntity where mobilePhone=?", new Object[]{reviewUser.getMobilePhone()});
 		JSONObject jsonObject = new JSONObject();
 
-//		if (CollectionUtils.isEmpty(reviewUserList)) {
+//		if(CollectionUtils.isEmpty(reviewUserList)) {
 //			logger.warn("register failed, mobilephone" + reviewUser.getMobilePhone() + " not exists");
 //			jsonObject.put("code", 1000);
-//			jsonObject.put("msg", "不是系统测评用户");
+//			jsonObject.put("msg", "不是该项目测评用户");
 //			return jsonObject;
 //		}
 
@@ -432,10 +432,13 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		if (!flag) {
 			jsonObject.put("code", 1000);
 			jsonObject.put("msg", "用户没有该项目测评权限，请联系管理员");
+			return jsonObject;
 		}
+
 		if (StringUtils.isBlank(reviewUserEntity.getGroupId())) { //设置默认用户组
 			reviewUserEntity.setGroupId("1");
 		}
+
 		if (StringUtils.isBlank(reviewUserEntity.getUserId())) {
 			reviewUserEntity.setCreateTime(new Date());
 			reviewUserEntity.setUpdateTime(reviewUserEntity.getUpdateTime());

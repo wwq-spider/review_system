@@ -30,17 +30,16 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
     @Autowired
     private ReviewClassService reviewClassService;
 
-    @Autowired
-    private ReviewUserService reviewUserService;
-
     private TreeMap<String, String> getBaseHeader() {
         TreeMap<String, String> headerAlias = new TreeMap<>();
         headerAlias.put("00_姓名", "姓名");
-        headerAlias.put("00_真实姓名", "真实姓名");
-        headerAlias.put("00_性别", "性别");
-        headerAlias.put("00_年龄", "年龄");
-        headerAlias.put("00_手机号", "手机号");
-        headerAlias.put("00_完成时间", "完成时间");
+        headerAlias.put("01_真实姓名", "真实姓名");
+        headerAlias.put("02_性别", "性别");
+        headerAlias.put("03_年龄", "年龄");
+        headerAlias.put("04_手机号", "手机号");
+        headerAlias.put("05_完成时间", "完成时间");
+        headerAlias.put("06_是否生病", "是否生病");
+        headerAlias.put("07_具体描述", "具体描述");
         return headerAlias;
     }
 
@@ -127,18 +126,19 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
     private Map<String, Object> geneUserRow(ReviewQuestionAnswerVO answerQuestion, TreeMap<String, String> headerAlias) {
         Map<String, Object> userClassMap = new HashMap<>();
         userClassMap.put("00_姓名", answerQuestion.getUserName());
-        userClassMap.put("00_真实姓名", answerQuestion.getRealName());
-        userClassMap.put("00_性别", "1".equals(answerQuestion.getSex()) ? "男":"女");
-        userClassMap.put("00_年龄", answerQuestion.getAge());
-        userClassMap.put("00_手机号", answerQuestion.getMobilePhone());
-        userClassMap.put("00_完成时间", answerQuestion.getCreateTime());
-
+        userClassMap.put("01_真实姓名", answerQuestion.getRealName());
+        userClassMap.put("02_性别", "1".equals(answerQuestion.getSex()) ? "男":"女");
+        userClassMap.put("03_年龄", answerQuestion.getAge());
+        userClassMap.put("04_手机号", answerQuestion.getMobilePhone());
+        userClassMap.put("05_完成时间", answerQuestion.getCreateTime());
+        userClassMap.put("06_是否生病","");
+        userClassMap.put("07_具体描述","");
         if(StringUtils.isNotBlank(answerQuestion.getExtra())) {
             JSONObject extraObj = JSONObject.parseObject(answerQuestion.getExtra());
             if (extraObj.containsKey("isSick")) {
-                userClassMap.put("00_是否生病", "1".equals(extraObj.getString("isSick")) ? "是" : "否");
+                userClassMap.put("06_是否生病", "1".equals(extraObj.getString("isSick")) ? "是" : "否");
                 if (extraObj.containsKey("sickDesc")) {
-                    userClassMap.put("00_具体描述", extraObj.getString("sickDesc"));
+                    userClassMap.put("07_具体描述", extraObj.getString("sickDesc"));
                 }
             }
         }
