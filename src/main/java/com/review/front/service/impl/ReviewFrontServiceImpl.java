@@ -416,6 +416,10 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 
 		try {
 			MyBeanUtils.copyBean2Bean(reviewUserEntity, reviewUser);
+			//存储用户额外信息
+			if (!reviewUser.getExtraObj().isEmpty()) {
+				reviewUserEntity.setExtra(com.alibaba.fastjson.JSONObject.toJSONString(reviewUser.getExtraObj()));
+			}
 		} catch (Exception e) {
 			logger.error("copyBean2Bean error, ", e);
 			jsonObject.put("code", 500);

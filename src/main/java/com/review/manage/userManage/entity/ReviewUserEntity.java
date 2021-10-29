@@ -1,18 +1,14 @@
 package com.review.manage.userManage.entity;
-
 import java.io.Serializable;
 import java.util.*;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
 import org.hibernate.annotations.GenericGenerator;
 import org.jeecgframework.poi.excel.annotation.Excel;
-
 import com.review.manage.report.vo.ReportVO;
 import com.review.manage.variate.vo.VariateVO;
 
@@ -58,6 +54,12 @@ public class ReviewUserEntity implements Serializable {
 	private Date createTime;
 
 	private Date updateTime;
+	/**
+	 * 扩展字段
+	 */
+	private String extra;
+
+	private Map<String, Object> extraObj = new HashMap<>();
 
 	private transient Long projectId;
 
@@ -210,5 +212,23 @@ public class ReviewUserEntity implements Serializable {
 
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	@Column(name = "extra")
+	public String getExtra() {
+		return extra;
+	}
+
+	public void setExtra(String extra) {
+		this.extra = extra;
+	}
+
+	@Transient
+	public Map<String, Object> getExtraObj() {
+		return extraObj;
+	}
+
+	public void setExtraObj(Map<String, Object> extraObj) {
+		this.extraObj = extraObj;
 	}
 }

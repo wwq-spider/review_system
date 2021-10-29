@@ -94,7 +94,7 @@ public class ReviewExpertController extends BaseController {
 
 	/**
 	 * 添加测评专家模块
-	 * 
+	 *
 	 * @param reviewExpert
 	 * @return
 	 */
@@ -163,6 +163,18 @@ public class ReviewExpertController extends BaseController {
 		systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
 		j.setMsg(message);
 		return j;
+	}
+
+	/**
+	 * 日历设置
+	 * @param expertCalendar
+	 * @return
+	 */
+	@RequestMapping(params = "toCalendarSet")
+	public ModelAndView toCalendarSet(ReviewExpertCalendarVO expertCalendar) {
+		ModelAndView modelAndView = new ModelAndView("review/manage/expert/expertCalendar");
+		modelAndView.addObject("expertCalendar", expertCalendar);
+		return modelAndView;
 	}
 
 	/**

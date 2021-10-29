@@ -105,9 +105,8 @@
                         if (!rec.id) {
                             return '';
                         }
-                        var href = '';
-                        href += "[<a href='#' onclick=delObj('reviewExpertController.do?del&id=" + rec.id + "','reviewExpertList')>";
-                        href += "删除</a>]";
+                        let href = "[<a href='#' onclick=delObj('reviewExpertController.do?del&id=" + rec.id + "','reviewExpertList')>删除</a>]&nbsp;&nbsp;";
+                        href += "[<a href='#' onclick=\"createdetailwindow('专家日历','reviewExpertController.do?toCalendarSet&id=" + rec.id + "',800,700)\" >日历设置</a>]";
                         return href;
                     }
                 }]],

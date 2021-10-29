@@ -2,6 +2,7 @@ package com.review.manage.question.service.impl;
 
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
+import com.alibaba.fastjson.JSONObject;
 import com.review.front.entity.ReviewReportResultEntity;
 import com.review.manage.question.service.ReviewQuestionAnswerServiceI;
 import com.review.manage.question.vo.ReviewQuestionAnswerVO;
@@ -131,6 +132,17 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
         userClassMap.put("00_年龄", answerQuestion.getAge());
         userClassMap.put("00_手机号", answerQuestion.getMobilePhone());
         userClassMap.put("00_完成时间", answerQuestion.getCreateTime());
+
+        if(StringUtils.isNotBlank(answerQuestion.getExtra())) {
+            JSONObject extraObj = JSONObject.parseObject(answerQuestion.getExtra());
+            if (extraObj.containsKey("isSick")) {
+                userClassMap.put("00_是否生病", "1".equals(extraObj.getString("isSick")) ? "是" : "否");
+                if (extraObj.containsKey("sickDesc")) {
+                    userClassMap.put("00_具体描述", extraObj.getString("sickDesc"));
+                }
+            }
+        }
+
         List<ReviewReportResultEntity> reportResultList = reviewClassService.findHql("from ReviewReportResultEntity where resultId=? order by resultType asc",
                 new Object[]{answerQuestion.getResultId()});
         //导出报告因子得分
@@ -158,6 +170,7 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
                         "       u.age                       age,\n" +
                         "       u.mobile_phone              mobilePhone,\n" +
                         "       u.group_id                  groupId,\n" +
+                        "       u.extra                     extra,\n" +
                         "       q.question_num              questionNum,\n" +
                         "       concat(q.question_num, '.', q.content)              as content,\n" +
                         "       q.sel_code                                           selCode,\n" +

@@ -46,6 +46,8 @@ public class ReviewQuestionAnswerVO implements Serializable {
     @Excel(exportName="创建时间", exportConvertSign = 0, exportFieldWidth = 20, importConvertSign = 0)
     private String createTime;
 
+    private String extra;
+
     public String getClassId() {
         return classId;
     }
@@ -164,5 +166,13 @@ public class ReviewQuestionAnswerVO implements Serializable {
 
     public void setRealName(String realName) {
         this.realName = realName;
+    }
+
+    public String getExtra() {
+        return extra;
+    }
+
+    public void setExtra(String extra) {
+        this.extra = extra;
     }
 }
