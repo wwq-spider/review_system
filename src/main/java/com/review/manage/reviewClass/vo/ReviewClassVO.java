@@ -1,4 +1,5 @@
 package com.review.manage.reviewClass.vo;
+import org.jeecgframework.core.common.model.json.DataGrid;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 public class ReviewClassVO {
@@ -24,6 +25,8 @@ public class ReviewClassVO {
 	private CommonsMultipartFile contentImg;
 
 	private Integer type;
+
+	private DataGrid dataGrid;
 
 	public java.lang.String getClassId() {
 		return classId;
@@ -111,5 +114,13 @@ public class ReviewClassVO {
 
 	public void setClassDesc(String classDesc) {
 		this.classDesc = classDesc;
+	}
+
+	public DataGrid getDataGrid() {
+		return dataGrid;
+	}
+
+	public void setDataGrid(DataGrid dataGrid) {
+		this.dataGrid = dataGrid;
 	}
 }

@@ -1,29 +1,19 @@
 package com.review.manage.reviewClass.service.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.review.common.CommonUtils;
 import com.review.common.Constants;
-import com.review.common.OssUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-import org.jeecgframework.core.common.model.json.DataGrid;
-import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
-import org.jeecgframework.core.util.ContextHolderUtils;
-import org.jeecgframework.core.util.MyBeanUtils;
-import org.jeecgframework.core.util.UUIDGenerator;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.review.manage.reviewClass.entity.ReviewClassEntity;
 import com.review.manage.reviewClass.service.ReviewClassService;
 import com.review.manage.reviewClass.vo.ReviewClassVO;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.apache.commons.lang.StringUtils;
+import org.jeecgframework.core.common.model.json.DataGrid;
+import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
+import org.jeecgframework.core.util.MyBeanUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service("reviewClassService")
 @Transactional

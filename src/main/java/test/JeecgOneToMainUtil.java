@@ -3,6 +3,9 @@ package test;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import org.jeecgframework.codegenerate.generate.onetomany.CodeGenerateOneToMany;
 import org.jeecgframework.codegenerate.pojo.onetomany.CodeParamEntity;
 import org.jeecgframework.codegenerate.pojo.onetomany.SubTableEntity;
@@ -20,6 +23,9 @@ public class JeecgOneToMainUtil {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+
+		DateTime dateTime = DateUtil.offsetDay(new DateTime("2021-11-22 00:00:00", DatePattern.NORM_DATETIME_FORMAT), 128);
+
 		//第一步：设置主表
 		CodeParamEntity codeParamEntityIn = new CodeParamEntity();
 		codeParamEntityIn.setTableName("jeecg_order_main");//主表[表名]

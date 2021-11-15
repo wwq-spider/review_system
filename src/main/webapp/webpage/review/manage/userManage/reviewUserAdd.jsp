@@ -19,7 +19,22 @@
 				<span class="Validform_checktip">用户名范围在2~10位字符</span>
 			</c:if></td>
 		</tr>
-
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					性别:
+				</label>
+			</td>
+			<td class="value">
+				<input  name="sex" type="radio"
+					   <c:if test="${user.sex == '1'}">checked="checked"</c:if>
+					   value="1">男</input>
+				<input name="sex" type="radio"
+					   <c:if test="${user.sex == '2'}">checked="checked"</c:if>
+					   value="2">女</input>
+				<span class="Validform_checktip" id="sexTip"></span>
+			</td>
+		</tr>
 		<tr>
 			<td align="right" width="10%" nowrap><label class="Validform_label"> 用户组: </label></td>
 			<td class="value" width="10%">

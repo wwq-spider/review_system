@@ -173,7 +173,7 @@ public class ReviewClassController extends BaseController {
 		try {
 			reviewClassService.publishClass(classId, pubType);
 			if("0".equals(pubType)) {
-				ajax.setMsg("停止成功!");
+				ajax.setMsg("下线成功!");
 			} else if("1".equals(pubType)) {
 				ajax.setMsg("发布成功!");
 			}

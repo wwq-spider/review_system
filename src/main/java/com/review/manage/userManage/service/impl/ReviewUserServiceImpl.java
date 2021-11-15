@@ -70,6 +70,12 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 		sb.append("   u.user_name userName,");
 		sb.append("   u.real_Name realName,");
 		sb.append("   u.user_id id, ");
+		sb.append("   u.age age, ");
+		sb.append("   u.mobile_phone mobilePhone, ");
+		sb.append("   DATE_FORMAT(u.`create_time`, '%Y-%m-%e %H:%i:%S') AS createTime, ");
+		sb.append("   DATE_FORMAT(u.`update_time`, '%Y-%m-%e %H:%i:%S') AS updateTime, ");
+		sb.append("   u.openid openid, ");
+		sb.append("   (case u.sex when '1' then '男' else '女' end) as sex, ");
 		sb.append("   u.group_id groupId ");
 		sb.append(" FROM review_user u  ");
 		sb.append(" WHERE 1=1");
@@ -82,7 +88,7 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 		if(StringUtils.isNotBlank(groupId)) {
 			sb.append(" AND group_id='"+groupId+"'");
 		}
-		sb.append(" ORDER BY u.user_id desc");
+		sb.append(" ORDER BY u.update_time desc");
 		return this.findForJdbc(sb.toString(), page, rows);
 	}
 
@@ -116,8 +122,8 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 		if(!"".equals(StringUtils.trimToEmpty(reviewUser.getUserId()))) { //修改用户信息
 			user = this.get(ReviewUserEntity.class, reviewUser.getUserId());
 			try {
-				MyBeanUtils.copyBean2Bean(user, reviewUser);
-				reviewUser.setUpdateTime(new Date());
+				MyBeanUtils.copyBeanNotNull2Bean(reviewUser, user);
+				user.setUpdateTime(new Date());
 				this.saveOrUpdate(user);
 			} catch (Exception e) {
 				throw new RuntimeException(e);

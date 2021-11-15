@@ -22,7 +22,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/reviewFront/expert")
-public class ReviewFrontExpertController extends BaseController {
+public class ReviewExpertController extends BaseController {
 
     @Autowired
     private ReviewExpertServiceI reviewExpertService;
