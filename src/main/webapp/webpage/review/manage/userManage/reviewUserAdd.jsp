@@ -38,10 +38,9 @@
 		<tr>
 			<td align="right" width="10%" nowrap><label class="Validform_label"> 用户组: </label></td>
 			<td class="value" width="10%">
-			<select  id="groupId" name="groupId">
-				<option value="" selected="selected">--请选择--</option>
+			<select  id="groupId" name="groupId" multiple="true" style="height: 200px;">
 				<c:forEach items="${groupList }" var="userGroup">
-				<option <c:if test="${userGroup.id == user.groupId}"> selected</c:if>  value="${userGroup.id }">${userGroup.departname }</option>
+					<option <c:if test="${fn:contains(user.groupId, userGroup.id)}"> selected</c:if>  value="${userGroup.id }">${userGroup.departname }</option>
 				</c:forEach>
 			</select>
 			<span class="Validform_checktip" id="groupIdTip"></span>

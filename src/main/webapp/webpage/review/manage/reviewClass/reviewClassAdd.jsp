@@ -15,32 +15,58 @@
 		<tr>
 			<td align="right"><label class="Validform_label">
 				排序ID: </label></td>
-			<td class="value"><input datatype="n" id="sortId" name="sortId" value="${reviewClass.sortId }"
+			<td class="value" colspan="3"><input datatype="n" id="sortId" name="sortId" value="${reviewClass.sortId }"
 									 type="text" style="width: 300px" class="inputxt"><span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">排序ID</label></td>
 		</tr>
 		<tr>
 			<td align="right"><label class="Validform_label">
 				量表名称: </label></td>
-			<td class="value"><input datatype="*" id="title" name="title" value="${reviewClass.title }"
+			<td class="value" colspan="3"><input datatype="*" id="title" name="title" value="${reviewClass.title }"
 									 type="text" style="width: 300px" class="inputxt"><span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">量表名称</label></td>
 		</tr>
 		<tr>
 			<td align="right"><label class="Validform_label">
 				量表简介: </label></td>
-			<td class="value">
+			<td class="value" colspan="3">
 				<textarea rows="3" cols="80" id="classDesc" name="classDesc" datatype="*">${reviewClass.classDesc }</textarea>
 		</tr>
 		<tr>
 			<td align="right"><label class="Validform_label">
 				引导语: </label></td>
-			<td class="value">
+			<td class="value" colspan="3">
 				<textarea rows="3" cols="80" id="guide" name="guide" datatype="*">${reviewClass.guide }</textarea>
 		</tr>
 		<tr>
+			<td align="right">
+				<label class="Validform_label">是否计费:</label>
+			</td>
+			<td class="value" colspan="3">
+				<input name="charge" type="radio"
+						<c:if test="${reviewClass.charge == 0}">checked="checked"</c:if>
+						value="0">否</input>
+				<input name="charge" type="radio"
+					   <c:if test="${reviewClass.charge == 1}">checked="checked"</c:if>
+					   value="1">是</input>
+				<span class="Validform_checktip" id="chargeTip"></span>
+			</td>
+		</tr>
+		<tr id="chargeTr" <c:if test="${reviewClass.charge != 1}">style="display: none;"</c:if>>
+			<td align="right"><label class="Validform_label">
+				量表价格: </label></td>
+			<td class="value"><input id="orgPrice" name="orgPrice" value="${reviewClass.orgPrice }"
+									 type="number" style="width: 100px" class="inputxt"><span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">量表价格</label></td>
+			<td align="right"><label class="Validform_label">
+				优惠金额: </label></td>
+			<td class="value"><input id="dicountPrice" name="dicountPrice" value="${reviewClass.dicountPrice }"
+									 type="number" style="width: 100px" class="inputxt"><span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">优惠金额</label></td>
+		</tr>
+		<tr>
 			<td align="right"><label class="Validform_label">封面图片: </label></td>
-			<td class="value">
+			<td class="value" colspan="3">
 				<input type="file" name="contentImg" id="contentImg" onchange="previewImage(this,'content')" style="display: none"></input>
 				<div id="previewcontent">
 					<c:if test="${reviewClass.bannerImg != null && reviewClass.bannerImg != '' }">
@@ -84,6 +110,19 @@
 	<SCRIPT type="text/javascript"
 			src="plug-in/Validform/plugin/passwordStrength/passwordStrength-min.js"></SCRIPT>
 	<script type="text/javascript">
+
+		$(document).ready(function(){
+			$('input[type=radio][name=charge]').change(function() {
+				if (this.value == '1') {
+					$("#chargeTr").show()
+				} else if (this.value == '0') {
+					$("#chargeTr").hide()
+					$("#orgPrice").val(0)
+					$("#dicountPrice").val(0)
+				}
+			});
+		});
+
         let width = window.top.document.body.offsetWidth * 0.65;
 		var MAXWIDTH  = 100;
 		var MAXHEIGHT = 100;
@@ -336,6 +375,27 @@
 									$("#contentTip").text("通过信息验证");
 									$("#contentTip").attr("class", "Validform_checktip Validform_right");
 								}
+
+								let charge = $('input[type=radio][name=charge]:checked').val()
+								if($.trim(charge) == "") {
+									$("#chargeTip").text("请选择是否计费");
+									$("#chargeTip").attr("class","Validform_checktip Validform_wrong");
+									return false;
+								} else {
+									$("#chargeTip").text("通过信息验证");
+									$("#chargeTip").attr("class", "Validform_checktip Validform_right");
+								}
+
+								let orgPrice = $("#orgPrice").val()
+								if($.trim(orgPrice) == "") {
+									$("#orgPrice").val("0")
+								}
+
+								let dicountPrice = $("#dicountPrice").val()
+								if($.trim(dicountPrice) == "") {
+									$("#dicountPrice").val("0")
+								}
+
 								return true;
 							},
 							success : function(data) {
