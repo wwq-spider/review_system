@@ -11,4 +11,14 @@ public interface IOrderService {
      * @return
      */
     PreOrderVO createPrePayOrder(ReviewOrderVO reviewOrder);
+
+    /**
+     * 更新订单状态
+     * @param payId
+     * @param status
+     * @param payResultCode
+     * @param payResultMsg
+     * @return
+     */
+    Integer updateStatusByPayId(String payId, Integer status, String payResultCode, String payResultMsg);
 }

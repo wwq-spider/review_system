@@ -91,6 +91,14 @@ public class OrderServiceImpl implements IOrderService {
         return null;
     }
 
+    @Override
+    public Integer updateStatusByPayId(String payId, Integer status, String payResultCode, String payResultMsg) {
+        Integer updNum = reviewOrderService.executeSql("update review_order set status=?, pay_result_code=?, pay_result_msg=? where pay_id=? and status != ?",
+                new Object[]{status, payId, payResultCode, payResultMsg, status});
+        logger.info("updateStatusByPayId result: {}", updNum);
+        return updNum;
+    }
+
     public static void main(String[] args) {
         //System.out.println(IdUtil.fastSimpleUUID());
         //System.out.println(IdUtil.fastUUID());

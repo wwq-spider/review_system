@@ -37,6 +37,10 @@ public class ReviewOrderEntity implements java.io.Serializable {
 	private Long orderNo;
 	/**订单状态*/
 	private Integer status;
+	/**支付状态码*/
+	private String payResultCode;
+	/**支付状态描述*/
+	private String payResultMsg;
 	/**外部支付id*/
 	private String payId;
 	/**支付方式*/
@@ -187,6 +191,27 @@ public class ReviewOrderEntity implements java.io.Serializable {
 	public void setStatus(Integer status){
 		this.status = status;
 	}
+
+	@Column(name ="PAY_RESULT_CODE",nullable=true,length=50)
+	public String getPayResultCode() {
+		return payResultCode;
+	}
+
+	public ReviewOrderEntity setPayResultCode(String payResultCode) {
+		this.payResultCode = payResultCode;
+		return this;
+	}
+
+	@Column(name ="PAY_RESULT_MSG",nullable=true, length = 100)
+	public String getPayResultMsg() {
+		return payResultMsg;
+	}
+
+	public ReviewOrderEntity setPayResultMsg(String payResultMsg) {
+		this.payResultMsg = payResultMsg;
+		return this;
+	}
+
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  外部支付id
