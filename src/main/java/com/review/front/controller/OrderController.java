@@ -1,4 +1,6 @@
 package com.review.front.controller;
+
+import cn.hutool.core.io.IoUtil;
 import com.review.common.CommonUtils;
 import com.review.common.Constants;
 import com.review.common.PayUtils;
@@ -24,8 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.Map;
 
 /**
@@ -74,19 +74,11 @@ public class OrderController extends BaseController {
     public void wxPayNotify(HttpServletRequest request, HttpServletResponse response) throws Exception{
         BufferedOutputStream out = null;
         try {
-
             out = new BufferedOutputStream(response.getOutputStream());
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
-            String line = null;
-            StringBuilder sb = new StringBuilder();
-            while((line = br.readLine())!=null){
-                sb.append(line);
-            }
-            br.close();
-            //sb为微信返回的xml
-            String notityXml = sb.toString();
+            String notityXml = IoUtil.read(request.getInputStream(), "UTF-8");
             String resXml = "";
+
             logger.info("接收到的报文：" + notityXml);
 
             Map map = PayUtils.doXMLParse(notityXml);

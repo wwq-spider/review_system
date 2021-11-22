@@ -8,6 +8,7 @@
           <deploymentDescriptor name="weblogic.xml" url="file://$MODULE_DIR$/src/main/webapp/WEB-INF/weblogic.xml" />
         </descriptors>
         <webroots>
+          <root url="file://$MODULE_DIR$/src/main/webapp/WEB-INF/libs" relative="WEB-INF/lib" />
           <root url="file://$MODULE_DIR$/src/main/webapp" relative="/" />
         </webroots>
       </configuration>
@@ -17,9 +18,9 @@
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
         <datasource-mapping>
+          <factory-entry name="Entities" />
           <factory-entry name="review_system" />
         </datasource-mapping>
-        <naming-strategy-map />
       </configuration>
     </facet>
     <facet type="Spring" name="Spring">
@@ -36,10 +37,29 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: org.apache.poi:poi:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml-schemas:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlbeans:xmlbeans:2.3.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.poi:poi-scratchpad:3.9" level="project" />
+    <orderEntry type="library" name="Maven: cn.hutool:hutool-poi:4.6.13" level="project" />
+    <orderEntry type="library" name="Maven: cn.hutool:hutool-core:4.6.13" level="project" />
+    <orderEntry type="library" name="Maven: cn.hutool:hutool-log:4.6.13" level="project" />
+    <orderEntry type="library" name="Maven: com.aliyun.oss:aliyun-sdk-oss:3.10.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.4.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.4.1" level="project" />
+    <orderEntry type="library" name="Maven: org.jdom:jdom2:2.0.6" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.jettison:jettison:1.1" level="project" />
+    <orderEntry type="library" name="Maven: stax:stax-api:1.0.1" level="project" />
+    <orderEntry type="library" name="Maven: com.aliyun:aliyun-java-sdk-core:3.4.0" level="project" />
+    <orderEntry type="library" name="Maven: com.aliyun:aliyun-java-sdk-ram:3.0.0" level="project" />
+    <orderEntry type="library" name="Maven: com.aliyun:aliyun-java-sdk-sts:3.0.0" level="project" />
+    <orderEntry type="library" name="Maven: com.aliyun:aliyun-java-sdk-ecs:4.2.0" level="project" />
+    <orderEntry type="library" name="Maven: com.aliyun:aliyun-java-sdk-kms:2.7.0" level="project" />
     <orderEntry type="module-library">
       <library name="Maven: jxl:jxl:2.4.2">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/jxl-2.4.2.jar!/" />
+          <root url="jar://$MODULE_DIR$/src/main/webapp/WEB-INF/libs/jxl-2.4.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -140,12 +160,13 @@
     <orderEntry type="library" name="Maven: org.hibernate:hibernate-validator:4.2.0.Final" level="project" />
     <orderEntry type="library" name="Maven: javax.validation:validation-api:1.0.0.GA" level="project" />
     <orderEntry type="library" name="Maven: org.hibernate:hibernate-validator-annotation-processor:4.2.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.poi:poi:3.9" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml:3.9" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml-schemas:3.9" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.xmlbeans:xmlbeans:2.3.0" level="project" />
-    <orderEntry type="library" name="Maven: stax:stax-api:1.0.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.poi:poi-scratchpad:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.poi:poi:3.17" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-collections4:4.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml:3.17" level="project" />
+    <orderEntry type="library" name="Maven: com.github.virtuald:curvesapi:1.04" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml-schemas:3.17" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlbeans:xmlbeans:2.6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.poi:poi-scratchpad:3.17" level="project" />
     <orderEntry type="library" name="Maven: org.openoffice:juh:3.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.openoffice:ridl:3.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.openoffice:unoil:3.2.1" level="project" />
