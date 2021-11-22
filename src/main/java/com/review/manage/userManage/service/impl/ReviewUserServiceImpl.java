@@ -80,13 +80,13 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 		sb.append(" FROM review_user u  ");
 		sb.append(" WHERE 1=1");
 		if(!"".equals(StringUtils.trimToEmpty(userName))) {
-			sb.append(" AND user_name='"+userName+"'");
+			sb.append(" AND user_name like '%").append(userName).append("%'");
 		}
 		if(!"".equals(StringUtils.trimToEmpty(realName))) {
-			sb.append(" AND real_name='"+realName+"'");
+			sb.append(" AND real_name like '%").append(realName).append("%'");
 		}
 		if(StringUtils.isNotBlank(groupId)) {
-			sb.append(" AND group_id='"+groupId+"'");
+			sb.append(" and find_in_set('").append(groupId).append("', group_id)");
 		}
 		sb.append(" ORDER BY u.update_time desc");
 		return this.findForJdbc(sb.toString(), page, rows);

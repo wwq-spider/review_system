@@ -148,4 +148,28 @@ public class ReviewSubjectController extends BaseController {
 		model.addObject("classList", classList);
 		return model;
 	}
+
+	/**
+	 * 发布\下线专题
+	 * @param request
+	 */
+	@RequestMapping(params="publish")
+	@ResponseBody
+	public AjaxJson publish(HttpServletRequest request) {
+		AjaxJson ajax =  new AjaxJson();
+		String subjectId = request.getParameter("subjectId");
+		String pubType = request.getParameter("pubType");
+		try {
+			reviewSubjectService.publish(Long.valueOf(subjectId), pubType);
+			if("0".equals(pubType)) {
+				ajax.setMsg("下线成功!");
+			} else if("1".equals(pubType)) {
+				ajax.setMsg("发布成功!");
+			}
+		} catch (Exception e) {
+			ajax.setMsg("操作失败!");
+			logger.error("publish error, ", e);
+		}
+		return ajax;
+	}
 }

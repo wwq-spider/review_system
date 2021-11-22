@@ -15,6 +15,8 @@ import com.review.manage.report.service.ReportService;
 import com.review.manage.reviewClass.entity.ReviewClassEntity;
 import com.review.manage.reviewClass.service.ReviewClassService;
 import com.review.manage.reviewClass.vo.ReviewClassVO;
+import com.review.manage.subject.service.ReviewSubjectServiceI;
+import com.review.manage.subject.vo.ReviewSubjectVO;
 import com.review.manage.userManage.entity.ReviewUserEntity;
 import com.review.manage.userManage.service.ReviewUserService;
 import net.sf.json.JSONObject;
@@ -59,6 +61,9 @@ public class ReviewController extends BaseController{
 
 	@Autowired
 	private ReportService reportService;
+
+	@Autowired
+	private ReviewSubjectServiceI reviewSubjectServiceI;
 	
 	/**
 	 * 跳到登录页面
@@ -586,16 +591,15 @@ public class ReviewController extends BaseController{
 	/**
 	 * 获取测评专题分类
 	 * @param response
-	 * @param reviewClass
+	 * @param reviewSubject
 	 */
 	@RequestMapping(value = "getReviewSubjectClass", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public void getReviewSubjectClass(HttpServletResponse response, @RequestBody ReviewClassVO reviewClass) {
+	public void getReviewSubjectClass(HttpServletResponse response, @RequestBody ReviewSubjectVO reviewSubject) {
 		JSONObject json = new JSONObject();
-		Long projectId = reviewClass.getProjectId();
-		List<ReviewClassVO> reviewClassList = reviewClassService.getReviewClassByProjectId(projectId);
+		List<ReviewSubjectVO> reviewSubjectList = reviewSubjectServiceI.getReviewSubjectClass(reviewSubject);
 		json.put("code", 200);
-		json.put("rows", reviewClassList);
+		json.put("rows", reviewSubjectList);
 		json.put("msg", "查询成功");
 		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
 	}

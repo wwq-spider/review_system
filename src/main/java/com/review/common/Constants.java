@@ -211,9 +211,8 @@ public final class Constants {
 		public final static Integer Register = 3;  //前端注册
 	}
 
-	//发布状态
-	public final static String StatusPublish = "1";
 	//下线状态
-	public final static String StatusOffline = "0";
-
+	public final static Integer StatusOffline = 0;
+	//发布状态
+	public final static Integer StatusPublish = 1;
 }

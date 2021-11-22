@@ -96,17 +96,19 @@ public class ReviewSubjectServiceImpl extends CommonServiceImpl implements Revie
         sb.append("   c.`status`,");
         sb.append("   c.`type`,");
         sb.append("   c.`title`,");
+        sb.append("   c.`charge`,");
+        sb.append("   c.`org_price` orgPrice,");
+        sb.append("   c.`dicount_price` dicountPrice,");
         sb.append("   c.`class_desc` classDesc,");
-        sb.append("   c.`guide` ");
+        sb.append("   c.`guide`, ");
         sb.append("   s.`subject_name` subjectName, ");
-        sb.append("   s.`subject_desc` subjectDesc, ");
-        sb.append(" FROM  review_class c inner join review_subject_class sc on c.class_id=sc.class_id ");
-        sb.append("   inner join review_subject s on sc.subject_id=s.id");
-        sb.append(" where c.status=").append(Constants.StatusPublish);
-        sb.append("   and s.status=").append(Constants.StatusPublish);
+        sb.append("   s.`id` subjectId ");
+        sb.append(" FROM  review_class c INNER JOIN review_subject_class sc on c.class_id=sc.class_id ");
+        sb.append("   INNER JOIN review_subject s on sc.subject_id=s.id");
+        sb.append(" WHERE c.status=").append(Constants.StatusPublish);
+        //sb.append("   and s.status=").append(Constants.StatusPublish);
 
         Map<String, String> paramMap = new HashMap<>();
-
         if (reviewSubject.getId() != null && reviewSubject.getId() > 0) {
             sb.append(" and s.id=:subjectId").append(reviewSubject.getId());
             paramMap.put("subjectId", reviewSubject.getId().toString());
@@ -120,15 +122,22 @@ public class ReviewSubjectServiceImpl extends CommonServiceImpl implements Revie
         sb.append(pageSize);
 
         List<ReviewClassVO> resultList = this.getObjectList(sb.toString(), paramMap, ReviewClassVO.class);
-
-        Map<String, ReviewSubjectVO> resultMap = new HashMap<>();
-
+        Map<Long, ReviewSubjectVO> resultMap = new HashMap<>();
         for (ReviewClassVO reviewClass : resultList) {
-            if () {
-
+            ReviewSubjectVO subject = resultMap.get(reviewClass.getSubjectId());
+            if (subject == null) {
+                subject = new ReviewSubjectVO();
+                subject.setSubjectName(reviewClass.getSubjectName());
+                resultMap.put(reviewClass.getSubjectId(), subject);
             }
+            subject.getClassList().add(reviewClass);
         }
+        return new ArrayList<>(resultMap.values());
+    }
 
-        return null;
+    @Override
+    public void publish(Long subjectId, String pubType) {
+        String sql = "update review_subject set status=? where id=?";
+        this.executeSql(sql, new Object[]{Integer.parseInt(pubType), subjectId});
     }
 }

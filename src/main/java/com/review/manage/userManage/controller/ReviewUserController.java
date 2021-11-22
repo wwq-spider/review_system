@@ -110,7 +110,7 @@ public class ReviewUserController extends BaseController{
 			
 		} catch (Exception e) {
 			ajax.setMsg("操作失败");
-			e.printStackTrace();
+			logger.error("addorupdate error, ", e);
 		}
 		return ajax;
 	}
@@ -169,7 +169,7 @@ public class ReviewUserController extends BaseController{
 			ajax.setMsg("删除成功");
 		} catch (Exception e) {
 			ajax.setMsg("删除失败");
-			e.printStackTrace();
+			logger.error("delUser error, ", e);
 		}
 		return ajax;
 	}
@@ -210,8 +210,7 @@ public class ReviewUserController extends BaseController{
 		} catch (Exception e) {
 			j.setMsg("导入失败！");
 			logger.error(ExceptionUtil.getExceptionMessage(e));
-			e.printStackTrace();
-		} 
+		}
 		 return j;
 	}
 	
@@ -249,7 +248,6 @@ public class ReviewUserController extends BaseController{
 			}
 		} catch (Exception e) {
 			logger.error(ExceptionUtil.getExceptionMessage(e));
-			e.printStackTrace();
 		} finally {
 			IOUtils.closeQuietly(bis);
 			IOUtils.closeQuietly(bos);		

@@ -19,4 +19,11 @@ public interface ReviewSubjectServiceI extends CommonService{
      * @return
      */
     List<ReviewSubjectVO> getReviewSubjectClass(ReviewSubjectVO reviewSubject);
+
+    /**
+     * 发布专题
+     * @param subjectId
+     * @param pubType
+     */
+    void publish(Long subjectId, String pubType);
 }

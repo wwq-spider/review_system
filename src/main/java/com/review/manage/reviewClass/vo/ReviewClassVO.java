@@ -1,6 +1,7 @@
 package com.review.manage.reviewClass.vo;
 import org.jeecgframework.core.common.model.json.DataGrid;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import java.math.BigDecimal;
 
 public class ReviewClassVO {
 
@@ -27,6 +28,16 @@ public class ReviewClassVO {
 	private Integer type;
 
 	private DataGrid dataGrid;
+
+	private Long subjectId;
+
+	private String subjectName;
+
+	private Integer charge;
+
+	private String orgPrice;
+
+	private String dicountPrice;
 
 	public java.lang.String getClassId() {
 		return classId;
@@ -122,5 +133,45 @@ public class ReviewClassVO {
 
 	public void setDataGrid(DataGrid dataGrid) {
 		this.dataGrid = dataGrid;
+	}
+
+	public Long getSubjectId() {
+		return subjectId;
+	}
+
+	public void setSubjectId(Long subjectId) {
+		this.subjectId = subjectId;
+	}
+
+	public String getSubjectName() {
+		return subjectName;
+	}
+
+	public void setSubjectName(String subjectName) {
+		this.subjectName = subjectName;
+	}
+
+	public Integer getCharge() {
+		return charge;
+	}
+
+	public void setCharge(Integer charge) {
+		this.charge = charge;
+	}
+
+	public String getOrgPrice() {
+		return orgPrice;
+	}
+
+	public void setOrgPrice(String orgPrice) {
+		this.orgPrice = orgPrice;
+	}
+
+	public String getDicountPrice() {
+		return dicountPrice;
+	}
+
+	public void setDicountPrice(String dicountPrice) {
+		this.dicountPrice = dicountPrice;
 	}
 }

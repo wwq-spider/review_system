@@ -1,5 +1,6 @@
 package com.review.manage.reviewClass.entity; 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.*;
 
@@ -41,6 +42,12 @@ public class ReviewClassEntity implements Serializable{
     private java.lang.String createBy;
     @Column(name = "banner_img")
     private String bannerImg;
+    @Column(name = "charge")
+    private Integer charge;
+    @Column(name = "org_price")
+    private BigDecimal orgPrice;
+    @Column(name = "dicount_price")
+    private BigDecimal dicountPrice;
     
     public void setClassId(java.lang.String classId){  
         this.classId=classId;   
@@ -112,5 +119,29 @@ public class ReviewClassEntity implements Serializable{
 
     public void setClassDesc(String classDesc) {
         this.classDesc = classDesc;
+    }
+
+    public Integer getCharge() {
+        return charge;
+    }
+
+    public void setCharge(Integer charge) {
+        this.charge = charge;
+    }
+
+    public BigDecimal getOrgPrice() {
+        return orgPrice;
+    }
+
+    public void setOrgPrice(BigDecimal orgPrice) {
+        this.orgPrice = orgPrice;
+    }
+
+    public BigDecimal getDicountPrice() {
+        return dicountPrice;
+    }
+
+    public void setDicountPrice(BigDecimal dicountPrice) {
+        this.dicountPrice = dicountPrice;
     }
 }

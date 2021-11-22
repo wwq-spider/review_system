@@ -12,7 +12,7 @@
 					<th field="title" width="50">题库名称</th>
 					<th field="sortId" width="50">排序ID</th>
 					<th field="status" width="50">状态</th>
-					<th field="type" width="50">是否热门</th>
+<%--					<th field="type" width="50">是否热门</th>--%>
 					<th field="opt" width="150">操作</th>
 				</tr>
 			</thead>
@@ -33,7 +33,7 @@
 			var total = data.total;
 			var puburl = "";
 			var statusText = "";
-			let typetext = "";
+			//let typetext = "";
 
 			for(var i=0; i<data.rows.length; i++){
 				if(data.rows[i].status == 0) {
@@ -46,7 +46,7 @@
 					statusText = "已发布";
 				}
 
-				if(data.rows[i].type == 1) {
+				/*if(data.rows[i].type == 1) {
 					puburl += "[<a href=\"#\" onclick=\"publish('reviewClass.do?setUpHot&opt=2&classId="+
 							data.rows[i].classId+"','reviewClassList','置为热门')\">置为热门</a>]&nbsp;&nbsp;";
 					typetext = "否";
@@ -54,14 +54,14 @@
 					puburl += "[<a href=\"#\" onclick=\"publish('reviewClass.do?setUpHot&opt=1&classId="+
 							data.rows[i].classId+"','reviewClassList','取消热门')\">取消热门</a>]&nbsp;&nbsp;";
 					typetext = "是";
-				}
+				}*/
 
 				rows.push({
 					classId: data.rows[i].classId,
 					title: data.rows[i].title,
 					status: statusText,
 					sortId: data.rows[i].sortId,
-					type: typetext,
+					//type: typetext,
 					opt: "[<a href=\"#\" onclick=\"pubOrSave('题目设置','reviewClass.do?toAdd&classId="+data.rows[i].classId+"','reviewClassList',width,'100%')\">题目设置</a>]&nbsp;&nbsp;"+
 						  puburl +"[<a href=\"#\" onclick=\"delObj('reviewClass.do?del&classId="+data.rows[i].classId+"','删除')\">删除</a>]"
 				});

@@ -88,6 +88,9 @@ public class ReviewClassServiceImpl extends CommonServiceImpl implements ReviewC
 		sb.append("   c.`status`,");
 		sb.append("   c.`type`,");
 		sb.append("   c.`title`,");
+		sb.append("   c.`charge`,");
+		sb.append("   c.`org_price` orgPrice,");
+		sb.append("   c.`dicount_price` dicountPrice,");
 		sb.append("   c.`class_desc` classDesc,");
 		sb.append("   c.`guide` ");
 		sb.append(" FROM  ");

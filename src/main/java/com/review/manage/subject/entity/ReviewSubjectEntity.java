@@ -26,6 +26,8 @@ public class ReviewSubjectEntity implements java.io.Serializable {
 	private String subjectName;
 	/**专题描述*/
 	private String subjectDesc;
+	/**专题状态*/
+	private Integer status;
 	/**创建时间*/
 	private Date createTime;
 	/**更新时间*/
@@ -84,6 +86,20 @@ public class ReviewSubjectEntity implements java.io.Serializable {
 	public void setSubjectDesc(String subjectDesc){
 		this.subjectDesc = subjectDesc;
 	}
+
+	/**
+	 * 专题状态
+	 * @return
+	 */
+	@Column(name ="STATUS",nullable=true)
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
 	/**
 	 *方法: 取得java.util.Date
 	 *@return: java.util.Date  创建时间

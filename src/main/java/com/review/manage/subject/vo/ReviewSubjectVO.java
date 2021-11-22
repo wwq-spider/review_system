@@ -36,6 +36,8 @@ public class ReviewSubjectVO implements java.io.Serializable {
 	private String classIds;
 	/**分页查询*/
 	private DataGrid dataGrid;
+	/**专题状态*/
+	private Integer status;
 
 	private List<ReviewSubjectClassEntity> subjectClassList = new ArrayList<>();
 
