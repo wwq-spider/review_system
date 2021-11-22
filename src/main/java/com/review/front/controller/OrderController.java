@@ -1,10 +1,17 @@
 package com.review.front.controller;
 import com.review.common.CommonUtils;
+import com.review.common.Constants;
+import com.review.common.PayUtils;
+import com.review.common.WxAppletsUtils;
 import com.review.front.service.IOrderService;
 import com.review.front.vo.PreOrderVO;
 import com.review.manage.order.vo.ReviewOrderVO;
+import com.review.manage.userManage.entity.ReviewUserEntity;
 import net.sf.json.JSONObject;
 import org.jeecgframework.core.common.controller.BaseController;
+import org.jeecgframework.core.util.ContextHolderUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -12,7 +19,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Map;
 
 /**
  * 测评订单
@@ -20,6 +33,8 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("reviewFront/order")
 @Controller
 public class OrderController extends BaseController {
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private IOrderService orderService;
@@ -32,11 +47,68 @@ public class OrderController extends BaseController {
     @RequestMapping(value = "createPrePayOrder", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public void createPrePayOrder(HttpServletResponse response, @RequestBody ReviewOrderVO reviewOrder) {
+
         JSONObject json = new JSONObject();
+
+        ReviewUserEntity reviewUser = (ReviewUserEntity) ContextHolderUtils.getSession().getAttribute(Constants.REVIEW_LOGIN_USER);
+        reviewOrder.setUserId(reviewUser.getUserId());
+        reviewOrder.setOperator(reviewUser.getUserName());
+        reviewOrder.setGroupId(reviewUser.getGroupId());
+
         PreOrderVO preOrderVO = orderService.createPrePayOrder(reviewOrder);
         json.put("code", 200);
         json.put("data", preOrderVO);
         json.put("msg", "创建成功");
         CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+    }
+
+    /**
+     * 微信支付回调
+     * @param request
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "wxPayNotify", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void wxPayNotify(HttpServletRequest request, HttpServletResponse response) throws Exception{
+        BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+        String line = null;
+        StringBuilder sb = new StringBuilder();
+        while((line = br.readLine())!=null){
+            sb.append(line);
+        }
+        br.close();
+        //sb为微信返回的xml
+        String notityXml = sb.toString();
+        String resXml = "";
+        logger.info("接收到的报文：" + notityXml);
+
+        Map map = PayUtils.doXMLParse(notityXml);
+
+        String returnCode = (String) map.get("return_code");
+        if("SUCCESS".equals(returnCode)){
+            //验证签名是否正确
+            if(PayUtils.verify(PayUtils.createLinkString(map), (String)map.get("sign"), WxAppletsUtils.payKey, "utf-8")){
+                /**此处添加自己的业务逻辑代码start**/
+
+
+                /**此处添加自己的业务逻辑代码end**/
+
+                //通知微信服务器已经支付成功
+                resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
+                        + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
+            }
+        }else{
+            resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>"
+                    + "<return_msg><![CDATA[报文为空]]></return_msg>" + "</xml> ";
+        }
+        logger.info(resXml);
+        logger.info("微信支付回调数据结束");
+
+        BufferedOutputStream out = new BufferedOutputStream(
+                response.getOutputStream());
+        out.write(resXml.getBytes());
+        out.flush();
+        out.close();
     }
 }

@@ -12,6 +12,10 @@ public class ReviewOrderVO implements Serializable {
     private Long id;
     /**用户id*/
     private String userId;
+    /**微信openid*/
+    private String openid;
+    /**支付ip地址*/
+    private String ipAddr;
     /**测评量表id*/
     private String classId;
     /**量表名称*/
@@ -53,6 +57,24 @@ public class ReviewOrderVO implements Serializable {
 
     public String getUserId() {
         return userId;
+    }
+
+    public String getOpenid() {
+        return openid;
+    }
+
+    public ReviewOrderVO setOpenid(String openid) {
+        this.openid = openid;
+        return this;
+    }
+
+    public String getIpAddr() {
+        return ipAddr;
+    }
+
+    public ReviewOrderVO setIpAddr(String ipAddr) {
+        this.ipAddr = ipAddr;
+        return this;
     }
 
     public void setUserId(String userId) {

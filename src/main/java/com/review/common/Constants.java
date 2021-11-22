@@ -215,4 +215,22 @@ public final class Constants {
 	public final static Integer StatusOffline = 0;
 	//发布状态
 	public final static Integer StatusPublish = 1;
+
+	/**
+	 * 订单状态
+	 */
+	public final static class OrderStatus {
+		//新创建订单
+		public final static int CREATE = 0;
+		//生成预支付订单
+		public final static int PRE_PAY = 1;
+		//支付成功
+		public final static int SUCCESS = 2;
+		//取消支付
+		public final static int CANCEL = 3;
+		//支付失败
+		public final static int PAY_FAIL = 4;
+		//支付异常
+		public final static int PAY_ERR = 6;
+	}
 }

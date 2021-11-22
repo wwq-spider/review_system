@@ -31,6 +31,8 @@ public class PreOrderVO implements Serializable {
 
     private String signType;
 
+    private String packageStr;
+
     public String getPrePayID() {
         return prePayID;
     }
@@ -125,5 +127,14 @@ public class PreOrderVO implements Serializable {
 
     public void setSignType(String signType) {
         this.signType = signType;
+    }
+
+    public String getPackageStr() {
+        return packageStr;
+    }
+
+    public PreOrderVO setPackageStr(String packageStr) {
+        this.packageStr = packageStr;
+        return this;
     }
 }
