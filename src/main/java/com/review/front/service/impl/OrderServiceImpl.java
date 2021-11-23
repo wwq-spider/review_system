@@ -16,7 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderServiceImpl implements IOrderService {
@@ -92,9 +97,50 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
-    public Integer updateStatusByPayId(String payId, Integer status, String payResultCode, String payResultMsg) {
-        Integer updNum = reviewOrderService.executeSql("update review_order set status=?, pay_result_code=?, pay_result_msg=? where pay_id=? and status != ?",
-                new Object[]{status, payId, payResultCode, payResultMsg, status});
+    public Integer updateStatusByPayId(String payId, Integer status, String transactionId, String payResultCode,
+                                       String payResultMsg, Integer totalFee) {
+        //check
+        Map<String, Object> map = reviewOrderService.findOneForJdbc("select order_amount, status, order_no from review_order where pay_id=?",
+                new Object[]{payId});
+        if (map == null || map.isEmpty()) {
+            logger.warn("prepay:{} is not exist", payId);
+            return -1;
+        }
+
+        //处理成功的订单 不再重复处理
+        Integer orderStatus = (Integer)map.get("status");
+        if (orderStatus == Constants.OrderStatus.SUCCESS) {
+            logger.warn("order_no:{},payId:{} had process success", map.get("order_no"), payId);
+            return -2;
+        }
+
+        //check支付金额
+        int orderAmount = BigDecimal.valueOf(Double.valueOf(map.get("order_amount").toString())).multiply(BigDecimal.valueOf(100)).intValue();
+        if (Constants.OrderStatus.SUCCESS == status && (totalFee == null || totalFee != orderAmount)) {
+            logger.warn("totalFee:{} not equals orderAmount:{} ", totalFee == null ? "null" : totalFee, orderAmount);
+            return -3;
+        }
+
+        StringBuilder updSql = new StringBuilder("update review_order set status=?");
+        List<Object> params = new ArrayList<>();
+        if (StrUtil.isNotBlank(transactionId)) {
+            updSql.append(", transaction_id=?");
+            params.add(transactionId);
+        }
+        if (StrUtil.isNotBlank(payResultCode)) {
+            updSql.append(", pay_result_code=?");
+            params.add(payResultCode);
+        }
+        if (StrUtil.isNotBlank(payResultMsg)) {
+            updSql.append(", pay_result_msg=?");
+            params.add(payResultMsg);
+        }
+        updSql.append("where pay_id=? and status != ?");
+        params.add(payId);
+        params.add(Constants.OrderStatus.SUCCESS);
+
+        //采用cas 自旋锁 保证成功状态不被更新
+        Integer updNum = reviewOrderService.executeSql(updSql.toString(), params.toArray(new Object[params.size()]));
         logger.info("updateStatusByPayId result: {}", updNum);
         return updNum;
     }

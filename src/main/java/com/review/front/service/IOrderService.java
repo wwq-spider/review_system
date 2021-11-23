@@ -16,9 +16,12 @@ public interface IOrderService {
      * 更新订单状态
      * @param payId
      * @param status
+     * @param transactionId
      * @param payResultCode
      * @param payResultMsg
+     * @param totalFee
      * @return
      */
-    Integer updateStatusByPayId(String payId, Integer status, String payResultCode, String payResultMsg);
+    Integer updateStatusByPayId(String payId, Integer status, String transactionId, String payResultCode,
+                                String payResultMsg, Integer totalFee);
 }

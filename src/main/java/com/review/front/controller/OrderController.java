@@ -70,7 +70,6 @@ public class OrderController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "wxPayNotify", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
     public void wxPayNotify(HttpServletRequest request, HttpServletResponse response) throws Exception{
         BufferedOutputStream out = null;
         try {
@@ -94,13 +93,18 @@ public class OrderController extends BaseController {
 
                 //验证签名是否正确
                 if(PayUtils.verify(PayUtils.createLinkString(map), (String)map.get("sign"), WxAppletsUtils.payKey, "utf-8")){
+
                     /**此处添加自己的业务逻辑代码start**/
-                    String prepay_id = map.get("prepay_id").toString();
+                    String prepay_id = map.get("prepay_id") == null ? "" : map.get("prepay_id").toString();
+                    String transaction_id = map.get("transaction_id") == null ? "" : map.get("transaction_id").toString();
+
+                    //支付费用
+                    Integer total_fee = (Integer) map.get("total_fee");
 
                     Integer status = "SUCCESS".equals(resultCode) ? Constants.OrderStatus.SUCCESS : Constants.OrderStatus.PAY_FAIL;
 
                     //更新顶单状态
-                    int updNum = orderService.updateStatusByPayId(prepay_id, status, err_code, err_code_des);
+                    int updNum = orderService.updateStatusByPayId(prepay_id, status, transaction_id, err_code, err_code_des, total_fee);
                     if (updNum > 0) {
                         //通知微信服务器已经支付成功
                         resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
@@ -123,6 +127,7 @@ public class OrderController extends BaseController {
             out.flush();
         } catch (Exception e) {
             out.write("<xml><return_code><![CDATA[ERROR]]></return_code><return_msg><![CDATA[订单状态更新异常]]></return_msg></xml>".getBytes());
+            out.flush();
             logger.error("wxPayNotify error, ", e);
         } finally {
             IOUtils.closeQuietly(out);
