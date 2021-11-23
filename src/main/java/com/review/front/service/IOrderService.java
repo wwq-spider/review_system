@@ -1,7 +1,7 @@
 package com.review.front.service;
-
 import com.review.front.vo.PreOrderVO;
 import com.review.manage.order.vo.ReviewOrderVO;
+import java.math.BigDecimal;
 
 public interface IOrderService {
 
@@ -11,6 +11,17 @@ public interface IOrderService {
      * @return
      */
     PreOrderVO createPrePayOrder(ReviewOrderVO reviewOrder);
+
+    /**
+     * 生成预付单
+     * @param openid
+     * @param ip
+     * @param orderNo
+     * @param orderAmount
+     * @param body
+     * @return
+     */
+    PreOrderVO generatePrePayOrder(String openid, String ip, Long orderNo, BigDecimal orderAmount, String body);
 
     /**
      * 更新订单状态

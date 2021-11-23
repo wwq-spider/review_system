@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.review.common.Constants;
+import com.review.manage.userManage.entity.ReviewUserEntity;
 import org.jeecgframework.web.system.manager.ClientManager;
 import org.jeecgframework.web.system.pojo.base.Client;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -41,6 +42,14 @@ public class ContextHolderUtils {
 		Client client = ClientManager.getInstance().getClient(getSession().getId());
 		if (client.getUser() != null) {
 			return client.getUser().getUserName();
+		}
+		return null;
+	}
+
+	public static String getLoginFrontUserID() {
+		ReviewUserEntity reviewUserEntity = (ReviewUserEntity)getSession().getAttribute(Constants.REVIEW_LOGIN_USER);
+		if (reviewUserEntity != null) {
+			return reviewUserEntity.getUserId();
 		}
 		return null;
 	}

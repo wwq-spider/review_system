@@ -1,7 +1,6 @@
 package com.review.manage.reviewClass.vo;
 import org.jeecgframework.core.common.model.json.DataGrid;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import java.math.BigDecimal;
 
 public class ReviewClassVO {
 
@@ -38,6 +37,12 @@ public class ReviewClassVO {
 	private String orgPrice;
 
 	private String dicountPrice;
+
+	private String realPrice;
+
+	private Boolean buy;
+
+	private Integer buyCount;
 
 	public java.lang.String getClassId() {
 		return classId;
@@ -173,5 +178,29 @@ public class ReviewClassVO {
 
 	public void setDicountPrice(String dicountPrice) {
 		this.dicountPrice = dicountPrice;
+	}
+
+	public String getRealPrice() {
+		return realPrice;
+	}
+
+	public void setRealPrice(String realPrice) {
+		this.realPrice = realPrice;
+	}
+
+	public Boolean getBuy() {
+		return buy;
+	}
+
+	public void setBuy(Boolean buy) {
+		this.buy = buy;
+	}
+
+	public Integer getBuyCount() {
+		return buyCount;
+	}
+
+	public void setBuyCount(Integer buyCount) {
+		this.buyCount = buyCount;
 	}
 }

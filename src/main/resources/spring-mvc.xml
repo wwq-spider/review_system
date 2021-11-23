@@ -174,5 +174,21 @@
 				</property>
 			</bean>
 		</mvc:interceptor>
+
+		<mvc:interceptor>
+			<mvc:mapping path="/reviewFront/**" />
+			<bean class="com.review.common.interceptors.ReviewPayInterceptor" >
+				<property name="includeUrls">
+					<list>
+						<value>reviewFront/completeReview.do</value>
+						<value>reviewFront/getQuestionsByClassID.do</value>
+						<value>reviewFront/getReviewReportDetail.do</value>
+						<value>reviewFront/getReviewReports.do</value>
+						<value>reviewFront/joinUserGroup.do</value>
+						<value>reviewFront/getReviewProjectDetail.do</value>
+					</list>
+				</property>
+			</bean>
+		</mvc:interceptor>
 	</mvc:interceptors>
 </beans>

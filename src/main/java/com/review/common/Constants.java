@@ -216,6 +216,11 @@ public final class Constants {
 	//发布状态
 	public final static Integer StatusPublish = 1;
 
+	//量表收费
+	public final static Integer ClassCharge = 1;
+	//量表免费
+	public final static Integer ClassFree = 0;
+
 	/**
 	 * 订单状态
 	 */
@@ -224,13 +229,22 @@ public final class Constants {
 		public final static int CREATE = 0;
 		//生成预支付订单
 		public final static int PRE_PAY = 1;
+		//前端支付成功 后端待回调
+		public final static int PRE_SUCCESS = 2;
 		//支付成功
-		public final static int SUCCESS = 2;
+		public final static int SUCCESS = 3;
 		//取消支付
-		public final static int CANCEL = 3;
+		public final static int CANCEL = 4;
 		//支付失败
-		public final static int PAY_FAIL = 4;
+		public final static int PAY_FAIL = 5;
 		//支付异常
 		public final static int PAY_ERR = 6;
 	}
+
+	//成功状态
+	public final static String WX_PAY_STATUS_SUCCESS = "SUCCESS";
+	//失败状态
+	public final static String WX_PAY_STATUS_FAIL = "FAIL";
+
+
 }

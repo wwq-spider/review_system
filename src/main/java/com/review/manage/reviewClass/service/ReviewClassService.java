@@ -62,4 +62,12 @@ public interface ReviewClassService extends CommonService{
 	 * @param opt 1：置为热门 2：取消热门
 	 */
 	void setUpHot(String classId, Integer opt);
+
+	/**
+	 * 项目中是否包含该测评量表
+	 * @param projectId
+	 * @param classId
+	 * @return
+	 */
+	boolean projectContainsClass(Long projectId, String classId);
 }

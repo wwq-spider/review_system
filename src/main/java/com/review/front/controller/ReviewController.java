@@ -1,5 +1,6 @@
 package com.review.front.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.review.common.CommonUtils;
 import com.review.common.Constants;
 import com.review.common.WxAppletsUtils;
@@ -7,6 +8,8 @@ import com.review.front.entity.ReviewReportResultEntity;
 import com.review.front.entity.ReviewResultEntity;
 import com.review.front.service.ReviewFrontService;
 import com.review.front.vo.ReviewResultVO;
+import com.review.manage.order.service.ReviewOrderServiceI;
+import com.review.manage.order.vo.ReviewOrderVO;
 import com.review.manage.project.entity.ReviewProjectEntity;
 import com.review.manage.project.service.IReviewProjectService;
 import com.review.manage.project.vo.ReviewProjectVO;
@@ -23,7 +26,9 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jeecgframework.core.common.controller.BaseController;
+import org.jeecgframework.core.util.ContextHolderUtils;
 import org.jeecgframework.core.util.IpUtil;
+import org.jeecgframework.core.util.MyBeanUtils;
 import org.jeecgframework.web.system.manager.ClientManager;
 import org.jeecgframework.web.system.pojo.base.Client;
 import org.slf4j.Logger;
@@ -43,6 +48,7 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/reviewFront")
@@ -64,6 +70,9 @@ public class ReviewController extends BaseController{
 
 	@Autowired
 	private ReviewSubjectServiceI reviewSubjectServiceI;
+
+	@Autowired
+	private ReviewOrderServiceI reviewOrderService;
 	
 	/**
 	 * 跳到登录页面
@@ -512,13 +521,29 @@ public class ReviewController extends BaseController{
 			return;
 		}
 		ReviewClassEntity reviewClassInfo = reviewClassService.get(ReviewClassEntity.class, reviewClass.getClassId());
-		json.put("code", 200);
-		json.put("result", reviewClassInfo);
+		if (reviewClassInfo.getCharge() != null && reviewClassInfo.getCharge() == Constants.ClassCharge) {
+			reviewClassInfo.setRealPrice(reviewClassInfo.getOrgPrice().subtract(reviewClassInfo.getDicountPrice()));
+		}
+		ReviewClassVO reviewClassVO = new ReviewClassVO();
+		try {
+			MyBeanUtils.copyBeanNotNull2Bean(reviewClassInfo, reviewClassVO);
+			String userId = ContextHolderUtils.getLoginFrontUserID();
+			if (StrUtil.isNotBlank(userId) && reviewClassInfo.getCharge() == Constants.ClassCharge) {
+				//判断用户是都已经购买了课程
+				reviewClassVO.setBuy(reviewOrderService.userBuy(reviewClass.getClassId(), ContextHolderUtils.getLoginFrontUserID()));
+			}
+			json.put("code", 200);
+			json.put("result", reviewClassVO);
+		} catch (Exception e) {
+			logger.error("copyBeanNotNull2Bean error, ", e);
+			json.put("code", 400);
+			json.put("msg", "查询失败");
+		}
 		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
 	}
 
 	/**
-	 * 查询测评分类详情
+	 * 查询测评项目详情
 	 * @param response
 	 * @param reviewProject
 	 */

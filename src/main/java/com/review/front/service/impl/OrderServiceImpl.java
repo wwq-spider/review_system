@@ -1,13 +1,19 @@
 package com.review.front.service.impl;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.review.common.Constants;
+import com.review.common.HttpUtils;
+import com.review.common.PayUtils;
 import com.review.common.WxAppletsUtils;
 import com.review.front.service.IOrderService;
 import com.review.front.vo.PreOrderVO;
 import com.review.manage.order.entity.ReviewOrderEntity;
+import com.review.manage.order.entity.ReviewPayLogEntity;
 import com.review.manage.order.service.ReviewOrderServiceI;
+import com.review.manage.order.service.ReviewPayLogServiceI;
 import com.review.manage.order.vo.ReviewOrderVO;
 import com.review.manage.reviewClass.entity.ReviewClassEntity;
 import com.review.manage.reviewClass.service.ReviewClassService;
@@ -16,12 +22,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class OrderServiceImpl implements IOrderService {
@@ -34,7 +38,11 @@ public class OrderServiceImpl implements IOrderService {
     @Autowired
     private ReviewClassService reviewClassService;
 
+    @Autowired
+    private ReviewPayLogServiceI reviewPayLogService;
+
     @Override
+    @Transactional
     public PreOrderVO createPrePayOrder(ReviewOrderVO reviewOrder) {
 
         if (StrUtil.isBlank(reviewOrder.getClassId()) || StrUtil.isBlank(reviewOrder.getUserId())) {
@@ -48,13 +56,15 @@ public class OrderServiceImpl implements IOrderService {
             PreOrderVO preOrder = new PreOrderVO();
             preOrder.setPrePayID(reviewOrderVO.getPayId());
             preOrder.setPackageStr("prepay_id=" + preOrder.getPrePayID());
-            if (Constants.OrderStatus.SUCCESS == reviewOrderVO.getStatus()) {
+            if (Constants.OrderStatus.SUCCESS == reviewOrderVO.getStatus() || Constants.OrderStatus.PRE_SUCCESS == reviewOrderVO.getStatus()) {
                 preOrder.setReturnCode("FAIL");
                 preOrder.setReturnMsg("订单已支付，无需重复创建");
             } else {
                 String nonceStr = IdUtil.simpleUUID();
                 preOrder.setNonceStr(nonceStr);
-                preOrder.setPaySign(WxAppletsUtils.paySign(nonceStr, preOrder.getPrePayID(), System.currentTimeMillis() / 1000));
+                long timstamp = System.currentTimeMillis() / 1000;
+                preOrder.setTimeStamp(timstamp + "");
+                preOrder.setPaySign(WxAppletsUtils.paySign(nonceStr, preOrder.getPrePayID(), timstamp));
                 preOrder.setReturnCode("SUCCESS");
             }
             return preOrder;
@@ -75,25 +85,116 @@ public class OrderServiceImpl implements IOrderService {
                 ReviewOrderEntity orderEntity = new ReviewOrderEntity();
                 MyBeanUtils.copyBeanNotNull2Bean(reviewOrder, orderEntity);
                 orderEntity.setOrderNo(orderNo);
+                orderEntity.setClassName(reviewClass.getTitle());
                 orderEntity.setCreateTime(new Date());
                 orderEntity.setOperateTime(orderEntity.getCreateTime());
                 orderEntity.setOrgAmount(reviewClass.getOrgPrice());
                 orderEntity.setOrderAmount(reviewClass.getOrgPrice().subtract(reviewClass.getDicountPrice()));
                 orderEntity.setStatus(Constants.OrderStatus.PRE_PAY);
-
                 //创建微信预支付订单
-                PreOrderVO preOrder = WxAppletsUtils.generatePrePayOrder(reviewOrder.getOpenid(), reviewOrder.getIpAddr(),
-                        orderEntity);
-                orderEntity.setPayId(preOrder.getPrePayID());
-                reviewOrderService.save(orderEntity);
+                PreOrderVO preOrder = this.generatePrePayOrder(reviewOrder.getOpenid(), reviewOrder.getIpAddr(),
+                        orderEntity.getOrderNo(), orderEntity.getOrderAmount(), orderEntity.getClassName());
 
-                preOrder.setReturnCode("SUCCESS");
-                return preOrder;
+                if (Constants.WX_PAY_STATUS_SUCCESS.equals(preOrder.getResultCode()) && Constants.WX_PAY_STATUS_SUCCESS.equals(preOrder.getResultCode())) {
+                    orderEntity.setPayId(preOrder.getPrePayID());
+                    reviewOrderService.save(orderEntity);
+                    //记录支付日志
+                    preOrder.getReviewPayLog().setOrderId(orderEntity.getId());
+                    preOrder.getReviewPayLog().setBroswer(reviewOrder.getBroswer());
+                    preOrder.getReviewPayLog().setUserId(reviewOrder.getUserId());
+                    preOrder.getReviewPayLog().setOperator(reviewOrder.getOperator());
+                    reviewPayLogService.save(preOrder.getReviewPayLog());
+                    return preOrder;
+                }
             } catch (Exception e) {
                 logger.error("createPrePayOrder error, ", e);
             }
         }
         return null;
+    }
+
+    @Override
+    public PreOrderVO generatePrePayOrder(String openid, String ip, Long orderNo, BigDecimal orderAmount, String body) {
+        PreOrderVO preOrder = new PreOrderVO();
+        try{
+            //生成的随机字符串
+            String nonce_str = IdUtil.simpleUUID();
+            //商品名称
+            //获取本机的ip地址
+            long money = orderAmount.multiply(BigDecimal.valueOf(100)).longValue();//支付金额，单位：分，这边需要转成字符串类型，否则后面的签名会失败
+
+            Map<String, String> packageParams = new HashMap<String, String>();
+            packageParams.put("appid", WxAppletsUtils.appId);
+            packageParams.put("mch_id", WxAppletsUtils.mchID);
+            packageParams.put("nonce_str", nonce_str);
+            packageParams.put("body", body);
+            packageParams.put("out_trade_no", orderNo+"");//商户订单号
+            packageParams.put("total_fee", money+"");
+            packageParams.put("spbill_create_ip", ip);
+            packageParams.put("notify_url", WxAppletsUtils.notifyUrl);
+            packageParams.put("trade_type", WxAppletsUtils.tradeType);
+            packageParams.put("openid", openid);
+
+            // 除去数组中的空值和签名参数
+            packageParams = PayUtils.paraFilter(packageParams);
+            String prestr = PayUtils.createLinkString(packageParams); // 把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
+
+            //MD5运算生成签名，这里是第一次签名，用于调用统一下单接口
+            String mysign = PayUtils.sign(prestr, WxAppletsUtils.payKey, "utf-8").toUpperCase();
+            logger.info("=======================第一次签名：" + mysign + "=====================");
+
+
+            //拼接统一下单接口使用的xml数据，要将上一步生成的签名一起拼接进去
+            String paramXmlStr = String.format(WxAppletsUtils.prePayParamFormat, WxAppletsUtils.appId, body, WxAppletsUtils.mchID, nonce_str, WxAppletsUtils.notifyUrl, openid,
+                    orderNo, ip, money, WxAppletsUtils.tradeType, mysign);
+
+            logger.info("调试模式_统一下单接口 请求XML数据：{}", paramXmlStr);
+
+            //调用统一下单接口，并接受返回的结果
+            String result = HttpUtils.postString(WxAppletsUtils.prePayUrl, paramXmlStr);
+
+            logger.info("调试模式_统一下单接口 返回XML数据：{}", result);
+
+            // 将解析结果存储在HashMap中
+            Map map = PayUtils.doXMLParse(result);
+
+            String return_code = (String) map.get("return_code");//返回状态码
+            String result_code = (String) map.get("result_code");//返回状态码
+            String result_msg = (String) map.get("result_msg");//返回状态码
+
+            preOrder.setReturnCode(return_code);
+            preOrder.setReturnMsg(result_msg);
+            preOrder.setResultCode(result_code);
+
+            //返回给移动端需要的参数
+            if(Constants.WX_PAY_STATUS_SUCCESS.equals(return_code) && Constants.WX_PAY_STATUS_SUCCESS.equals(result_code)){
+                // 业务结果
+                String prepay_id = (String) map.get("prepay_id");//返回的预付单信息
+                preOrder.setPrePayID(prepay_id);
+                preOrder.setNonceStr(nonce_str);
+                preOrder.setPackageStr("prepay_id=" + prepay_id);
+                Long timeStamp = System.currentTimeMillis() / 1000;
+                //这边要将返回的时间戳转化成字符串，不然小程序端调用wx.requestPayment方法会报签名错误
+                preOrder.setTimeStamp(timeStamp.toString());
+                //再次签名，这个签名用于小程序端调用wx.requesetPayment方法
+                String paySign = WxAppletsUtils.paySign(nonce_str, prepay_id, timeStamp);
+                logger.info("=======================第二次签名：" + paySign + "=====================");
+                preOrder.setPaySign(paySign);
+
+                //这里记录支付日志
+                ReviewPayLogEntity reviewPayLog = new ReviewPayLogEntity();
+                reviewPayLog.setIpAddr(ip);
+                reviewPayLog.setPrePayResp(JSONObject.toJSONString(map));
+                reviewPayLog.setReqParam(JSONObject.toJSONString(packageParams));
+                reviewPayLog.setOperateTime(new Date());
+                reviewPayLog.setOrderNo(orderNo);
+                reviewPayLog.setOperateType(Constants.OrderStatus.PRE_PAY);
+                preOrder.setReviewPayLog(reviewPayLog);
+            }
+        }catch(Exception e){
+            throw new RuntimeException("generatePrePayOrder error, ", e);
+        }
+        return preOrder;
     }
 
     @Override
@@ -121,8 +222,15 @@ public class OrderServiceImpl implements IOrderService {
             return -3;
         }
 
-        StringBuilder updSql = new StringBuilder("update review_order set status=?");
+        StringBuilder updSql = new StringBuilder("update review_order set status=?, operate_time=? ");
         List<Object> params = new ArrayList<>();
+        String now = DateUtil.now();
+        params.add(status);
+        params.add(now);
+        if (Constants.OrderStatus.SUCCESS == status || Constants.OrderStatus.PRE_SUCCESS == status) {
+            updSql.append(", pay_time=?");
+            params.add(now);
+        }
         if (StrUtil.isNotBlank(transactionId)) {
             updSql.append(", transaction_id=?");
             params.add(transactionId);

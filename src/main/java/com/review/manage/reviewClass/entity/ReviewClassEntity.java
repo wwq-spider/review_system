@@ -48,6 +48,8 @@ public class ReviewClassEntity implements Serializable{
     private BigDecimal orgPrice;
     @Column(name = "dicount_price")
     private BigDecimal dicountPrice;
+
+    private transient BigDecimal realPrice;
     
     public void setClassId(java.lang.String classId){  
         this.classId=classId;   
@@ -143,5 +145,13 @@ public class ReviewClassEntity implements Serializable{
 
     public void setDicountPrice(BigDecimal dicountPrice) {
         this.dicountPrice = dicountPrice;
+    }
+
+    public BigDecimal getRealPrice() {
+        return realPrice;
+    }
+
+    public void setRealPrice(BigDecimal realPrice) {
+        this.realPrice = realPrice;
     }
 }

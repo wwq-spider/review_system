@@ -91,7 +91,11 @@ public class ReviewClassServiceImpl extends CommonServiceImpl implements ReviewC
 		sb.append("   c.`charge`,");
 		sb.append("   c.`org_price` orgPrice,");
 		sb.append("   c.`dicount_price` dicountPrice,");
+		sb.append("   (c.`org_price` - c.`dicount_price`) as realPrice,");
 		sb.append("   c.`class_desc` classDesc,");
+		if (projectId == null || projectId == 0) {
+			sb.append(" (select count(o.id) from review_order o where o.class_id=c.class_id and status in(2,3)) buyCount,");
+		}
 		sb.append("   c.`guide` ");
 		sb.append(" FROM  ");
 		HashMap<String, String> paramMap = new HashMap<>();
@@ -129,5 +133,11 @@ public class ReviewClassServiceImpl extends CommonServiceImpl implements ReviewC
 	public void setUpHot(String classId, Integer opt) {
 		String sql = "update review_class set type=? where class_id=?";
 		this.executeSql(sql, new Object[]{opt,classId});
+	}
+
+	@Override
+	public boolean projectContainsClass(Long projectId, String classId) {
+		long count = this.getCountForJdbcParam("select count(pc.id) from review_project_class pc where pc.class_id=? and pc.project_id=?", new Object[]{classId, projectId});
+		return count > 0;
 	}
 }

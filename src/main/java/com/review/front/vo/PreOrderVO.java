@@ -1,5 +1,7 @@
 package com.review.front.vo;
 
+import com.review.manage.order.entity.ReviewPayLogEntity;
+
 import java.io.Serializable;
 
 /**
@@ -17,6 +19,8 @@ public class PreOrderVO implements Serializable {
 
     private String returnCode;
 
+    private String resultCode;
+
     private String returnMsg;
 
     private String mchId;
@@ -32,6 +36,8 @@ public class PreOrderVO implements Serializable {
     private String signType;
 
     private String packageStr;
+
+    private ReviewPayLogEntity reviewPayLog;
 
     public String getPrePayID() {
         return prePayID;
@@ -71,6 +77,14 @@ public class PreOrderVO implements Serializable {
 
     public void setReturnCode(String returnCode) {
         this.returnCode = returnCode;
+    }
+
+    public String getResultCode() {
+        return resultCode;
+    }
+
+    public void setResultCode(String resultCode) {
+        this.resultCode = resultCode;
     }
 
     public String getReturnMsg() {
@@ -136,5 +150,13 @@ public class PreOrderVO implements Serializable {
     public PreOrderVO setPackageStr(String packageStr) {
         this.packageStr = packageStr;
         return this;
+    }
+
+    public ReviewPayLogEntity getReviewPayLog() {
+        return reviewPayLog;
+    }
+
+    public void setReviewPayLog(ReviewPayLogEntity reviewPayLog) {
+        this.reviewPayLog = reviewPayLog;
     }
 }

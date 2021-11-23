@@ -47,6 +47,8 @@ public class ReviewOrderVO implements Serializable {
     /**操作人*/
     private String operator;
 
+    private String broswer;
+
     public Long getId() {
         return id;
     }
@@ -199,5 +201,13 @@ public class ReviewOrderVO implements Serializable {
 
     public void setOperator(String operator) {
         this.operator = operator;
+    }
+
+    public String getBroswer() {
+        return broswer;
+    }
+
+    public void setBroswer(String broswer) {
+        this.broswer = broswer;
     }
 }
