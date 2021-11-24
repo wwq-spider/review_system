@@ -16,9 +16,9 @@ import com.aliyuncs.profile.DefaultProfile;
 
 public class AliYunSmsUtils {
 
-    public final static String accessKey = "LTAI5tGirtTdcZkqxrVGrJQX";
+    public final static String accessKey = "xxx";
 
-    public final static String accessKeySecert = "UiIouJAMsliQi72rCBmPmN4rwQM4Hv";
+    public final static String accessKeySecert = "xxx";
 
     /**
      * 使用AK&SK初始化账号Client
