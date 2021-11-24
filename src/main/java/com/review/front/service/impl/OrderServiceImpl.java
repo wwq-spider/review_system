@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -251,6 +250,26 @@ public class OrderServiceImpl implements IOrderService {
         Integer updNum = reviewOrderService.executeSql(updSql.toString(), params.toArray(new Object[params.size()]));
         logger.info("updateStatusByPayId result: {}", updNum);
         return updNum;
+    }
+
+    @Override
+    public List<ReviewOrderVO> list(ReviewOrderVO reviewOrder) {
+        StringBuilder sql = new StringBuilder("select o.id, " +
+                "       o.order_no                                        orderNo, " +
+                "       o.class_name                                      className, " +
+                "       o.class_id                                        classId, " +
+                "       DATE_FORMAT(o.operate_time, '%Y-%m-%e %H:%i:%S') as operateTime, " +
+                "       c.banner_img                                      bannerImg " +
+                " from review_order o " +
+                "         inner join review_class c on o.class_id = c.class_id " +
+                " where user_id = :userId ");
+        sql.append("and o.status in (")
+           .append(Constants.OrderStatus.PRE_SUCCESS).append(",")
+           .append(Constants.OrderStatus.SUCCESS).append(")")
+           .append(" order by o.operate_time desc");
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("userId", reviewOrder.getUserId());
+        return reviewOrderService.getObjectList(sql.toString(), paramMap, ReviewOrderVO.class);
     }
 
     public static void main(String[] args) {

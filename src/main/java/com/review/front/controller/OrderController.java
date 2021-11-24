@@ -2,7 +2,11 @@ package com.review.front.controller;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.IoUtil;
-import com.review.common.*;
+import cn.hutool.core.util.StrUtil;
+import com.review.common.CommonUtils;
+import com.review.common.Constants;
+import com.review.common.PayUtils;
+import com.review.common.WxAppletsUtils;
 import com.review.front.service.IOrderService;
 import com.review.front.vo.PreOrderVO;
 import com.review.manage.order.service.ReviewPayLogServiceI;
@@ -23,11 +27,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,6 +50,27 @@ public class OrderController extends BaseController {
 
     @Autowired
     private ReviewPayLogServiceI reviewPayLogService;
+
+    /**
+     * 个人中心我的订购
+     * @param response
+     */
+    @RequestMapping(value = "myOrder", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void myOrder(HttpServletResponse response, @RequestBody ReviewOrderVO reviewOrder) {
+
+        JSONObject json = new JSONObject();
+        if (StrUtil.isBlank(reviewOrder.getUserId())) {
+            json.put("code", 300);
+            json.put("msg", "用户id为空");
+        } else {
+            List<ReviewOrderVO> orderList = orderService.list(reviewOrder);
+            json.put("code", 200);
+            json.put("rows", orderList);
+            json.put("msg", "查询成功");
+        }
+        CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+    }
 
     /**
      * 创建预支付订单
@@ -109,7 +136,7 @@ public class OrderController extends BaseController {
      * @param response
      * @throws Exception
      */
-    @RequestMapping(value = "wxPayNotify", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "wxPayNotify", method = RequestMethod.POST)
     public void wxPayNotify(HttpServletRequest request, HttpServletResponse response) throws Exception{
         BufferedOutputStream out = null;
         try {

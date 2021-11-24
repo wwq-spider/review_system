@@ -246,5 +246,8 @@ public final class Constants {
 	//失败状态
 	public final static String WX_PAY_STATUS_FAIL = "FAIL";
 
-
+	/**
+	 * session中的短信验证码key
+	 */
+	public final static String MSG_CODE_KEY = "msg_code";
 }

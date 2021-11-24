@@ -21,7 +21,7 @@ import java.util.Date;
 @SuppressWarnings("serial")
 public class ReviewNoticeEntity implements java.io.Serializable {
 	/**id*/
-	private Integer id;
+	private Long id;
 	/**noticeName*/
 	private String noticeName;
 	/**noticeDesc*/
@@ -43,7 +43,7 @@ public class ReviewNoticeEntity implements java.io.Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name ="ID",nullable=false,precision=19,scale=0)
-	public Integer getId(){
+	public Long getId(){
 		return this.id;
 	}
 
@@ -51,7 +51,7 @@ public class ReviewNoticeEntity implements java.io.Serializable {
 	 *方法: 设置java.lang.Integer
 	 *@param: java.lang.Integer  id
 	 */
-	public void setId(Integer id){
+	public void setId(Long id){
 		this.id = id;
 	}
 	/**

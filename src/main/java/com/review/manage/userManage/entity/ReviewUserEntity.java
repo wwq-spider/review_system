@@ -63,6 +63,8 @@ public class ReviewUserEntity implements Serializable {
 
 	private transient Long projectId;
 
+	private transient String msgCode;
+
 	
 	private List<ReportVO> reportVOList = new ArrayList<ReportVO>();
 	
@@ -230,5 +232,14 @@ public class ReviewUserEntity implements Serializable {
 
 	public void setExtraObj(Map<String, Object> extraObj) {
 		this.extraObj = extraObj;
+	}
+
+	@Transient
+	public String getMsgCode() {
+		return msgCode;
+	}
+
+	public void setMsgCode(String msgCode) {
+		this.msgCode = msgCode;
 	}
 }

@@ -102,7 +102,7 @@ public class ReviewSubjectServiceImpl extends CommonServiceImpl implements Revie
         sb.append("   (c.`org_price` - c.`dicount_price`) as realPrice,");
         sb.append("   c.`class_desc` classDesc,");
         sb.append("   c.`guide`, ");
-        sb.append("   (select count(o.id) from review_order o where o.class_id=c.class_id and status in(1,2,3)) buyCount,");
+        sb.append("   (select count(o.id) from review_order o where o.class_id=c.class_id and status in(2,3)) buyCount,");
         sb.append("   s.`subject_name` subjectName, ");
         sb.append("   s.`id` subjectId ");
         sb.append(" FROM  review_class c INNER JOIN review_subject_class sc on c.class_id=sc.class_id ");

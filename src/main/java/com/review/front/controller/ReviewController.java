@@ -1,6 +1,9 @@
 package com.review.front.controller;
 
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import com.aliyun.dysmsapi20170525.models.SendSmsResponseBody;
+import com.review.common.AliYunSmsUtils;
 import com.review.common.CommonUtils;
 import com.review.common.Constants;
 import com.review.common.WxAppletsUtils;
@@ -400,8 +403,18 @@ public class ReviewController extends BaseController{
 			return;
 		}
 		try {
+			//check 验证码
+			String msgCode = (String) ContextHolderUtils.getSession().getAttribute(Constants.MSG_CODE_KEY);
+			if (StringUtils.isBlank(msgCode) || !msgCode.equals(reviewUser.getMsgCode())) {
+				json.put("code", 301);
+				json.put("msg", "短信验证码不正确或已过期");
+				CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+				return;
+			}
+
 			JSONObject jsonObject = reviewFrontService.register(reviewUser);
 			if (jsonObject.getInt("code") == 200) {
+				ContextHolderUtils.getSession().removeAttribute(Constants.MSG_CODE_KEY);
 				json.put("code", 200);
 				json.put("msg", "用户信息注册成功");
 				json.put("result", jsonObject.get("userId"));
@@ -626,6 +639,39 @@ public class ReviewController extends BaseController{
 		json.put("code", 200);
 		json.put("rows", reviewSubjectList);
 		json.put("msg", "查询成功");
+		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+	}
+
+	/**
+	 * 发送验证码
+	 * @param response
+	 * @param reviewUser
+	 */
+	@RequestMapping(value = "sendMsg", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void sendMsg(HttpServletResponse response, @RequestBody ReviewUserEntity reviewUser) {
+		JSONObject json = new JSONObject();
+		if (StrUtil.isBlank(reviewUser.getMobilePhone())) {
+			json.put("code", 300);
+			json.put("msg", "手机号不能为空");
+		} else {
+			String code = RandomUtil.randomNumbers(4);
+			try {
+				SendSmsResponseBody body = AliYunSmsUtils.sendMsg(code, reviewUser.getMobilePhone());
+				if (body != null && "ok".equalsIgnoreCase(body.getCode())) {
+					ContextHolderUtils.getSession().setAttribute(Constants.MSG_CODE_KEY, code);
+					json.put("code", 200);
+					json.put("msg", "验证码发送成功");
+				} else {
+					json.put("code", 400);
+					json.put("msg", "验证码发送失败");
+				}
+			} catch (Exception e) {
+				logger.error("sendMsg error, ", e);
+				json.put("code", 500);
+				json.put("msg", "验证码发送异常，请联系管理员");
+			}
+		}
 		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
 	}
 }

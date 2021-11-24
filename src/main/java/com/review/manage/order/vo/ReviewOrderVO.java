@@ -1,7 +1,6 @@
 package com.review.manage.order.vo;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 测评订单
@@ -20,6 +19,8 @@ public class ReviewOrderVO implements Serializable {
     private String classId;
     /**量表名称*/
     private String className;
+    /**量表封面*/
+    private String bannerImg;
     /**订单实付金额*/
     private String orderAmount;
     /**原始价格*/
@@ -39,11 +40,11 @@ public class ReviewOrderVO implements Serializable {
     /**用户组id*/
     private String groupId;
     /**支付时间*/
-    private Date payTime;
+    private String payTime;
     /**创建时间*/
-    private Date createTime;
+    private String createTime;
     /**操作时间*/
-    private Date operateTime;
+    private String operateTime;
     /**操作人*/
     private String operator;
 
@@ -97,6 +98,14 @@ public class ReviewOrderVO implements Serializable {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public String getBannerImg() {
+        return bannerImg;
+    }
+
+    public void setBannerImg(String bannerImg) {
+        this.bannerImg = bannerImg;
     }
 
     public String getOrderAmount() {
@@ -171,27 +180,27 @@ public class ReviewOrderVO implements Serializable {
         this.groupId = groupId;
     }
 
-    public Date getPayTime() {
+    public String getPayTime() {
         return payTime;
     }
 
-    public void setPayTime(Date payTime) {
+    public void setPayTime(String payTime) {
         this.payTime = payTime;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getOperateTime() {
+    public String getOperateTime() {
         return operateTime;
     }
 
-    public void setOperateTime(Date operateTime) {
+    public void setOperateTime(String operateTime) {
         this.operateTime = operateTime;
     }
 
