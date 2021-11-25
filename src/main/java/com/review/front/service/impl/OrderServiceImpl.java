@@ -205,20 +205,20 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
-    public Integer updateStatusByPayId(String payId, Integer status, String transactionId, String payResultCode,
+    public Integer updateStatusByPayId(Long orderNo, Integer status, String transactionId, String payResultCode,
                                        String payResultMsg, Integer totalFee) {
         //check
-        Map<String, Object> map = reviewOrderService.findOneForJdbc("select order_amount, status, order_no from review_order where pay_id=?",
-                new Object[]{payId});
+        Map<String, Object> map = reviewOrderService.findOneForJdbc("select order_amount, status, order_no from review_order where order_no=?",
+                new Object[]{orderNo});
         if (map == null || map.isEmpty()) {
-            logger.warn("prepay:{} is not exist", payId);
+            logger.warn("orderNo:{} is not exist", orderNo);
             return -1;
         }
 
         //处理成功的订单 不再重复处理
         Integer orderStatus = (Integer)map.get("status");
         if (orderStatus == Constants.OrderStatus.SUCCESS) {
-            logger.warn("order_no:{},payId:{} had process success", map.get("order_no"), payId);
+            logger.warn("order_no:{}  had process success", map.get("order_no"));
             return -2;
         }
 
@@ -250,8 +250,8 @@ public class OrderServiceImpl implements IOrderService {
             updSql.append(", pay_result_msg=?");
             params.add(payResultMsg);
         }
-        updSql.append("where pay_id=? and status != ?");
-        params.add(payId);
+        updSql.append("where order_no=? and status != ?");
+        params.add(orderNo);
         params.add(Constants.OrderStatus.SUCCESS);
 
         //采用cas 自旋锁 保证成功状态不被更新

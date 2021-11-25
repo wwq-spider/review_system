@@ -117,15 +117,15 @@ public class OrderController extends BaseController {
 
         Integer total_fee = BigDecimal.valueOf(Double.valueOf(reviewOrder.getOrderAmount())).multiply(BigDecimal.valueOf(100)).intValue();
 
-        int updNum = orderService.updateStatusByPayId(reviewOrder.getPayId(), Constants.OrderStatus.PRE_SUCCESS, "",
+        int updNum = orderService.updateStatusByPayId(reviewOrder.getOrderNo(), Constants.OrderStatus.PRE_SUCCESS, "",
                 "", "", total_fee);
 
         if (updNum > 0) {
             json.put("code", 200);
             json.put("msg", "更新成功");
         } else {
-            json.put("code", 400);
-            json.put("msg", "更新状态失败");
+            json.put("code", 300);
+            json.put("msg", "状态已更新");
         }
         CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
     }
@@ -155,19 +155,20 @@ public class OrderController extends BaseController {
 
             if(Constants.WX_PAY_STATUS_SUCCESS.equals(returnCode)){
                 String resultCode = (String) map.get("result_code");
+                String sign = (String)map.get("sign");
+                map.remove("sign");
                 //验证签名是否正确
-                if(PayUtils.verify(PayUtils.createLinkString(map), (String)map.get("sign"), WxAppletsUtils.payKey, Charset.defaultCharset().name())){
+                if(PayUtils.verify(PayUtils.createLinkString(map), sign, WxAppletsUtils.payKey, Charset.defaultCharset().name())){
 
                     /**此处添加自己的业务逻辑代码start**/
-                    String prepay_id = map.get("prepay_id") == null ? "" : map.get("prepay_id").toString();
                     String transaction_id = map.get("transaction_id") == null ? "" : map.get("transaction_id").toString();
 
                     //支付费用
-                    Integer total_fee = (Integer) map.get("total_fee");
+                    Integer total_fee = Integer.parseInt((String)map.get("total_fee"));
                     Integer status = Constants.WX_PAY_STATUS_SUCCESS.equals(resultCode) ? Constants.OrderStatus.SUCCESS : Constants.OrderStatus.PAY_FAIL;
 
                     //更新顶单状态
-                    int updNum = orderService.updateStatusByPayId(prepay_id, status, transaction_id, err_code, err_code_des, total_fee);
+                    int updNum = orderService.updateStatusByPayId(Long.valueOf(out_trade_no), status, transaction_id, err_code, err_code_des, total_fee);
                     if (updNum > 0) {
                         //通知微信服务器已经支付成功
                         resXml = "<xml><return_code><![CDATA[SUCCESS]]></return_code>"
@@ -181,6 +182,9 @@ public class OrderController extends BaseController {
                     reviewPayLogService.executeSql("update review_pay_log set callback_resp=?, operate_time=?, operate_type=? where order_no=?",
                             new Object[]{com.alibaba.fastjson.JSONObject.toJSONString(map), DateUtil.now(), Constants.OrderStatus.SUCCESS, out_trade_no});
                     /**此处添加自己的业务逻辑代码end**/
+                } else{
+                    resXml = "<xml><return_code><![CDATA[FAIL]]></return_code>"
+                            + "<return_msg><![CDATA[签名校验失败]]></return_msg></xml> ";
                 }
             } else{
                 resXml = "<xml><return_code><![CDATA[FAIL]]></return_code>"
