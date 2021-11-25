@@ -464,7 +464,7 @@ public class CommonServiceImpl implements CommonService {
 	}
 
 	@Override
-	public <T> List<T> getObjectList(String sql, Map<String, String> params,
+	public <T> List<T> getObjectList(String sql, Map<String, Object> params,
 			Class<T> t) {
 		return commonDao.getObjectList(sql, params, t);
 	}

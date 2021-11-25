@@ -8,4 +8,4 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 %>
 <c:set var="webRoot" value="<%=basePath%>" />
 <c:set var="realPath" value="<%=path%>" />
-<c:set var="aliyunOssHost" value="https://review-images.oss-cn-beijing.aliyuncs.com/" />
+<c:set var="aliyunOssHost" value="https://review-img.oss-cn-beijing.aliyuncs.com/" />

@@ -202,6 +202,8 @@ public final class Constants {
 
 	public final static String ReviewExpertDir = "review-expert";
 
+	public final static String ReviewBannerDir = "review-banner";
+
 	public static class UserSource {
 
 		public final static Integer SystemAdd = 1; //系统录入
@@ -239,6 +241,8 @@ public final class Constants {
 		public final static int PAY_FAIL = 5;
 		//支付异常
 		public final static int PAY_ERR = 6;
+		//订单已过期
+		public final static int PAY_EXPIRED = 7;
 	}
 
 	//成功状态

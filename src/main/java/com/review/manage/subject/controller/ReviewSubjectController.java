@@ -138,8 +138,8 @@ public class ReviewSubjectController extends BaseController {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			Map<String, String> paramMap = new HashMap<>();
-			paramMap.put("subjectId", reviewSubject.getId().toString());
+			Map<String, Object> paramMap = new HashMap<>();
+			paramMap.put("subjectId", reviewSubject.getId());
 			subjectVO.setSubjectClassList(reviewSubjectService.getObjectList("select id, subject_id subjectId, class_id classId from review_subject_class where subject_id=:subjectId", paramMap, ReviewSubjectClassEntity.class));
 			req.setAttribute("reviewSubject", subjectVO);
 		}

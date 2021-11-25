@@ -1,8 +1,8 @@
-package com.review.manage.notice.service;
+package com.review.manage.banner.service;
 
 import org.jeecgframework.core.common.service.CommonService;
 
-public interface ReviewNoticeServiceI extends CommonService{
+public interface ReviewBannerServiceI extends CommonService{
 
     /**
      * 发布/停止公告

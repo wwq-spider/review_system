@@ -123,6 +123,7 @@
 						<value>reviewFront/notice/list.do</value>
 						<value>reviewFront/notice/detail.do</value>
 						<value>reviewFront/order/wxPayNotify.do</value>
+						<value>reviewFront/banner/list.do</value>
 						<!--<value>reviewFront/getQuestionsByClassID.do</value>
 						<value>reviewFront/completeReview.do</value>
 						<value>reviewFront/getReviewRecords.do</value>
@@ -174,6 +175,12 @@
 						<value>reviewFront/getOpenid.do</value>
 						<value>reviewFront/joinUserGroup.do</value>
 						<value>reviewFront/getReviewProjectDetail.do</value>
+						<value>reviewFront/getReviewSubjectClass.do</value>
+						<value>reviewFront/sendMsg.do</value>
+						<value>reviewFront/notice/list.do</value>
+						<value>reviewFront/notice/detail.do</value>
+						<value>reviewFront/order/wxPayNotify.do</value>
+						<value>reviewFront/banner/list.do</value>
 					</list>
 				</property>
 			</bean>
@@ -188,7 +195,6 @@
 						<value>reviewFront/getQuestionsByClassID.do</value>
 						<value>reviewFront/getReviewReportDetail.do</value>
 						<value>reviewFront/getReviewReports.do</value>
-						<value>reviewFront/joinUserGroup.do</value>
 						<value>reviewFront/getReviewProjectDetail.do</value>
 					</list>
 				</property>

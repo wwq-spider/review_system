@@ -14,12 +14,16 @@ public class ReviewOrderServiceImpl extends CommonServiceImpl implements ReviewO
 
     @Override
     public ReviewOrderVO findOneOrder(String classId, String userId) {
-        Map<String, Object> resMap = this.findOneForJdbc("select pay_id payId, status from review_order where class_id=? and user_id=?",
-                new Object[]{classId, userId});
+        Map<String, Object> resMap = this.findOneForJdbc("select id, pay_id payId, status,DATE_FORMAT(create_time, '%Y-%m-%e %H:%i:%S') as createTime " +
+                        "from review_order where class_id=? and user_id=? and status in(?,?,?,?,?)",
+                new Object[]{classId, userId, Constants.OrderStatus.CREATE, Constants.OrderStatus.PRE_PAY, Constants.OrderStatus.PRE_SUCCESS,
+                        Constants.OrderStatus.SUCCESS, Constants.OrderStatus.PAY_FAIL});
         if (resMap != null && !resMap.isEmpty()) {
             ReviewOrderVO orderVO = new ReviewOrderVO();
+            orderVO.setId((Long)resMap.get("id"));
             orderVO.setPayId(resMap.get("payId").toString());
             orderVO.setStatus((Integer) resMap.get("status"));
+            orderVO.setCreateTime((String) resMap.get("createTime"));
             return orderVO;
         }
         return null;

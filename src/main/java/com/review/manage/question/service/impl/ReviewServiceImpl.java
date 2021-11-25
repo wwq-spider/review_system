@@ -321,7 +321,7 @@ public class ReviewServiceImpl extends CommonServiceImpl implements ReviewServic
 		sb.append("  review_answer a ");
 		sb.append(" WHERE a.`question_id` =:questionId ");
 		sb.append(" ORDER BY a.`answer_code` ");
-		Map<String, String> map = new HashMap<String, String>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("questionId", questionId);
 		return this.getObjectList(sb.toString(), map, QuestionVO.class);
 	}

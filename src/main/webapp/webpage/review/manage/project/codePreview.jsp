@@ -34,7 +34,9 @@
                     frameElement.api.close();
                 },
                 success : function(data) {
+					var win = frameElement.api.opener;
                     if (data.code == 200) {
+						win.reloadTable();
                         $("#previewc").attr("src", "${aliyunOssHost}" + data.result)
                     }else{
                         alert("二维码刷新失败")

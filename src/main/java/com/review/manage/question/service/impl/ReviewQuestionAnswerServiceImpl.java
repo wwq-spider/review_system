@@ -157,7 +157,7 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
 
     @Override
     public List<ReviewQuestionAnswerVO> getListByGroupId(String groupId, Long projectId, String startTime, String endTime) {
-        Map<String, String> paramMap = new HashMap<>();
+        Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("groupId", groupId);
 
         StringBuilder sql = new StringBuilder(
@@ -180,7 +180,7 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
                         " where q.user_id=u.user_id and q.group_id = :groupId ");
         if(projectId != null && projectId > 0) {
             sql.append(" and q.project_id=:projectId");
-            paramMap.put("projectId", projectId.toString());
+            paramMap.put("projectId", projectId);
         }
         if(StringUtils.isNotBlank(startTime)) {
             sql.append(" and q.create_time >= :startTime");

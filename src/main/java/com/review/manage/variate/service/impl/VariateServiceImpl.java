@@ -293,7 +293,7 @@ public class VariateServiceImpl extends CommonServiceImpl implements VariateServ
 		sb.append("   ON r.`question_id`=q.`question_id`");
 		sb.append(" WHERE r.variate_id=:variateId");
 		
-		Map<String, String> map = new HashMap<String, String>();
+		Map<String, Object> map = new HashMap();
 		map.put("variateId", variateId);
 		return this.getObjectList(sb.toString(), map, ReviewGradeRuleEntity.class);
 	}

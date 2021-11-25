@@ -1034,7 +1034,7 @@ public abstract class GenericBaseCommonDao<T, PK extends Serializable>
 	 * @param t
 	 * @return
 	 */
-	public <T> List<T> getObjectList(String sql, Map<String, String> params,
+	public <T> List<T> getObjectList(String sql, Map<String, Object> params,
 			final Class<T> t) {
 
 		return namedParameterJdbcTemplate.query(sql, params,

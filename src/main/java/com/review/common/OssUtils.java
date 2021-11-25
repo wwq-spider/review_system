@@ -14,7 +14,7 @@ public class OssUtils {
 
     public static Logger logger = LoggerFactory.getLogger(OssUtils.class);
 
-    private static final ResourceBundle bundle = java.util.ResourceBundle.getBundle("oosconfig");
+    public static final ResourceBundle bundle = java.util.ResourceBundle.getBundle("oosconfig");
 
     private static String bucketName = bundle.getString("IMG_BUCHETNAME");
 

@@ -110,10 +110,10 @@ public class ReviewSubjectServiceImpl extends CommonServiceImpl implements Revie
         sb.append(" WHERE c.status=").append(Constants.StatusPublish);
         //sb.append("   and s.status=").append(Constants.StatusPublish);
 
-        Map<String, String> paramMap = new HashMap<>();
+        Map<String, Object> paramMap = new HashMap<>();
         if (reviewSubject.getId() != null && reviewSubject.getId() > 0) {
             sb.append(" and s.id=:subjectId").append(reviewSubject.getId());
-            paramMap.put("subjectId", reviewSubject.getId().toString());
+            paramMap.put("subjectId", reviewSubject.getId());
         }
 
         int page = reviewSubject.getDataGrid().getPage() > 0 ? reviewSubject.getDataGrid().getPage() : 1;

@@ -1,13 +1,11 @@
 package com.review.front.service.impl;
+import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.review.common.Constants;
-import com.review.common.HttpUtils;
-import com.review.common.PayUtils;
-import com.review.common.WxAppletsUtils;
+import com.review.common.*;
 import com.review.front.service.IOrderService;
 import com.review.front.vo.PreOrderVO;
 import com.review.manage.order.entity.ReviewOrderEntity;
@@ -51,22 +49,32 @@ public class OrderServiceImpl implements IOrderService {
 
         //判断订单是否已存在
         ReviewOrderVO reviewOrderVO = reviewOrderService.findOneOrder(reviewOrder.getClassId(), reviewOrder.getUserId());
-        if (reviewOrderVO != null && StrUtil.isNotBlank(reviewOrderVO.getPayId())) {
+        if (reviewOrderVO != null && StrUtil.isNotBlank(reviewOrderVO.getPayId()) && reviewOrderVO.getStatus() != Constants.OrderStatus.PAY_EXPIRED) {
             PreOrderVO preOrder = new PreOrderVO();
             preOrder.setPrePayID(reviewOrderVO.getPayId());
             preOrder.setPackageStr("prepay_id=" + preOrder.getPrePayID());
             if (Constants.OrderStatus.SUCCESS == reviewOrderVO.getStatus() || Constants.OrderStatus.PRE_SUCCESS == reviewOrderVO.getStatus()) {
                 preOrder.setReturnCode("FAIL");
                 preOrder.setReturnMsg("订单已支付，无需重复创建");
+                return preOrder;
             } else {
-                String nonceStr = IdUtil.simpleUUID();
-                preOrder.setNonceStr(nonceStr);
-                long timstamp = System.currentTimeMillis() / 1000;
-                preOrder.setTimeStamp(timstamp + "");
-                preOrder.setPaySign(WxAppletsUtils.paySign(nonceStr, preOrder.getPrePayID(), timstamp));
-                preOrder.setReturnCode("SUCCESS");
+                Date now = new Date();
+                Date createTime = DateUtil.parse(reviewOrderVO.getCreateTime());
+                long diffMinutes = DateUtil.between(createTime, now, DateUnit.MINUTE);
+                if (diffMinutes >= 60) { //超时1个小时 该订单就已过期 重新创建订单
+                    //更新订单状态为已过期
+                    StringBuilder updSql = new StringBuilder("update review_order set status=?, operate_time=? where id=?");
+                    reviewOrderService.executeSql(updSql.toString(), new Object[]{Constants.OrderStatus.PAY_EXPIRED, now, reviewOrderVO.getId()});
+                } else {
+                    String nonceStr = IdUtil.simpleUUID();
+                    preOrder.setNonceStr(nonceStr);
+                    long timstamp = System.currentTimeMillis() / 1000;
+                    preOrder.setTimeStamp(timstamp + "");
+                    preOrder.setPaySign(WxAppletsUtils.paySign(nonceStr, preOrder.getPrePayID(), timstamp));
+                    preOrder.setReturnCode("SUCCESS");
+                    return preOrder;
+                }
             }
-            return preOrder;
         }
 
         //获取测评量表
@@ -267,7 +275,7 @@ public class OrderServiceImpl implements IOrderService {
            .append(Constants.OrderStatus.PRE_SUCCESS).append(",")
            .append(Constants.OrderStatus.SUCCESS).append(")")
            .append(" order by o.operate_time desc");
-        Map<String, String> paramMap = new HashMap<>();
+        Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("userId", reviewOrder.getUserId());
         return reviewOrderService.getObjectList(sql.toString(), paramMap, ReviewOrderVO.class);
     }

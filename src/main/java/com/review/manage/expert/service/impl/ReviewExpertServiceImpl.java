@@ -76,7 +76,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
                 "       e.label\n" +
                 "from review_expert e\n" +
                 "where e.status = 1");
-        Map<String, String> paramMap = new HashMap<>();
+        Map<String, Object> paramMap = new HashMap<>();
         if (StringUtil.isNotEmpty(reviewExpertVO.getExpertName())) {
             sql.append(" and e.expert_name like ':expertName%'");
             paramMap.put("expertName", reviewExpertVO.getExpertName());
@@ -178,8 +178,8 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
                 "       DATE_FORMAT(c.`create_time`, '%Y-%m-%e %H:%i:%S') AS createTime\n" +
                 "from review_expert_calendar c\n" +
                 "where c.expert_id = :expertId and c.status=1 order by c.`begin_time` asc");
-        Map<String, String> paramMap = new HashMap<>();
-        paramMap.put("expertId", reviewExpertCalendar.getExpertId().toString());
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("expertId", reviewExpertCalendar.getExpertId());
         return this.getObjectList(sql.toString(), paramMap, ReviewExpertCalendarVO.class);
     }
 }

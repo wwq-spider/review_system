@@ -344,6 +344,6 @@ public interface IGenericBaseCommonDao {
 	 * @param t
 	 * @return
 	 */
-	public <T> List<T> getObjectList(String sql, Map<String, String> params,
+	public <T> List<T> getObjectList(String sql, Map<String, Object> params,
 			final Class<T> t);
 }

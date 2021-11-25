@@ -6,15 +6,16 @@ import com.aliyun.dysmsapi20170525.models.SendSmsResponse;
 import com.aliyun.dysmsapi20170525.models.SendSmsResponseBody;
 import com.aliyun.teaopenapi.models.Config;
 import com.aliyun.dysmsapi20170525.Client;
+import org.jeecgframework.core.util.ResourceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 public class AliYunSmsUtils {
 
-    public final static String accessKey = "xxx";
+    public final static String accessKey = OssUtils.bundle.getString("ACCESS_ID");
 
-    public final static String accessKeySecert = "xxx";
+    public final static String accessKeySecert = OssUtils.bundle.getString("ACCESS_KEY");
 
     private static volatile Client smsClient;
 
@@ -70,9 +71,9 @@ public class AliYunSmsUtils {
         java.util.List<String> args = java.util.Arrays.asList(args_);
         com.aliyun.dysmsapi20170525.Client client = AliYunSmsUtils.getClient(accessKey, accessKeySecert);
         SendSmsRequest sendSmsRequest = new SendSmsRequest()
-                .setPhoneNumbers("xxx")
-                .setSignName("xxx")
-                .setTemplateCode("xxx")
+                .setPhoneNumbers("18810284375")
+                .setSignName("筑心康")
+                .setTemplateCode("SMS_228360174")
                 .setTemplateParam("{\"code\":\"1234\"}");
         // 复制代码运行请自行打印 API 的返回值
         SendSmsResponse smsResponse = client.sendSms(sendSmsRequest);

@@ -1,8 +1,9 @@
 package com.review.front.controller;
+
 import com.review.common.CommonUtils;
 import com.review.common.Constants;
-import com.review.manage.notice.entity.ReviewNoticeEntity;
-import com.review.manage.notice.service.ReviewNoticeServiceI;
+import com.review.manage.banner.service.ReviewBannerServiceI;
+import com.review.manage.banner.vo.ReviewBannerVO;
 import net.sf.json.JSONObject;
 import org.jeecgframework.core.common.controller.BaseController;
 import org.jeecgframework.core.common.model.json.DataGrid;
@@ -21,15 +22,15 @@ import java.util.Map;
 /**
  * 公告前端controller
  */
-@RequestMapping("/reviewFront/notice")
+@RequestMapping("/reviewFront/banner")
 @Controller
-public class NoticeController extends BaseController {
+public class BannerController extends BaseController {
 
     @Autowired
-    private ReviewNoticeServiceI reviewNoticeService;
+    private ReviewBannerServiceI reviewBannerServiceI;
 
     /**
-     * 公告列表查询
+     * banner列表查询
      * @param response
      * @param dataGrid
      */
@@ -43,37 +44,17 @@ public class NoticeController extends BaseController {
         Map<String, Object> param = new HashMap<>();
         param.put("status", Constants.StatusPublish);
 
-        StringBuilder sql = new StringBuilder("select id, notice_name noticeName from ");
-        sql.append(" review_notice where status=:status ");
-        sql.append(" order by update_time desc limit ");
+        StringBuilder sql = new StringBuilder("select id, title, img_url imgUrl, target_url targetUrl, status from ");
+        sql.append(" review_banner where status=:status ");
+        sql.append(" order by operate_time desc limit ");
         sql.append((page-1) * pageSize);
         sql.append(",");
         sql.append(pageSize);
 
-        List<ReviewNoticeEntity> reviewNoticeList = reviewNoticeService.getObjectList(sql.toString(), param, ReviewNoticeEntity.class);
+        List<ReviewBannerVO> reviewBannerList = reviewBannerServiceI.getObjectList(sql.toString(), param, ReviewBannerVO.class);
         json.put("code", 200);
-        json.put("rows", reviewNoticeList);
+        json.put("rows", reviewBannerList);
         json.put("msg", "查询成功");
-        CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
-    }
-
-    /**
-     * 公告详情查询
-     * @param response
-     * @param reviewNotice
-     */
-    @RequestMapping(value = "detail", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public void list(HttpServletResponse response, @RequestBody ReviewNoticeEntity reviewNotice) {
-        JSONObject json = new JSONObject();
-        if (reviewNotice.getId() != null && reviewNotice.getId() > 0) {
-            json.put("code", 200);
-            json.put("data", reviewNoticeService.get(ReviewNoticeEntity.class, reviewNotice.getId()));
-            json.put("msg", "查询成功");
-        } else {
-            json.put("code", 300);
-            json.put("msg", "公告id为空");
-        }
         CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
     }
 }

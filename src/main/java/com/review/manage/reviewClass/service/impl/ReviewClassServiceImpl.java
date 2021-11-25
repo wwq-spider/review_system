@@ -98,12 +98,12 @@ public class ReviewClassServiceImpl extends CommonServiceImpl implements ReviewC
 		}
 		sb.append("   c.`guide` ");
 		sb.append(" FROM  ");
-		HashMap<String, String> paramMap = new HashMap<>();
+		HashMap<String, Object> paramMap = new HashMap<>();
 		if (projectId == null || projectId == 0) {
 			sb.append(" review_class c");
 			sb.append(" WHERE c.`status`=1");
 		} else {
-			paramMap.put("projectId", projectId+"");
+			paramMap.put("projectId", projectId);
 			sb.append("   review_class c,review_project_class pc");
 			sb.append(" WHERE c.`status`=1 and c.`class_id`=pc.class_id and pc.project_id=:projectId");
 		}

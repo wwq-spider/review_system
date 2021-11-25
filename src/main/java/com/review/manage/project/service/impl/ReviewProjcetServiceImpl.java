@@ -144,7 +144,7 @@ public class ReviewProjcetServiceImpl extends CommonServiceImpl implements IRevi
                 "DATE_FORMAT(`create_time`,'%Y-%m-%e %H:%i:%S') createTime, " +
                 "DATE_FORMAT(`update_time`,'%Y-%m-%e %H:%i:%S') updateTime, " +
                 "creator from review_project where 1=1 ");
-        Map<String, String> paramMap = new HashMap<>();
+        Map<String, Object> paramMap = new HashMap<>();
         if (reviewProject != null) {
             if (StringUtils.isNotBlank(reviewProject.getProjectName())) {
                 sql.append(" and project_name like :projectName");

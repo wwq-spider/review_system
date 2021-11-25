@@ -48,10 +48,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/reviewFront")
@@ -76,6 +73,9 @@ public class ReviewController extends BaseController{
 
 	@Autowired
 	private ReviewOrderServiceI reviewOrderService;
+
+	@Autowired
+	private IReviewProjectService reviewProjectService;
 	
 	/**
 	 * 跳到登录页面
@@ -404,7 +404,7 @@ public class ReviewController extends BaseController{
 		}
 		try {
 			//check 验证码
-			String msgCode = (String) ContextHolderUtils.getSession().getAttribute(Constants.MSG_CODE_KEY);
+			String msgCode = (String) ContextHolderUtils.getSession().getAttribute(reviewUser.getMobilePhone() + Constants.MSG_CODE_KEY);
 			if (StringUtils.isBlank(msgCode) || !msgCode.equals(reviewUser.getMsgCode())) {
 				json.put("code", 301);
 				json.put("msg", "短信验证码不正确或已过期");
@@ -414,7 +414,7 @@ public class ReviewController extends BaseController{
 
 			JSONObject jsonObject = reviewFrontService.register(reviewUser);
 			if (jsonObject.getInt("code") == 200) {
-				ContextHolderUtils.getSession().removeAttribute(Constants.MSG_CODE_KEY);
+				ContextHolderUtils.getSession().removeAttribute(reviewUser.getMobilePhone() + Constants.MSG_CODE_KEY);
 				json.put("code", 200);
 				json.put("msg", "用户信息注册成功");
 				json.put("result", jsonObject.get("userId"));
@@ -429,10 +429,6 @@ public class ReviewController extends BaseController{
 		}
 		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
 	}
-
-	@Autowired
-	private IReviewProjectService reviewProjectService;
-
 
 	/**
 	 * 设置用户组
@@ -496,7 +492,7 @@ public class ReviewController extends BaseController{
 			CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
 			return;
 		}
-		List<ReviewResultVO> reviewResultList = reviewFrontService.getReportResults(reviewUser.getUserId());
+		List<ReviewResultVO> reviewResultList = reviewFrontService.getReportResults(reviewUser.getUserId(), reviewUser.getProjectId());
 		json.put("code", 200);
 		json.put("rows", reviewResultList);
 		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
@@ -659,7 +655,7 @@ public class ReviewController extends BaseController{
 			try {
 				SendSmsResponseBody body = AliYunSmsUtils.sendMsg(code, reviewUser.getMobilePhone());
 				if (body != null && "ok".equalsIgnoreCase(body.getCode())) {
-					ContextHolderUtils.getSession().setAttribute(Constants.MSG_CODE_KEY, code);
+					ContextHolderUtils.getSession().setAttribute(reviewUser.getMobilePhone() + Constants.MSG_CODE_KEY, code);
 					json.put("code", 200);
 					json.put("msg", "验证码发送成功");
 				} else {

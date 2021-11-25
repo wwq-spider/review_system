@@ -57,7 +57,7 @@ public class HelloOSS {
 
     // Bucket用来管理所存储Object的存储空间，详细描述请参看“开发人员指南 > 基本概念 > OSS基本概念介绍”。
     // Bucket命名规范如下：只能包括小写字母，数字和短横线（-），必须以小写字母或者数字开头，长度必须在3-63字节之间。
-    private static String bucketName = "review-images";
+    private static String bucketName = "review-img";
 
     // Object是OSS存储数据的基本单元，称为OSS的对象，也被称为OSS的文件。详细描述请参看“开发人员指南 > 基本概念 > OSS基本概念介绍”。
     // Object命名规范如下：使用UTF-8编码，长度必须在1-1023字节之间，不能以“/”或者“\”字符开头。
@@ -106,7 +106,7 @@ public class HelloOSS {
 
             // 下载文件。详细请参看“SDK手册 > Java-SDK > 下载文件”。
             // 链接地址是：https://help.aliyun.com/document_detail/oss/sdk/java-sdk/download_object.html?spm=5176.docoss/sdk/java-sdk/manage_object
-            OSSObject ossObject = ossClient.getObject(bucketName, "picMadeByMatools.png");
+            OSSObject ossObject = ossClient.getObject(bucketName, "2021-09-29/picMadeByMatools.png");
             InputStream inputStream = ossObject.getObjectContent();
             StringBuilder objectContent = new StringBuilder();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));

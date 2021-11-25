@@ -72,7 +72,7 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		if(num > 0) {
 			sb.append(" LIMIT "+page+","+num);
 		}
-		Map<String, String> map = new HashMap<String, String>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("classId", classId);
 		return this.getObjectList(sb.toString(), map, QuestionVO.class);
 	}
@@ -105,8 +105,8 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		sb.append("   review_answer a ");
 		sb.append(" WHERE a.`question_id` =:questionId");
 		sb.append(" ORDER BY a.`answer_code` ASC");
-		Map<String,String> map = new HashMap<String, String>();
-		map.put("questionId", questionId+"");
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("questionId", questionId);
 		List<SelectVO> list = this.getObjectList(sb.toString(), map, SelectVO.class);
 		return list;
 	}
@@ -354,23 +354,27 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 	}
 
 	@Override
-	public List<ReviewResultVO> getReportResults(String userId) {
-		String sql = "select r.result_id resultId, " +
+	public List<ReviewResultVO> getReportResults(String userId, Long projectId) {
+		Map<String, Object> paramMap = new HashMap<>();
+		StringBuilder sql = new StringBuilder("select r.result_id resultId, " +
 				"       r.class_id classId, " +
 				"       DATE_FORMAT(r.`create_time`,'%Y-%m-%e %H:%i:%S') createTime," +
 				"       r.grade_total reportGrade," +
 				"       c.banner_img classCover," +
 				"       c.title classTitle" +
-				" from review_result r, review_class c " +
-				" where r.class_id=c.class_id and r.user_id=:userId order by r.`create_time` desc";
-		Map<String, String> paramMap = new HashMap<>();
+				" from review_result r inner join review_class c on r.class_id=c.class_id  where r.user_id =:userId");
 		paramMap.put("userId", userId);
-		return this.getObjectList(sql, paramMap, ReviewResultVO.class);
+		if (projectId != null && projectId > 0) {
+			sql.append(" and r.project_id=:projectId ");
+			paramMap.put("projectId", projectId);
+		}
+		sql.append(" order by r.`create_time` desc");
+		return this.getObjectList(sql.toString(), paramMap, ReviewResultVO.class);
 	}
 
 	@Override
 	public List<ReviewResultVO> getReviewReports(String userId, Long projectId) {
-		Map<String, String> paramMap = new HashMap<>();
+		Map<String, Object> paramMap = new HashMap<>();
 		StringBuilder sql =new StringBuilder("select r.result_id                                  resultId,\n" +
 				"       r.class_id                                        classId,\n" +
 				"       DATE_FORMAT(r.`create_time`, '%Y-%m-%e %H:%i:%S') createTime,\n" +
@@ -383,7 +387,7 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		if (projectId != null && projectId > 0) {
 			sql.append(" inner join (select id from review_project where id=:projectId and show_report = 2) p on r.project_id = p.id ");
 			sql.append(" where r.user_id =:userId");
-			paramMap.put("projectId", projectId.toString());
+			paramMap.put("projectId", projectId);
 		} else {
 			sql.append(" left join (select id from review_project where show_report = 2) p on r.project_id = p.id " +
 					" where r.user_id =:userId and (r.project_id is null or r.project_id = 0 or p.id != null)");
