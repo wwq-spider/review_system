@@ -58,6 +58,7 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		sb.append("   q.`content` content,");
 		sb.append("   q.`question_id` questionId,");
 		sb.append("   q.`question_num` questionNum,");
+		sb.append("   q.`question_type` questionType,");
 		sb.append("   q.`picture_attach` pictureAttach,");
 		sb.append("   qc.`class_id` classId,");
 		sb.append("   (SELECT GROUP_CONCAT(r.variate_id) FROM review_grade_rule r WHERE r.question_id=q.question_id) variateId,");

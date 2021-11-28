@@ -5,17 +5,13 @@ import com.review.manage.order.service.ReviewOrderServiceI;
 import org.apache.log4j.Logger;
 import org.jeecgframework.core.common.controller.BaseController;
 import org.jeecgframework.core.common.hibernate.qbc.CriteriaQuery;
-import org.jeecgframework.core.common.model.json.AjaxJson;
 import org.jeecgframework.core.common.model.json.DataGrid;
-import org.jeecgframework.core.constant.Globals;
-import org.jeecgframework.core.util.MyBeanUtils;
 import org.jeecgframework.core.util.StringUtil;
 import org.jeecgframework.tag.core.easyui.TagUtil;
-import org.jeecgframework.web.system.service.SystemService;
+import org.jeecgframework.tag.vo.datatable.SortDirection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,16 +35,14 @@ public class ReviewOrderController extends BaseController {
 
 	@Autowired
 	private ReviewOrderServiceI reviewOrderService;
-	@Autowired
-	private SystemService systemService;
 
 
 	/**
-	 * 公告列表 页面跳转
+	 * 订单列表 页面跳转
 	 * 
 	 * @return
 	 */
-	@RequestMapping(params = "reviewOrder")
+	@RequestMapping(params = "toList")
 	public ModelAndView reviewOrder(HttpServletRequest request) {
 		return new ModelAndView("review/manage/order/reviewOrderList");
 	}
@@ -65,59 +59,11 @@ public class ReviewOrderController extends BaseController {
 	@RequestMapping(params = "datagrid")
 	public void datagrid(ReviewOrderEntity reviewOrder, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
 		CriteriaQuery cq = new CriteriaQuery(ReviewOrderEntity.class, dataGrid);
+		cq.addOrder("operateTime", SortDirection.desc);
 		//查询条件组装器
 		org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil.installHql(cq, reviewOrder, request.getParameterMap());
 		this.reviewOrderService.getDataGridReturn(cq, true);
 		TagUtil.datagrid(response, dataGrid);
-	}
-
-	/**
-	 * 删除公告
-	 * 
-	 * @return
-	 */
-	@RequestMapping(params = "del")
-	@ResponseBody
-	public AjaxJson del(ReviewOrderEntity reviewOrder, HttpServletRequest request) {
-		AjaxJson j = new AjaxJson();
-		String message = "公告删除成功";
-		reviewOrderService.deleteEntityById(ReviewOrderEntity.class, reviewOrder.getId());
-		systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
-		
-		j.setMsg(message);
-		return j;
-	}
-
-
-	/**
-	 * 添加公告
-	 * 
-	 * @param ids
-	 * @return
-	 */
-	@RequestMapping(params = "save")
-	@ResponseBody
-	public AjaxJson save(ReviewOrderEntity reviewOrder, HttpServletRequest request) {
-		AjaxJson j = new AjaxJson();
-		String message = "";
-		if (StringUtil.isNotEmpty(reviewOrder.getId())) {
-			message = "公告更新成功";
-			ReviewOrderEntity t = reviewOrderService.get(ReviewOrderEntity.class, reviewOrder.getId());
-			try {
-				MyBeanUtils.copyBeanNotNull2Bean(reviewOrder, t);
-				reviewOrderService.saveOrUpdate(t);
-				systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
-			} catch (Exception e) {
-				logger.error("save error, ", e);
-				message = "公告更新失败";
-			}
-		} else {
-			message = "公告添加成功";
-			reviewOrderService.save(reviewOrder);
-			systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
-		}
-		j.setMsg(message);
-		return j;
 	}
 
 	/**

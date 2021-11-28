@@ -11,6 +11,8 @@ public class ReviewOrderVO implements Serializable {
     private Long id;
     /**用户id*/
     private String userId;
+    /**用户手机号*/
+    private String mobilePhone;
     /**微信openid*/
     private String openid;
     /**支付ip地址*/
@@ -50,6 +52,9 @@ public class ReviewOrderVO implements Serializable {
 
     private String broswer;
 
+    /**微信订单id*/
+    private String transactionId;
+
     public Long getId() {
         return id;
     }
@@ -82,6 +87,14 @@ public class ReviewOrderVO implements Serializable {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getMobilePhone() {
+        return mobilePhone;
+    }
+
+    public void setMobilePhone(String mobilePhone) {
+        this.mobilePhone = mobilePhone;
     }
 
     public String getClassId() {
@@ -218,5 +231,13 @@ public class ReviewOrderVO implements Serializable {
 
     public void setBroswer(String broswer) {
         this.broswer = broswer;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
     }
 }

@@ -90,6 +90,7 @@ public class OrderController extends BaseController {
         reviewOrder.setOpenid(reviewUser.getOpenid());
         reviewOrder.setIpAddr(IpUtil.getIpAddr(ContextHolderUtils.getRequest()));
         reviewOrder.setBroswer(BrowserUtils.checkBrowse(ContextHolderUtils.getRequest()));
+        reviewOrder.setMobilePhone(reviewOrder.getMobilePhone());
 
         //创建预支付订单
         PreOrderVO preOrderVO = orderService.createPrePayOrder(reviewOrder);

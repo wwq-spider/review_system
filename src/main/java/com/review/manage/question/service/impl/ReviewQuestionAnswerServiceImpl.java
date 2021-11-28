@@ -1,5 +1,6 @@
 package com.review.manage.question.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.alibaba.fastjson.JSONObject;
@@ -38,8 +39,8 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
         headerAlias.put("03_年龄", "年龄");
         headerAlias.put("04_手机号", "手机号");
         headerAlias.put("05_完成时间", "完成时间");
-        headerAlias.put("06_是否生病", "是否生病");
-        headerAlias.put("07_具体描述", "具体描述");
+       /* headerAlias.put("06_是否生病", "是否生病");
+        headerAlias.put("07_具体描述", "具体描述");*/
         return headerAlias;
     }
 
@@ -97,7 +98,11 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
                 userClassMap = geneUserRow(answerQuestion, headerAlias); //生成用户行
                 singleClassMap.put(userKey, userClassMap);
             }
-            userClassMap.put(qNum, answerQuestion.getSelectGrade());
+            if (StrUtil.isBlank(answerQuestion.getSelectGrade())) {
+                userClassMap.put(qNum, answerQuestion.getRightAnswer());
+            } else {
+                userClassMap.put(qNum, answerQuestion.getSelectGrade());
+            }
         }
 
         ExcelWriter excelWriter = ExcelUtil.getWriter();
@@ -131,7 +136,7 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
         userClassMap.put("03_年龄", answerQuestion.getAge());
         userClassMap.put("04_手机号", answerQuestion.getMobilePhone());
         userClassMap.put("05_完成时间", answerQuestion.getCreateTime());
-        userClassMap.put("06_是否生病","");
+        /*userClassMap.put("06_是否生病","");
         userClassMap.put("07_具体描述","");
         if(StringUtils.isNotBlank(answerQuestion.getExtra())) {
             JSONObject extraObj = JSONObject.parseObject(answerQuestion.getExtra());
@@ -141,7 +146,7 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
                     userClassMap.put("07_具体描述", extraObj.getString("sickDesc"));
                 }
             }
-        }
+        }*/
 
         List<ReviewReportResultEntity> reportResultList = reviewClassService.findHql("from ReviewReportResultEntity where resultId=? order by resultType asc",
                 new Object[]{answerQuestion.getResultId()});
@@ -175,6 +180,7 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
                         "       concat(q.question_num, '.', q.content)              as content,\n" +
                         "       q.sel_code                                           selCode,\n" +
                         "       q.select_grade                                       selectGrade,\n" +
+                        "       q.right_answer                                       rightAnswer,\n" +
                         "       DATE_FORMAT(q.`create_time`, '%Y-%m-%e %H:%i:%S') AS createTime\n" +
                         " from review_question_answer q, review_user u" +
                         " where q.user_id=u.user_id and q.group_id = :groupId ");

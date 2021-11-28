@@ -25,6 +25,18 @@
 				<tr>
 					<td align="right">
 						<label class="Validform_label">
+							交易手机号:
+						</label>
+					</td>
+					<td class="value">
+						<input class="inputxt" id="mobilePhone" name="mobilePhone" ignore="ignore"
+							   value="${reviewOrder.mobilePhone}">
+						<span class="Validform_checktip"></span>
+					</td>
+				</tr>
+				<tr>
+					<td align="right">
+						<label class="Validform_label">
 							测评量表id:
 						</label>
 					</td>
@@ -109,6 +121,18 @@
 				<tr>
 					<td align="right">
 						<label class="Validform_label">
+							微信订单id:
+						</label>
+					</td>
+					<td class="value">
+						<input class="inputxt" id="transactionId" name="transactionId" ignore="ignore"
+							   value="${reviewOrder.transactionId}">
+						<span class="Validform_checktip"></span>
+					</td>
+				</tr>
+				<%--<tr>
+					<td align="right">
+						<label class="Validform_label">
 							支付方式:
 						</label>
 					</td>
@@ -117,7 +141,7 @@
 							   value="${reviewOrder.payType}" datatype="n">
 						<span class="Validform_checktip"></span>
 					</td>
-				</tr>
+				</tr>--%>
 				<tr>
 					<td align="right">
 						<label class="Validform_label">

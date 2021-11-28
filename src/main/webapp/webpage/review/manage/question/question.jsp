@@ -31,7 +31,19 @@
 				</td>
 			</tr>
 			<tr>
-				<td align="right"><label class="Validform_label">题目内容&nbsp;&nbsp;</label></td>
+				<td align="right"><label class="Validform_label">题目类型&nbsp;&nbsp;</label></td>
+				<td class="value">
+					<select  id="questionType" name="questionType" style="width: 200px; " datatype="*" onchange="questionTypeChange(this)">
+						<option value="">---请选择---</option>
+						<option value="1">单选题</option>
+						<option value="2">问答题</option>
+					</select>
+					<span style="color: red">*</span>
+					<span class="Validform_checktip"  id="questionTypeTip"></span>
+				</td>
+			</tr>
+			<tr>
+				<td align="right"><label class="Validform_label">题目标题&nbsp;&nbsp;</label></td>
 				<td class="value">
 					<table style="width: 100%;">
 						<tr>
@@ -48,7 +60,7 @@
 					</table>
 				</td>
 			</tr>
-			<tr>
+			<tr style="display: none" id="questionOptionTr">
 				<td align="right"><label class="Validform_label">
 						选项&nbsp;&nbsp; </label></td>
 				<td class="value" id="selectTd">
@@ -63,7 +75,6 @@
 						<thead>
 						<tbody id="selectTable">
 							<c:forEach items="${answersList }" var="answer" varStatus="i">
-							
 							<tr>
 								<td align="center">
 									<input type="hidden" name="selectList[${i.index }].selectId" id="selectList[${i.index }].selectId" value=""></input>
@@ -101,6 +112,15 @@
  		</table>
 
  		<script type="text/javascript">
+
+		function questionTypeChange(obj) {
+			let type = $(obj).val()
+			if(type == "1") { //单选题
+				$("#questionOptionTr").show()
+			} else if(type == "" || type == "2"){
+				$("#questionOptionTr").hide()
+			}
+		}
  		
  		 var MAXWIDTH  = 50; 
          var MAXHEIGHT = 50;
@@ -208,6 +228,15 @@
 								} else {
 									$("#contentTip").text("通过信息验证");
 									$("#contentTip").attr("class","Validform_checktip Validform_right");
+								}
+								var questionType = $("#questionType").val();
+								if($.trim(questionType) == "") {
+									$("#questionTypeTip").text("请填写题目类型");
+									$("#questionTypeTip").attr("class","Validform_checktip Validform_wrong");
+									return false;
+								} else {
+									$("#questionTypeTip").text("通过信息验证");
+									$("#questionTypeTip").attr("class","Validform_checktip Validform_right");
 								}
 								return true;
 							},

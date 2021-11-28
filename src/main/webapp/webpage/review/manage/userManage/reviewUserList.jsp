@@ -20,14 +20,14 @@
 <t:base type="jquery,easyui,tools,DatePicker"></t:base>
 <t:datagrid name="reviewUserList" title="用户管理" actionUrl="reviewUser.do?datagrid" fit="true" fitColumns="true" idField="id" queryMode="group">
 	<t:dgCol title="编号" field="id" hidden="false"></t:dgCol>
-	<t:dgCol title="用户名" sortable="false" field="userName" query="true"></t:dgCol>
-	<t:dgCol title="真实姓名" field="realName" query="true"></t:dgCol>
-	<t:dgCol title="性别" sortable="false" field="sex" query="false"></t:dgCol>
-	<t:dgCol title="用户组" sortable="false" field="groupId" query="true" replace="${departsReplace}"></t:dgCol>
-	<t:dgCol title="手机号" sortable="false" field="mobilePhone" query="false"></t:dgCol>
-	<t:dgCol title="微信id" sortable="false" field="openid" query="false"></t:dgCol>
-	<t:dgCol title="操作时间" field="updateTime" query="false"></t:dgCol>
-	<t:dgCol title="操作" field="opt"></t:dgCol>
+	<t:dgCol title="用户名" sortable="false" field="userName" query="true" width="10"></t:dgCol>
+	<t:dgCol title="真实姓名" field="realName" query="true" width="10"></t:dgCol>
+	<t:dgCol title="性别" sortable="false" field="sex" query="false" width="5"></t:dgCol>
+	<t:dgCol title="用户组" sortable="false" field="groupId" query="true" replace="${departsReplace}"  width="20"></t:dgCol>
+	<t:dgCol title="手机号" sortable="false" field="mobilePhone" query="false"  width="10"></t:dgCol>
+	<t:dgCol title="微信id" sortable="false" field="openid" query="false" width="15"></t:dgCol>
+	<t:dgCol title="操作时间" field="updateTime" query="false" width="15"></t:dgCol>
+	<t:dgCol title="操作" field="opt"  width="20"></t:dgCol>
 	<t:dgFunOpt funname="viewRecord(id)" title="查看测评记录"></t:dgFunOpt>
 	<t:dgDelOpt title="删除" url="reviewUser.do?del&userId={id}" />
 	<t:dgToolBar title="用户录入" icon="icon-add" url="reviewUser.do?toAdd" funname="add"></t:dgToolBar>

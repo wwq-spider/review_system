@@ -25,6 +25,8 @@ public class ReviewOrderEntity implements java.io.Serializable {
 	private Long id;
 	/**用户id*/
 	private String userId;
+	/**用户手机号*/
+	private String mobilePhone;
 	/**测评量表id*/
 	private String classId;
 	/**量表名称*/
@@ -51,6 +53,8 @@ public class ReviewOrderEntity implements java.io.Serializable {
 	private Long subjectId;
 	/**用户组id*/
 	private String groupId;
+	/**微信订单id*/
+	private String transactionId;
 	/**支付时间*/
 	private Date payTime;
 	/**创建时间*/
@@ -95,6 +99,19 @@ public class ReviewOrderEntity implements java.io.Serializable {
 	public void setUserId(String userId){
 		this.userId = userId;
 	}
+	/**
+	 *方法: 取得java.lang.String
+	 *@return: java.lang.String  用户交易手机号
+	 */
+	@Column(name ="MOBILE_PHONE",nullable=true,length=20)
+	public String getMobilePhone() {
+		return mobilePhone;
+	}
+
+	public void setMobilePhone(String mobilePhone) {
+		this.mobilePhone = mobilePhone;
+	}
+
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  测评量表id
@@ -210,6 +227,14 @@ public class ReviewOrderEntity implements java.io.Serializable {
 	public ReviewOrderEntity setPayResultMsg(String payResultMsg) {
 		this.payResultMsg = payResultMsg;
 		return this;
+	}
+	@Column(name ="transaction_id",nullable=true, length = 50)
+	public String getTransactionId() {
+		return transactionId;
+	}
+
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
 	}
 
 	/**
