@@ -194,7 +194,6 @@
 						<value>reviewFront/completeReview.do</value>
 						<value>reviewFront/getQuestionsByClassID.do</value>
 						<value>reviewFront/getReviewReportDetail.do</value>
-						<value>reviewFront/getReviewReports.do</value>
 						<value>reviewFront/getReviewProjectDetail.do</value>
 					</list>
 				</property>
