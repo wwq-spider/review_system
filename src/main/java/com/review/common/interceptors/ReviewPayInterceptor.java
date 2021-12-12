@@ -31,7 +31,6 @@ public class ReviewPayInterceptor implements HandlerInterceptor {
     public void setIncludeUrls(List<String> includeUrls) {
         this.includeUrls = includeUrls;
     }
-
     @Autowired
     private ReviewClassService reviewClassService;
 
