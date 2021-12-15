@@ -26,6 +26,7 @@ import com.review.manage.subject.vo.ReviewSubjectVO;
 import com.review.manage.userManage.entity.ReviewUserEntity;
 import com.review.manage.userManage.service.ReviewUserService;
 import net.sf.json.JSONObject;
+import org.apache.commons.collections.MultiMap;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jeecgframework.core.common.controller.BaseController;
@@ -147,8 +148,22 @@ public class ReviewController extends BaseController{
 	public ModelAndView toQuestionStore(HttpServletRequest request,
 			HttpServletResponse response) {
 		ModelAndView model = new ModelAndView("review/front/questionStore");
-		List<ReviewClassEntity> list = reviewFrontService.findByQueryString("from ReviewClassEntity where status=1 ORDER BY createTime");
-		model.addObject("classList", list);
+		//List<ReviewClassEntity> list = reviewFrontService.findByQueryString("from ReviewClassEntity where status=1 ORDER BY createTime");
+		ReviewUserEntity reviewUser = ContextHolderUtils.getLoginFrontUser();
+
+		List<ReviewClassVO> list = reviewFrontService.getReviewClassByGroupId(reviewUser.getGroupId());
+		Map<String, List<ReviewClassVO>> resultMap = new HashMap<>();
+		for (ReviewClassVO reviewClass : list) {
+			List<ReviewClassVO> reviewClassList = resultMap.get(reviewClass.getProjectName());
+			if (reviewClassList == null) {
+				reviewClassList = new ArrayList<>();
+				reviewClassList.add(reviewClass);
+				resultMap.put(reviewClass.getProjectName(), reviewClassList);
+			} else {
+				reviewClassList.add(reviewClass);
+			}
+		}
+		model.addObject("resultMap", resultMap);
 		return model;
 	}
 	

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.review.front.entity.ReviewResultEntity;
 import com.review.front.vo.ReviewResultVO;
+import com.review.manage.reviewClass.vo.ReviewClassVO;
 import com.review.manage.userManage.entity.ReviewUserEntity;
 import net.sf.json.JSONObject;
 import org.jeecgframework.core.common.service.CommonService;
@@ -89,4 +90,11 @@ public interface ReviewFrontService extends CommonService{
 	 * @return
 	 */
 	ReviewUserEntity getUserInfo(String openid);
+
+	/**
+	 * 查询用户组下的测评项目
+	 * @param groupId
+	 * @return
+	 */
+	List<ReviewClassVO> getReviewClassByGroupId(String groupId);
 }

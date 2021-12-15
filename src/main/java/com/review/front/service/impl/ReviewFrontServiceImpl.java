@@ -16,6 +16,7 @@ import com.review.manage.question.vo.QuestionVO;
 import com.review.manage.report.entity.ReviewReportEntity;
 import com.review.manage.report.entity.ReviewReportGradeEntity;
 import com.review.manage.report.entity.ReviewReportVariateEntity;
+import com.review.manage.reviewClass.vo.ReviewClassVO;
 import com.review.manage.userManage.entity.ReviewUserEntity;
 import com.review.manage.variate.entity.ReviewVariateEntity;
 import com.review.manage.variate.entity.ReviewVariateGradeEntity;
@@ -491,5 +492,31 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 			return null;
 		}
 		return reviewUserList.get(0);
+	}
+
+	@Override
+	public List<ReviewClassVO> getReviewClassByGroupId(String groupId) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(" SELECT ");
+		sb.append("	  c.`class_id` classId,");
+		sb.append("   c.`sort_id` sortId,");
+		sb.append("   c.`banner_img` bannerImg,");
+		sb.append("   c.`status`,");
+		sb.append("   c.`type`,");
+		sb.append("   c.`title`,");
+		sb.append("   c.`charge`,");
+		sb.append("   c.`org_price` orgPrice,");
+		sb.append("   c.`dicount_price` dicountPrice,");
+		sb.append("   (c.`org_price` - c.`dicount_price`) as realPrice,");
+		sb.append("   c.`class_desc` classDesc,");
+		sb.append("   p.`project_name` projectName");
+
+		sb.append(" FROM  ");
+		HashMap<String, Object> paramMap = new HashMap<>();
+		paramMap.put("groupId", groupId);
+		sb.append("   review_class c inner join review_project_class pc on c.class_id=pc.class_id inner join review_project p on pc.project_id=p.id");
+		sb.append(" WHERE c.`status`=1 and p.group_id=:groupId");
+		sb.append(" ORDER BY c.`sort_id` ASC ");
+		return this.getObjectList(sb.toString(), paramMap, ReviewClassVO.class);
 	}
 }

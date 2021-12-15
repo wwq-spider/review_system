@@ -25,8 +25,13 @@ $(function(){
 		<div id="maincontent">
 			<h1 class="tikutitle"><img src="<%=path%>/plug-in/review/images/tiku_text.jpg" alt="题库选择" /></h1>
 			<div class="tikuselectwrap">
-				<c:forEach items="${classList }" var="reviewType">
-					<p><a href="<%=path%>/reviewFront.do?toGuide&classId=${reviewType.classId}" title=""><p>${reviewType.title }</p></a></p>
+				<c:forEach items="${resultMap}" var="item">
+					<div>${item.key}</div>
+					<c:forEach items="${item.value}" var="reviewType">
+						<p style=" text-align: start">
+							<a href="<%=path%>/reviewFront.do?toGuide&classId=${reviewType.classId}" title="${reviewType.title }">${reviewType.title }</a>
+						</p>
+					</c:forEach>
 				</c:forEach>
 			</div>
 		</div>

@@ -33,7 +33,7 @@
 
 			for(let i=0; i<data.rows.length; i++){
 				let edit = "[<a href=\"#\" onclick=\"createwindow('编辑', 'reviewProject.do?toAdd&projectId="+
-						data.rows[i].id+"', 800, 750)\">编辑</a>]";
+						data.rows[i].id+"', '100%', 500)\">编辑</a>]";
 				rows.push({
 					id: data.rows[i].id,
 					projectName: data.rows[i].projectName,

@@ -20,6 +20,8 @@ public class ReviewClassVO {
 
     private Long projectId;
 
+	private String projectName;
+
 	private String bannerImg;
 
 	private CommonsMultipartFile contentImg;
@@ -202,5 +204,14 @@ public class ReviewClassVO {
 
 	public void setBuyCount(Integer buyCount) {
 		this.buyCount = buyCount;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public ReviewClassVO setProjectName(String projectName) {
+		this.projectName = projectName;
+		return this;
 	}
 }

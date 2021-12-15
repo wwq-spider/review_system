@@ -47,11 +47,24 @@ public class ContextHolderUtils {
 	}
 
 	public static String getLoginFrontUserID() {
-		ReviewUserEntity reviewUserEntity = (ReviewUserEntity)getSession().getAttribute(Constants.REVIEW_LOGIN_USER);
+		ReviewUserEntity reviewUserEntity = getLoginFrontUser();
 		if (reviewUserEntity != null) {
 			return reviewUserEntity.getUserId();
 		}
 		return null;
 	}
 
+	public static ReviewUserEntity getLoginFrontUser() {
+
+		Client client = ClientManager.getInstance().getClient(getSession().getId());
+		if (client.getUser() != null) {
+			return client.getReviewUser();
+		}
+
+		ReviewUserEntity reviewUserEntity = (ReviewUserEntity)getSession().getAttribute(Constants.REVIEW_LOGIN_USER);
+		if (reviewUserEntity != null) {
+			return reviewUserEntity;
+		}
+		return null;
+	}
 }
