@@ -31,15 +31,12 @@ $(function(){
 			</div>
 			<form action="" id="zhidaoyumyform" name="zhidaoyumyform">
 			<p id="zhidaomybtndiv">
-			<a href="<%=path%>/reviewFront.do?nextQuestion&classId=${classId}&questionNum=0">
+			<a href="<%=path%>/reviewFront.do?nextQuestion&classId=${classId}&nextClassId=${nextClassId}&questionNum=0">
 			<img src="<%=path%>/plug-in/review/images/begin_testbtn.jpg" alt="开始测试"/>
 			</a>
 			</p>
-
-			</form>	
-	
+			</form>
 		</div>
-
 </div>
 </body>
 </html>

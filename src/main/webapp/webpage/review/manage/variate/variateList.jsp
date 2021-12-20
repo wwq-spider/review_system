@@ -37,7 +37,7 @@
 			 <div class="datagrid-toolbar" style="height:30px;">
 				<span style="float:left;">
 					<a href="#" id='add' class="easyui-linkbutton" plain="true" icon="icon-add"
-					onclick="add('添加因子','variate.do?toAdd','variateList')" id="">添加因子</a></span>
+					onclick="add('添加因子','variate.do?toAdd','variateList', 800, 500)" id="">添加因子</a></span>
 				<span style="float:right">
 					<a onclick="variateSearch()" iconcls="icon-search" class="easyui-linkbutton l-btn" href="#"
 						id="">查询</a>
@@ -65,7 +65,7 @@
 					createTime: data.rows[i].createTime,
 					createBy: data.rows[i].createBy,
 					opt: "[<a href=\"#\" onclick=\"add('计分设置','variate.do?toScore&variateId="+data.rows[i].variateId+"&variateName="+variatename+"&classId="+data.rows[i].classId+"','variateList','100%',500)\">计分设置</a>]&nbsp;&nbsp;"+
-						 "[<a href=\"#\" onclick=\"add('因子编辑','variate.do?toAdd&variateId="+data.rows[i].variateId+"','variateList',700,500)\">编辑</a>]&nbsp;&nbsp;[<a href=\"#\" onclick=\"delObj('variate.do?del&variateId="+
+						 "[<a href=\"#\" onclick=\"add('因子编辑','variate.do?toAdd&variateId="+data.rows[i].variateId+"','variateList',800,500)\">编辑</a>]&nbsp;&nbsp;[<a href=\"#\" onclick=\"delObj('variate.do?del&variateId="+
 							data.rows[i].variateId+"','删除')\">删除</a>]&nbsp;&nbsp;[<a href=\"#\" onclick=\"moveUp('"+data.rows[i].variateId+"');\">上移</a>]"+
 						 "[<a href=\"#\" onclick=\"moveDown('"+data.rows[i].variateId+"');\">下移</a>]"
 				});

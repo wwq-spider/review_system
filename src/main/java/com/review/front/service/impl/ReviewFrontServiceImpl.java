@@ -13,6 +13,8 @@ import com.review.manage.project.service.IReviewProjectService;
 import com.review.manage.question.entity.ReviewQuestionAnswerEntity;
 import com.review.manage.question.service.ReviewQuestionAnswerServiceI;
 import com.review.manage.question.vo.QuestionVO;
+import com.review.manage.record.entity.ReviewRecordEntity;
+import com.review.manage.record.service.ReviewRecordServiceI;
 import com.review.manage.report.entity.ReviewReportEntity;
 import com.review.manage.report.entity.ReviewReportGradeEntity;
 import com.review.manage.report.entity.ReviewReportVariateEntity;
@@ -47,6 +49,9 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 	@Autowired
 	private IReviewProjectService reviewProjectService;
 
+	@Autowired
+	private ReviewRecordServiceI reviewRecordService;
+
 	@Override
 	public List<QuestionVO> getQuestionVOList(String classId) {
 		return getQuestionVOList(classId, 0, 0);
@@ -72,7 +77,10 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		sb.append(" GROUP BY q.`question_id`");
 		sb.append(" ORDER BY q.question_num asc");
 		if(num > 0) {
-			sb.append(" LIMIT "+page+","+num);
+			sb.append(" LIMIT ");
+			sb.append(page);
+			sb.append(",");
+			sb.append(num);
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("classId", classId);
@@ -81,17 +89,18 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 
 	
 	@Override
-	public QuestionVO getQuestionDetail(String classId,int page, int num) {
-		List<QuestionVO> list = getQuestionVOList(classId,page, 0);
-		QuestionVO question = list.get(page);
-		
-		if(page == list.size()-1) {
-			question.setIsLastQuestion("Y");
-		} 
-		question.setMultiple("N");
-		List<SelectVO> selectList = this.getSelectVOList(question.getQuestionId());
-		question.setSelectList(selectList);
-		return question;
+	public QuestionVO getQuestionDetail(String classId,int page) {
+		//每次查2条 用于判断是否为最后一题
+		List<QuestionVO> list = getQuestionVOList(classId, page, 2);
+		if (CollectionUtils.isNotEmpty(list)) {
+			QuestionVO question = list.get(0);
+			question.setMultiple("N");
+			question.setIsLastQuestion(list.size() == 1 ? Constants.YES : Constants.NO);
+			List<SelectVO> selectList = this.getSelectVOList(question.getQuestionId());
+			question.setSelectList(selectList);
+			return question;
+		}
+		return null;
 	}
 
 	@Override
@@ -206,6 +215,9 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		ReviewVariateEntity variateEntity = null;
 		Double variateTotalGrade = 0.0;
 
+		List<String> resultCombine = new ArrayList<>();
+		Integer levelGradeTotal = 0;
+
 		//遍历因子
 		for(Entry<String, Double> entry : map.entrySet()) {	
 			variateEntity = this.get(ReviewVariateEntity.class, entry.getKey());
@@ -222,11 +234,18 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 			variateTotalGrade = calVariateGrade(variateEntity.getCalSymbol(), variateTotalGrade, variateEntity.getCalTotal());
 
 			//System.out.println("3："+variateTotalGrade);
-			
+
+			int levelGrade = 0;
+
 			for(int i=0; i< variateGradeList.size();i++) {
 				variateGrade = variateGradeList.get(i);
 				if(variateGrade.getGradeSmall() <= variateTotalGrade && variateTotalGrade <= variateGrade.getGradeBig()) {
 					variateResultExplain = variateGrade.getResultExplain();
+					resultCombine.add(variateResultExplain);
+					if (variateGrade.getLevelGrade() != null) {
+						levelGrade = variateGrade.getLevelGrade();
+						levelGradeTotal += levelGrade;
+					}
 					break;
 				}
 			}
@@ -249,6 +268,7 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 			
 			reportResult.setExplainResult(variateResultExplain);
 			reportResult.setGrade(variateTotalGrade);
+			reportResult.setLevelGrade(levelGrade);
 			reportResult.setReportId(entry.getKey());
 			reportResult.setReportName(variateEntity.getVariateName());
 			reportResult.setResultId(reviewResult.getResultId());
@@ -268,10 +288,16 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 					grade = Arith.add(grade, map.get(reportVariate.getVariateId()));
 				}
 			}
+
+			int levelGrade = 0;
+
 			gradeList = this.findByProperty(ReviewReportGradeEntity.class, "reportId", report.getReportId());
 			for(ReviewReportGradeEntity reportGrade : gradeList) {
 				if(grade <= reportGrade.getGradeBig() && grade >= reportGrade.getGradeSmall()) {
 					reportResult.setExplainResult(reportGrade.getResultExplain());
+					if(reportGrade.getLevelGrade() != null) {
+						levelGrade = reportGrade.getLevelGrade();
+					}
 					//拼装报告的结果描述
 					if(resultExplain.length() == 0) {
 						resultExplain.append(report.getReportName())
@@ -288,6 +314,7 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 			if(gradeList.size() > 0 && grade > 0) {
 				reportResult.setReportId(reviewResult.getResultId());
 				reportResult.setGrade(grade);
+				reportResult.setLevelGrade(levelGrade);
 				reportResult.setCreateTime(report.getCreateTime());
 				reportResult.setReportId(report.getReportId());
 				reportResult.setReportName(report.getReportName());
@@ -298,6 +325,8 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		}
 		//将结果存起来
 		reviewResult.setReviewResult(resultExplain.toString());
+		reviewResult.setLevelGrade(levelGradeTotal);
+		reviewResult.setCombineVarResult(StringUtils.join(resultCombine, ","));
 		this.saveOrUpdate(reviewResult);
 		return reviewResult;
 	}
@@ -495,7 +524,7 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 	}
 
 	@Override
-	public List<ReviewClassVO> getReviewClassByGroupId(String groupId) {
+	public List<ReviewClassVO> getReviewClassByGroupId(String groupId, String userId) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(" SELECT ");
 		sb.append("	  c.`class_id` classId,");
@@ -509,14 +538,61 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		sb.append("   c.`dicount_price` dicountPrice,");
 		sb.append("   (c.`org_price` - c.`dicount_price`) as realPrice,");
 		sb.append("   c.`class_desc` classDesc,");
-		sb.append("   p.`project_name` projectName");
-
+		sb.append("   p.`project_name` projectName,");
+		sb.append("   p.`id` projectId");
 		sb.append(" FROM  ");
 		HashMap<String, Object> paramMap = new HashMap<>();
 		paramMap.put("groupId", groupId);
-		sb.append("   review_class c inner join review_project_class pc on c.class_id=pc.class_id inner join review_project p on pc.project_id=p.id");
+		sb.append("   review_class c inner join review_project_class pc on c.class_id=pc.class_id");
+		sb.append(" inner join review_project p on pc.project_id=p.id ");
 		sb.append(" WHERE c.`status`=1 and p.group_id=:groupId");
-		sb.append(" ORDER BY c.`sort_id` ASC ");
-		return this.getObjectList(sb.toString(), paramMap, ReviewClassVO.class);
+		sb.append(" ORDER BY p.id, c.`sort_id` ASC ");
+		List<ReviewClassVO> reviewClassList = this.getObjectList(sb.toString(), paramMap, ReviewClassVO.class);
+
+		//封装测评记录
+		Map<String, List<ReviewClassVO>> resultMap = new HashMap<>();
+		paramMap.put("userId", userId);
+		List<ReviewClassVO> reviewRecordList = reviewRecordService.getObjectList("select class_id classId, count(result_id) as reviewTimes " +
+				"from review_result\n" +
+				"where user_id =:userId\n" +
+				"group by class_id\n" +
+				"order by count(result_id) desc", paramMap, ReviewClassVO.class);
+
+		if (CollectionUtils.isNotEmpty(reviewRecordList)) {
+			Map<String, Integer> map = new HashMap<>();
+			for (ReviewClassVO reviewRecord : reviewRecordList) {
+				map.put(reviewRecord.getClassId(), reviewRecord.getReviewTimes());
+			}
+			for (ReviewClassVO reviewClass : reviewClassList) {
+				if (map.get(reviewClass.getClassId()) != null) {
+					reviewClass.setReviewTimes(map.get(reviewClass.getClassId()));
+				}
+				String key = reviewClass.getProjectId() + reviewClass.getProjectName();
+				if (resultMap.get(key) == null) {
+					resultMap.put(key, new ArrayList<>());
+				}
+				resultMap.get(key).add(reviewClass);
+			}
+		}
+		return reviewClassList;
+	}
+
+	@Override
+	public String getNextClassId(String curClassId, String groupId, String userId) {
+		//获取测评量表
+		List<ReviewClassVO> reviewClassList = getReviewClassByGroupId(groupId, userId);
+		int size = reviewClassList.size();
+		for (int i=0; i < size; i++) {
+			ReviewClassVO reviewClass = reviewClassList.get(i);
+			if (curClassId.equals(reviewClass.getClassId()) && i < size-1) {
+				for (int j = i+1; j<size; j++) {
+					ReviewClassVO reviewClassNew = reviewClassList.get(j);
+					if (reviewClassNew.getReviewTimes() == 0) {
+						return reviewClassNew.getClassId();
+					}
+				}
+			}
+		}
+		return null;
 	}
 }

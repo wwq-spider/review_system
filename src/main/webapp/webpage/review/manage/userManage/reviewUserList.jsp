@@ -30,8 +30,8 @@
 	<t:dgCol title="操作" field="opt"  width="20"></t:dgCol>
 	<t:dgFunOpt funname="viewRecord(id)" title="查看测评记录"></t:dgFunOpt>
 	<t:dgDelOpt title="删除" url="reviewUser.do?del&userId={id}" />
-	<t:dgToolBar title="用户录入" icon="icon-add" url="reviewUser.do?toAdd" funname="add"></t:dgToolBar>
-	<t:dgToolBar title="用户编辑" icon="icon-edit" url="reviewUser.do?toAdd" funname="updateReviewUser"></t:dgToolBar>
+	<t:dgToolBar title="用户录入" icon="icon-add" url="reviewUser.do?toAdd" funname="add" width="600" height="500"></t:dgToolBar>
+	<t:dgToolBar title="用户编辑" icon="icon-edit" url="reviewUser.do?toAdd" funname="updateReviewUser"  width="600" height="500"></t:dgToolBar>
 	<t:dgToolBar title="导入用户" icon="icon-search" onclick="userListImportXls()"></t:dgToolBar>
 	<t:dgToolBar title="批量导入" icon="icon-search" onclick="batchImport()"></t:dgToolBar>
 	<t:dgToolBar title="导出答题记录" icon="icon-add" onclick="exportRecord()"></t:dgToolBar>

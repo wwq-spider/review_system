@@ -46,8 +46,13 @@ public class ReviewResultEntity implements Serializable {
 	
 	@Column(name="create_by")
 	private String createBy;
-	
-	
+
+	@Column(name="level_grade")
+	private Integer levelGrade;
+
+	@Column(name="combine_result")
+	private String combineVarResult;
+
 	public Date getCreateTime() {
 		return createTime;
 	}
@@ -111,6 +116,20 @@ public class ReviewResultEntity implements Serializable {
 	public void setReviewResult(String reviewResult) {
 		this.reviewResult = reviewResult;
 	}
-	
-	
+
+	public Integer getLevelGrade() {
+		return levelGrade;
+	}
+
+	public void setLevelGrade(Integer levelGrade) {
+		this.levelGrade = levelGrade;
+	}
+
+	public String getCombineVarResult() {
+		return combineVarResult;
+	}
+
+	public void setCombineVarResult(String combineVarResult) {
+		this.combineVarResult = combineVarResult;
+	}
 }

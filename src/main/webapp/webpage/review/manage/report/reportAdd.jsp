@@ -11,7 +11,7 @@
  		<input type="hidden" id="btn_sub" class="btn_sub" onclick="addReport();"/>
  		<input type="hidden" id="gradeCount" class="gradeCount"/>
  		<input id="reportId" name="reportId" type="hidden" value="${report.reportId }">
- 		<table style="width: 700px;" cellpadding="0" align="center" cellspacing="1" class="formtable">
+ 		<table style="width: 100%;" cellpadding="0" align="center" cellspacing="1" class="formtable">
  			<tr>
 				<td align="right"><label class="Validform_label">
 						所属分类 </label></td>
@@ -41,6 +41,7 @@
 						<thead>
 							<th align="center" field="num">序号</th>
 							<th align="center" field="range">分值范围</th>
+							<th align="center" field="levelGrade">等级分</th>
 							<th align="center" field="resultExplain">结果描述</th>
 							<th align="center" field="opt">操作</th>
 						</thead>
@@ -59,6 +60,11 @@
 										<input type="number" datatype="*" style="width:50px;" name="reportGradeList[${i.index}].gradeBig"
 										 id="reportGradeList[${i.index}].gradeBig" value="${item.gradeBig }"/>
 										<span class="Validform_checktip"></span><label class="Validform_label" style="display: none;">分值范围</label>
+									</td>
+									<td>
+										<input type="number" datatype="*" style="width:50px;" name="reportGradeList[${i.index}].levelGrade"
+											   id="reportGradeList[${i.index}].levelGrade" value="${item.levelGrade }"/>
+										<span id="reportGradeList[${i.index}].levelGradeTip" class="Validform_checktip"></span>
 									</td>
 									<td>
 										<textarea cols="55" rows="2" datatype="*" name="reportGradeList[${i.index}].resultExplain"
@@ -100,6 +106,11 @@
 				    "<label class=\"Validform_label\" style=\"display: none;\">分值范围</label>——&nbsp;&nbsp;<input type=\"number\" datatype=\"*\" style=\"width:50px;\""+
 				    "name=\"reportGradeList["+tr.length+"].gradeBig\" id=\"reportGradeList["+tr.length+"].gradeBig\" value=\"\"/>"+
 					"<span class=\"Validform_checktip\"></span><label class=\"Validform_label\" style=\"display: none;\">分值范围</label></td>"+
+
+					"<td><input type=\"number\" datatype=\"*\" style=\"width:50px;\" name=\"reportGradeList[" + tr.length + "].levelGrade\"" +
+					" id=\"reportGradeList[" + tr.length + "].levelGrade\" value=\"\"/>" +
+					"<span id=\"reportGradeList[" + tr.length + "].levelGradeTip\" class=\"Validform_checktip\"></span></td>"+
+
 					"<td><textarea cols=\"55\" rows=\"2\" datatype=\"*\" name=\"reportGradeList["+tr.length+"].resultExplain\""+ 
 					"id=\"reportGradeList["+tr.length+"].resultExplain\"></textarea><span class=\"Validform_checktip\"></span>"+
 					"<label class=\"Validform_label\" style=\"display: none;\">结果描述</label></td><td><input type=\"file\" name=\"reportGradeList["+tr.length+"].file\""+

@@ -4,9 +4,11 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 public class ReviewClassVO {
 
-	private java.lang.String classId;   
-	
- 	private Integer sortId;
+	private java.lang.String classId;
+
+	private String nextClassId;
+
+	private Integer sortId;
  
     private java.lang.String title;   
 
@@ -45,6 +47,13 @@ public class ReviewClassVO {
 	private Boolean buy;
 
 	private Integer buyCount;
+
+	private Integer reviewStatus;
+
+	/**
+	 * 测评次数
+	 */
+	private Integer reviewTimes;
 
 	public java.lang.String getClassId() {
 		return classId;
@@ -213,5 +222,32 @@ public class ReviewClassVO {
 	public ReviewClassVO setProjectName(String projectName) {
 		this.projectName = projectName;
 		return this;
+	}
+
+	public String getNextClassId() {
+		return nextClassId;
+	}
+
+	public void setNextClassId(String nextClassId) {
+		this.nextClassId = nextClassId;
+	}
+
+	public Integer getReviewStatus() {
+		return reviewStatus;
+	}
+
+	public void setReviewStatus(Integer reviewStatus) {
+		this.reviewStatus = reviewStatus;
+	}
+
+	public Integer getReviewTimes() {
+		if (reviewTimes == null) {
+			return 0;
+		}
+		return reviewTimes;
+	}
+
+	public void setReviewTimes(Integer reviewTimes) {
+		this.reviewTimes = reviewTimes;
 	}
 }

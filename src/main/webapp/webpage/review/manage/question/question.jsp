@@ -37,6 +37,7 @@
 						<option value="">---请选择---</option>
 						<option value="1">单选题</option>
 						<option value="2">问答题</option>
+						<option value="3">动态数字题</option>
 					</select>
 					<span style="color: red">*</span>
 					<span class="Validform_checktip"  id="questionTypeTip"></span>

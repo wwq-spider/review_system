@@ -38,6 +38,7 @@
 					<option value="">---请选择---</option>
 					<option value="1" <c:if test="${question.questionType == '1'}">selected="selected"</c:if>>单选题</option>
 					<option value="2" <c:if test="${question.questionType == '2'}">selected="selected"</c:if>>问答题</option>
+					<option value="3" <c:if test="${question.questionType == '3'}">selected="selected"</c:if>>动态数字题</option>
 				</select>
 				<span style="color: red">*</span>
 				<span class="Validform_checktip"  id="questionTypeTip"></span>

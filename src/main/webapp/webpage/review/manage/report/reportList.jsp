@@ -35,7 +35,7 @@
 			 <div class="datagrid-toolbar" style="height:30px;">
 				<span style="float:left;">
 					<a href="#" id='add' class="easyui-linkbutton" plain="true" icon="icon-add"
-					onclick="add('添加维度','report.do?toAdd','reportList')" id="">添加维度</a></span>
+					onclick="add('添加维度','report.do?toAdd','reportList',800,500)" id="">添加维度</a></span>
 				<span style="float:right">
 					<a onclick="reportSearch();" iconcls="icon-search" class="easyui-linkbutton l-btn" href="#"
 						id="">查询</a>
@@ -60,7 +60,7 @@
 					reportName: data.rows[i].reportName,
 					createTime: data.rows[i].createTime,
 					createBy: data.rows[i].createBy,
-					opt: "[<a href=\"#\" onclick=\"add('维度编辑','report.do?toAdd&reportId="+data.rows[i].reportId+"&reportName="+reportname+"','reportList',700,500)\">编辑</a>]&nbsp;&nbsp;"+
+					opt: "[<a href=\"#\" onclick=\"add('维度编辑','report.do?toAdd&reportId="+data.rows[i].reportId+"&reportName="+reportname+"','reportList',800,500)\">编辑</a>]&nbsp;&nbsp;"+
 				 	 "[<a href=\"#\" onclick=\"add('维度设置','report.do?toReportSet&reportId="+data.rows[i].reportId+"&reportName="+reportname+"&classId="+data.rows[i].classId+
 				 			 "','reportList','100%',500)\">维度设置</a>]&nbsp;&nbsp;"+
 					"[<a href=\"#\" onclick=\"delObj('report.do?del&reportId="+

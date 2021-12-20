@@ -111,12 +111,12 @@ public final class Constants {
 	/**
 	 * 积分兑换-已兑换
 	 */
-	public final static String POINTS_EXCHANGE_YES = "Y";
+	public final static String YES = "Y";
 	
 	/**
 	 * 积分兑换-未兑换
 	 */
-	public final static String POINTS_EXCHANGE_NO = "N";
+	public final static String NO = "N";
 	
 	/**
 	 * 积分类型--收藏
@@ -254,4 +254,23 @@ public final class Constants {
 	 * session中的短信验证码key
 	 */
 	public final static String MSG_CODE_KEY = "msg_code";
+
+	/**
+	 * 题目类型
+	 */
+	public enum QuestionType {
+		SingleSelect(1),
+		QA(2),
+		DynamicNum(3);
+
+		private int value;
+
+		QuestionType(int value) {
+			this.value = value;
+		}
+
+		public int getValue() {
+			return value;
+		}
+	}
 }

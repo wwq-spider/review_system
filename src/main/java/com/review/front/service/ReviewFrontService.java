@@ -1,6 +1,7 @@
 package com.review.front.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.review.front.entity.ReviewResultEntity;
 import com.review.front.vo.ReviewResultVO;
@@ -33,10 +34,9 @@ public interface ReviewFrontService extends CommonService{
 	/**
 	 * 查询问题详情
 	 * @param classId
-	 * @param num
 	 * @return
 	 */
-	QuestionVO getQuestionDetail(String classId,int page,  int num);
+	QuestionVO getQuestionDetail(String classId,int page);
 	
 	/**
 	 * 查询问题选项
@@ -96,5 +96,14 @@ public interface ReviewFrontService extends CommonService{
 	 * @param groupId
 	 * @return
 	 */
-	List<ReviewClassVO> getReviewClassByGroupId(String groupId);
+	List<ReviewClassVO> getReviewClassByGroupId(String groupId, String userId);
+
+	/**
+	 * 获取下一个量表id
+	 * @param curClassId
+	 * @param groupId
+	 * @param userId
+	 * @return
+	 */
+	String getNextClassId(String curClassId, String groupId, String userId);
 }
