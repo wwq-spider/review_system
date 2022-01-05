@@ -38,6 +38,7 @@
 					<option value="">---请选择---</option>
 					<option value="1" <c:if test="${question.questionType == '1'}">selected="selected"</c:if>>单选题</option>
 					<option value="2" <c:if test="${question.questionType == '2'}">selected="selected"</c:if>>问答题</option>
+					<option value="3" <c:if test="${question.questionType == '3'}">selected="selected"</c:if>>多选题</option>
 				</select>
 				<span style="color: red">*</span>
 				<span class="Validform_checktip"  id="questionTypeTip"></span>
@@ -122,12 +123,12 @@
 
 	<script type="text/javascript">
 		let questionType = "${question.questionType}"
-		if(questionType == "1") {
+		if(questionType == "1" || questionType == "3") {
 			$("#questionOptionTr").show()
 		}
 		function questionTypeChange(obj) {
 			let type = $(obj).val()
-			if(type == "1") { //单选题
+			if(type == "1" || type == "3") { //单选题\多选题
 				$("#questionOptionTr").show()
 			} else if(type == "" || type == "2"){
 				$("#questionOptionTr").hide()

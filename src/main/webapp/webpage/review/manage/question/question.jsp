@@ -37,6 +37,7 @@
 						<option value="">---请选择---</option>
 						<option value="1">单选题</option>
 						<option value="2">问答题</option>
+						<option value="3">多选题</option>
 					</select>
 					<span style="color: red">*</span>
 					<span class="Validform_checktip"  id="questionTypeTip"></span>
@@ -115,7 +116,7 @@
 
 		function questionTypeChange(obj) {
 			let type = $(obj).val()
-			if(type == "1") { //单选题
+			if(type == "1" || type == "3") { //单选题
 				$("#questionOptionTr").show()
 			} else if(type == "" || type == "2"){
 				$("#questionOptionTr").hide()
