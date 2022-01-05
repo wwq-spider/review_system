@@ -7,6 +7,8 @@ public class ReviewResultVO implements Serializable {
 
 	private String classId;
 
+	private String groupId;
+
 	private String classTitle;
 
 	private String createTime;
@@ -21,12 +23,36 @@ public class ReviewResultVO implements Serializable {
 	
 	private String reportGrade;
 
+	private String userId;
+
+	private String idCard;
+
+	private String userName;
+
+	private String realName;
+
+	private String combineVarResult;
+
+	private Integer levelGrade;
+
+	private Long projectId;
+
+	private Double gradeTotal;
+
 	public String getClassId() {
 		return classId;
 	}
 
 	public void setClassId(String classId) {
 		this.classId = classId;
+	}
+
+	public String getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
 	}
 
 	public String getClassTitle() {
@@ -84,6 +110,68 @@ public class ReviewResultVO implements Serializable {
 	public void setReportGrade(String reportGrade) {
 		this.reportGrade = reportGrade;
 	}
-	
-	
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getRealName() {
+		return realName;
+	}
+
+	public void setRealName(String realName) {
+		this.realName = realName;
+	}
+
+	public String getCombineVarResult() {
+		return combineVarResult;
+	}
+
+	public void setCombineVarResult(String combineVarResult) {
+		this.combineVarResult = combineVarResult;
+	}
+
+	public Integer getLevelGrade() {
+		return levelGrade;
+	}
+
+	public void setLevelGrade(Integer levelGrade) {
+		this.levelGrade = levelGrade;
+	}
+
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
+	}
+
+	public Double getGradeTotal() {
+		return gradeTotal;
+	}
+
+	public void setGradeTotal(Double gradeTotal) {
+		this.gradeTotal = gradeTotal;
+	}
+
+	public String getIdCard() {
+		return idCard;
+	}
+
+	public void setIdCard(String idCard) {
+		this.idCard = idCard;
+	}
 }

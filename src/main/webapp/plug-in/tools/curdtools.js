@@ -217,6 +217,120 @@ function createwindowPubOrSave(title, addurl,width,height) {
 
 
 /**
+ * 添加事件打开窗口(有保存发布按钮)
+ * @param title 编辑框标题
+ * @param addurl//目标页面地址
+ */
+function printPreview(title,url, id,width,height) {
+	gridname=id;
+	var rowsData = $('#'+id).datagrid('getSelections');
+	if (!rowsData || rowsData.length==0) {
+		tip('请选择一条记录');
+		return;
+	}
+	let userIds = ""
+	for (let i=0; i < rowsData.length; i++) {
+		if (userIds == "") {
+			userIds = rowsData[i].id
+		} else {
+			userIds += "," + rowsData[i].id
+		}
+	}
+	url += '&userIds='+userIds;
+	createwindowPrint(title, url, width, height);
+}
+
+/**
+ * 创建打印预览
+ *
+ * @param title
+ * @param addurl
+ * @param saveurl
+ */
+function createwindowPrint(title, addurl,width,height) {
+	width = width?width:700;
+	height = height?height:400;
+	if(width=="100%") {
+		width = window.top.document.body.offsetWidth;
+	}
+	if(height=="100%"){
+		height =window.top.document.body.offsetHeight-100;
+	}
+	//--author：JueYue---------date：20140427---------for：弹出bug修改,设置了zindex()函数
+	if(typeof(windowapi) == 'undefined'){
+		$.dialog({
+			content: 'url:'+addurl,
+			lock : true,
+			zIndex:1890,
+			width:width,
+			height:height,
+			title:title,
+			opacity : 0.3,
+			cache:false,
+			button:[{
+				name : '打印',
+				callback : function() {
+					iframe = this.iframe.contentWindow;
+					iframe.executePrint()
+					//saveOrPub('1');
+					return false;
+
+				},
+				focus : true
+			}, {
+				name : '关闭',
+				cancel: true
+			}]
+		}).zindex();
+	}else{
+		W.$.dialog({
+			content: 'url:'+addurl,
+			lock : true,
+			width:width,
+			zIndex:1890,
+			height:height,
+			parent:windowapi,
+			title:title,
+			opacity : 0.3,
+			cache:false,
+			button:[{
+				name : '打印',
+				callback : function() {
+					iframe = this.iframe.contentWindow;
+					iframe.executePrint()
+					//saveOrPub('2');
+					return false;
+
+				},
+				focus : true
+			},{
+				name : '关闭',
+				cancel: true
+			} ]
+		}).zindex();
+	}
+}
+
+function executePrint(){
+
+	var oldHtml = $("body", iframe.document).html();
+	var printbox = $("#printBody", iframe.document).html();
+	$("body", iframe.document).innerHTML = printbox;
+	iframe.print();
+	$("body", iframe.document).innerHTML = oldHtml;
+
+	// console.log("执行打印")
+	// var oldHtml = $("body", iframe.document).html();
+	// var printbox = $("#printBody", iframe.document).html();
+	// $("body").innerHTML = printbox;
+	// iframe.document.print();
+	// $("body").innerHTML = oldHtml;
+
+	//$("#printBody", iframe.document).jqprint()
+}
+
+
+/**
  * 创建添加或编辑窗口(仅有保存按钮)
  * 
  * @param title

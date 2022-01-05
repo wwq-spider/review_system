@@ -1,0 +1,39 @@
+{
+  "MBTI": [
+    {
+      "levelGrade": 1,
+      "result": "一般",
+      "explain": "这个人很一般"
+    },
+    {
+      "levelGrade": 2,
+      "result": "良好",
+      "explain": "这个人还可以"
+    },
+    {
+      "levelGrade": 3,
+      "result": "优秀",
+      "explain": "这个人太优秀了"
+    }
+  ],
+  "AdaptVar": [
+    {
+      "scoreSmall": 0,
+      "scoreBig": 10,
+      "result": "一般",
+      "explain": "这个人很一般"
+    },
+    {
+      "scoreSmall": 11,
+      "scoreBig": 20,
+      "result": "良好",
+      "explain": "这个人还可以"
+    },
+    {
+      "scoreSmall": 21,
+      "scoreBig": 30,
+      "result": "优秀",
+      "explain": "这个人太优秀了"
+    }
+  ]
+}

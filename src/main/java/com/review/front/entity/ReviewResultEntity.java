@@ -32,6 +32,9 @@ public class ReviewResultEntity implements Serializable {
 	@Column(name="class_id")
 	private String classId;
 
+	@Column(name="group_id")
+	private String groupId;
+
 	@Column(name="project_id")
 	private Long projectId;
 	
@@ -91,6 +94,14 @@ public class ReviewResultEntity implements Serializable {
 
 	public void setClassId(String classId) {
 		this.classId = classId;
+	}
+
+	public String getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
 	}
 
 	public Long getProjectId() {

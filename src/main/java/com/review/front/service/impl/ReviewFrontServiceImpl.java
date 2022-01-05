@@ -138,6 +138,7 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		reviewResult.setCreateTime(new Date());
 		reviewResult.setCreateBy(reviewUser.getUserName());
 		reviewResult.setProjectId(resultList.get(0).getProjectId()); //项目id
+		reviewResult.setGroupId(reviewUser.getGroupId());
 		ReviewProjectEntity reviewProject = null;
 		String groupId = "";
 		if(reviewResult.getProjectId() != null && reviewResult.getProjectId() > 0) {

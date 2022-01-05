@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.util.StrUtil;
 import com.review.common.Constants;
 import jxl.format.Colour;
 import jxl.format.UnderlineStyle;
@@ -599,7 +600,16 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+	}
+
+	private ReviewUserEntity userExist(ReviewUserEntity user) {
+		ReviewUserEntity userEntity= null;
+		if (StrUtil.isNotBlank(user.getMobilePhone())) {
+			userEntity= this.findUniqueByProperty(ReviewUserEntity.class, "mobilePhone", user.getMobilePhone());
+		} else if (StrUtil.isNotBlank(user.getIdCard())) {
+			userEntity= this.findUniqueByProperty(ReviewUserEntity.class, "idCard", user.getIdCard());
+		}
+		return userEntity;
 	}
 
 	@SuppressWarnings({ "unchecked"})
@@ -616,11 +626,21 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 			
 			for(ReviewUserEntity user : userList) {
 				user.setGroupId(groupId);
-				userEntity= this.findUniqueByProperty(ReviewUserEntity.class, "mobilePhone", user.getMobilePhone());
+				userEntity= userExist(user);
+				//用户名和密码都为空的话  默认去身份证号 作为用户名密码
+				if (StrUtil.isNotBlank(user.getIdCard())) {
+					if(StrUtil.isBlank(user.getPassword())) {
+						user.setPassword(user.getIdCard());
+					}
+					if (StrUtil.isBlank(user.getUserName())) {
+						user.setUserName(user.getIdCard());
+					}
+				}
+
 				if(userEntity == null) {
-					userEntity.setSource(Constants.UserSource.SystemImport);
-					userEntity.setCreateTime(new Date());
-					userEntity.setUpdateTime(userEntity.getUpdateTime());
+					user.setSource(Constants.UserSource.SystemImport);
+					user.setCreateTime(new Date());
+					user.setUpdateTime(user.getUpdateTime());
 					this.save(user);
 				} else {
 					if("".equals(userNames)) {

@@ -16,9 +16,13 @@
 	function exportRecord() {
 		createwindow('导出答题记录', 'reviewUser.do?toExportRecord', 500, 300)
 	}
+
+	function printReport() {
+		printPreview('测评报告', 'reviewUser.do?toReportPreview', 'reviewUserList', '100%', '100%')
+	}
 </script>
 <t:base type="jquery,easyui,tools,DatePicker"></t:base>
-<t:datagrid name="reviewUserList" title="用户管理" actionUrl="reviewUser.do?datagrid" fit="true" fitColumns="true" idField="id" queryMode="group">
+<t:datagrid name="reviewUserList" title="用户管理" actionUrl="reviewUser.do?datagrid" fit="true" fitColumns="true" idField="id" queryMode="group" checkbox="true">
 	<t:dgCol title="编号" field="id" hidden="false"></t:dgCol>
 	<t:dgCol title="用户名" sortable="false" field="userName" query="true" width="10"></t:dgCol>
 	<t:dgCol title="真实姓名" field="realName" query="true" width="10"></t:dgCol>
@@ -34,5 +38,6 @@
 	<t:dgToolBar title="用户编辑" icon="icon-edit" url="reviewUser.do?toAdd" funname="updateReviewUser"  width="600" height="500"></t:dgToolBar>
 	<t:dgToolBar title="导入用户" icon="icon-search" onclick="userListImportXls()"></t:dgToolBar>
 	<t:dgToolBar title="批量导入" icon="icon-search" onclick="batchImport()"></t:dgToolBar>
-	<t:dgToolBar title="导出答题记录" icon="icon-add" onclick="exportRecord()"></t:dgToolBar>
+	<t:dgToolBar title="导出测评结果" icon="icon-add" onclick="exportRecord()"></t:dgToolBar>
+	<t:dgToolBar title="打印测评报告" icon="icon-add" onclick="printReport()"></t:dgToolBar>
 </t:datagrid>
