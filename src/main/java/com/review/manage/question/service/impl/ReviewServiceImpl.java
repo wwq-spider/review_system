@@ -16,6 +16,7 @@ import com.review.common.CommonUtils;
 import com.review.common.Constants;
 import com.review.common.OssUtils;
 import com.review.manage.reviewClass.entity.ReviewClassEntity;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jeecgframework.core.common.model.json.DataGrid;
 import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
@@ -353,6 +354,7 @@ public class ReviewServiceImpl extends CommonServiceImpl implements ReviewServic
 				if(questionEntity == null) {
 					questionEntity = new ReviewQuestionEntity();
 					questionClass = new ReviewQuestionClassEntity();
+					questionEntity.setQuestionType(questionImport.getQuestionType());
 					questionEntity.setContent(questionImport.getQuestionContent());
 					questionEntity.setQuestionNum(questionImport.getQuestionNum());
 					questionEntity.setCreateTime(new Date());
@@ -365,7 +367,7 @@ public class ReviewServiceImpl extends CommonServiceImpl implements ReviewServic
 					this.save(questionClass);
 					
 					selectList = getSelectInfo(questionEntity.getQuestionId(), questionImport);
-					if(selectList.size() > 0) {
+					if(CollectionUtils.isNotEmpty(selectList)) {
 						for(ReviewAnswerEntity answerEntity : selectList) {
 							this.save(answerEntity);
 						}
@@ -389,6 +391,10 @@ public class ReviewServiceImpl extends CommonServiceImpl implements ReviewServic
 	 * @throws Exception
 	 */
 	private List<ReviewAnswerEntity> getSelectInfo(Integer questionId, QuestionImportEntity questionImport) throws Exception {
+		if (!Constants.QuestionType.SingleSelect.getValue().equals(questionImport.getQuestionType()) &&
+				!Constants.QuestionType.MultiSelect.getValue().equals(questionImport.getQuestionType())) {
+			return null;
+		}
 		Field[] fieldArr = QuestionImportEntity.class.getDeclaredFields();
 		Field field = null;
 		String filedName = "";

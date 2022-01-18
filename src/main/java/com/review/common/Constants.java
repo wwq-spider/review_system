@@ -254,4 +254,25 @@ public final class Constants {
 	 * session中的短信验证码key
 	 */
 	public final static String MSG_CODE_KEY = "msg_code";
+
+	/**
+	 * 题目类型
+	 */
+	public enum QuestionType {
+
+		SingleSelect("1"),
+		QA("2"),
+		MultiSelect("3"),
+		Other("4");
+
+		QuestionType(String value) {
+			this.value = value;
+		}
+
+		private String value;
+
+		public String getValue() {
+			return value;
+		}
+	}
 }

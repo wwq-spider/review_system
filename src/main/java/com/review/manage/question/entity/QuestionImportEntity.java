@@ -9,6 +9,9 @@ import org.jeecgframework.poi.excel.annotation.Excel;
  */
 public class QuestionImportEntity {
 
+	@Excel(exportName="题目类型", exportConvertSign = 0, exportFieldWidth = 10, importConvertSign = 0)
+	private java.lang.String questionType;
+
 	@Excel(exportName="题目内容", exportConvertSign = 0, exportFieldWidth = 10, importConvertSign = 0)
 	private java.lang.String questionContent;
 	
@@ -170,6 +173,14 @@ public class QuestionImportEntity {
 	
 	@Excel(exportName="Z分值", exportConvertSign = 0, exportFieldWidth = 10, importConvertSign = 0)
 	private java.math.BigDecimal gradeZ;
+
+	public String getQuestionType() {
+		return questionType;
+	}
+
+	public void setQuestionType(String questionType) {
+		this.questionType = questionType;
+	}
 
 	public java.lang.String getQuestionContent() {
 		return questionContent;
