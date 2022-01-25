@@ -429,7 +429,7 @@ public class ReviewUserController extends BaseController{
 		Map<String, Object> paramMap = new HashMap<>();
 		if(StrUtil.isNotBlank(userIds)) {
 			List<ProjectResultVO> list = reviewResultService.calReviewResult(Arrays.asList(userIds.split(",")), projectId);
-			paramMap.put("reviewResultList", list);
+			paramMap.put("projectResultList", list);
 		}
 		return new ModelAndView("review/manage/userManage/projectReport", paramMap);
 	}

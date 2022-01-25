@@ -17,8 +17,29 @@ $(function(){
 		  });
 	 });
 	$(window).resize();
-});	
+});
+
+function begin(classId, nextClassId) {
+	window.location.href = "<%=path%>/reviewFront.do?nextQuestion&classId="+ classId + "&nextClassId=" + nextClassId + "&questionNum=0"
+}
 </script>
+<style type="text/css">
+	#reviewBtn {
+		background-color: #008CBA; /* 蓝色 */
+		border: none;
+		color: white;
+		padding: 15px 36px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 16px;
+		margin: 4px 2px;
+		cursor: pointer;
+		border-radius: 10px;
+		border: none;
+		box-shadow: 5px 5px 10px grey;
+	}
+</style>
 </head>
 <body>
 <div class="w_centerwrapbox">
@@ -26,16 +47,13 @@ $(function(){
 			<h1 class="tikutitle"><img src="<%=path%>/plug-in/review/images/zhidao_text.jpg" alt="指导语" /></h1>
 			<div id="zhidaoyu_c">
 				<div id="zhidaoyu_c_bg">
+					<p style="font-size: 20px; text-align: center;">${reviewClass.title }</p>
 					<p>${reviewClass.guide }</p>		
 				</div>
 			</div>
-			<form action="" id="zhidaoyumyform" name="zhidaoyumyform">
-			<p id="zhidaomybtndiv">
-			<a href="<%=path%>/reviewFront.do?nextQuestion&classId=${classId}&nextClassId=${nextClassId}&questionNum=0">
-			<img src="<%=path%>/plug-in/review/images/begin_testbtn.jpg" alt="开始测试"/>
-			</a>
-			</p>
-			</form>
+			<div style="text-align: center;">
+				<button type="submit" onclick="begin('${classId}', '${nextClassId}')" id="reviewBtn">开始测评</button>
+			</div>
 		</div>
 </div>
 </body>

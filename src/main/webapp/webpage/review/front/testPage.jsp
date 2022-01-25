@@ -32,13 +32,14 @@
 		});
 		$(window).resize();
 		$(window).bind("popstate", function() {});
+		$("#dynamicNumType").hide()
 
 		let questionType = $("#questionType").val()
 		if(questionType == "3") { //动态数字题型
 			//开始倒计时
 			tmpTimeout1 = secondsDown(106, "secondNum1")
 			setRandom()
-			tmpTimeout2 = secondsDown(15, "secondNum2")
+			tmpTimeout2 = secondsDown(15, "reviewBtn")
 			$("#singleSelType").hide()
 			$("#dynamicNumType").show()
 		} else if(questionType == "1") {
@@ -50,7 +51,6 @@
 				$("#btnImg").attr("src",  rootPath + "/plug-in/review/images/nextbtn.jpg");
 			}
 			$("#singleSelType").show()
-			$("#dynamicNumType").hide()
 		}
 	});
 
@@ -81,18 +81,22 @@
 	 ***/
 	function secondsDown(t, domid){
 		if(t > 0){
-			$("#" + domid).html("倒计时：" + t)
+			if (domid == "reviewBtn") {
+				$("#" + domid).text("下一组(" + t + ")")
+			} else {
+				$("#" + domid).html("倒计时：" + t)
+			}
 			t = t - 1
 			return setTimeout(function(){
-				if (domid == "secondNum2") {
+				if (domid == "reviewBtn") {
 					tmpTimeout2 = secondsDown(t, domid)
 				} else {
 					tmpTimeout1 = secondsDown(t, domid)
 				}
 			},1000)
 		} else {
-			$("#" + domid).html("倒计时结束!")
-			if (domid == "secondNum2") {
+			if (domid == "reviewBtn") {
+				$("#" + domid).text("下一题")
 				clearTimeout(tmpTimeout2)
 				let curNums = $("#dynamicNum").text()
 				if (!lackValMap[curNums]) {
@@ -101,6 +105,7 @@
 				setRandom()
 				tmpTimeout2 = secondsDown(15, domid)
 			} else {
+				$("#" + domid).html("倒计时结束!")
 				end = true
 				//清除题目倒计时定时器
 				clearTimeout(tmpTimeout1)
@@ -148,7 +153,7 @@
 				//更新数字
 				setRandom()
 				//15秒倒计时开始
-				secondsDown(15, "secondNum2")
+				secondsDown(15, "reviewBtn")
 			}
 		}
 	}
@@ -245,41 +250,59 @@
 		return result
 	}
 </script>
+
+<style type="text/css">
+	#reviewBtn {
+		background-color: #008CBA; /* 蓝色 */
+		border: none;
+		color: white;
+		padding: 10px 35px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 16px;
+		margin: 4px 2px;
+		cursor: pointer;
+		border-radius: 10px;
+		border: none;
+		box-shadow: 5px 5px 10px grey;
+	}
+</style>
 </head>
 <body>
 <div class="w_centerwrapbox">
 	<div id="maincontent_testpage">
+		<div style="padding-left: 10px; padding-right: 10px; font-size: 20px; color: #1e4063; line-height: 28px;">
+			${question.questionNum}&nbsp;.&nbsp;${question.content}&nbsp;
+				<c:if test="${question.isAttach=='Y' }">
+					<img alt="图片" id="previewc" width="70px" height="70px" src="<%=path%>/review.do?previewImg&questionId=${question.questionId}"/>
+				</c:if>
+		</div>
 		<form action="<%=path %>/reviewFront.do?nextQuestion" id="completeForm" name="completeForm" method="post">
 			<div id="testpage_c">
 				<div id="zhidaoyu_c_bg">
 					<div id="questionContent">
-						<h3>${question.questionNum}&nbsp;.&nbsp;${question.content}&nbsp;
-							<c:if test="${question.isAttach=='Y' }">
-								<img alt="图片" id="previewc" width="70px" height="70px" src="<%=path%>/review.do?previewImg&questionId=${question.questionId}"/>
-							</c:if>
-						</h3>
 						<div id="singleSelType" class="test_checkitemwrap" <c:if test="${question.isAttach=='Y'}">style="height:280px;width:500px;overflow-y:auto"</c:if>>
 							<c:forEach items="${question.selectList}" var="select">
-								<p><input type="radio" value="${select.selectGrade }" name="answerSelect">${select.selCode}.&nbsp;${select.selectContent }</p>
+								<p><input type="radio" value="${select.selectGrade }" name="answerSelect"> ${select.selCode}.&nbsp;${select.selectContent }</p>
 								<c:if test="${select.pictureAttach != null && select.pictureAttach != ''}">
 									<p style="background:url() no-repeat 0 0"><img alt="图片" id="preview" width="70px" height="70px" src="${aliyunOssHost}${select.pictureAttach}"/></p>
 								</c:if>
 							</c:forEach>
 						</div>
-						<div id="dynamicNumType">
-							<div id="secondNum1"></div>
-							<div id="secondNum2"></div>
-							<span id="dynamicNum"></span><br/>
-							<input type="text" id="rightNum" name="rightNum" style="width: 200px" placeholder="请输入缺失数字"/>
+						<div id="dynamicNumType" style="margin-top: 40px;">
+							<span id="dynamicNum" style="font-size: 20px; color: #0F3A56;"></span>
+							<div style="margin-top: 15px;">
+								<input type="text" id="rightNum" autocomplete="off" name="rightNum" style="width: 260px; height: 30px; border-radius: 8px; border: none; box-shadow: 2px 2px 6px grey;" placeholder="请输入缺失数字"/>
+							</div>
 						</div>
 					</div>
 				</div>
+				<div>
+					<button type="button" onclick="nextQuestion()" id="reviewBtn">下一题</button>
+					<div id="secondNum1" style="font-size: 20px; color: #e96666; margin-top: 20px;"></div>
+				</div>
 			</div>
-			<p>
-				<a href="javascript:void(0);" onclick="javascript:nextQuestion()" title="">
-					<img id="btnImg" src="<%=path%>/plug-in/review/images/nextbtn.jpg" />
-				</a>
-			</p>
 			<input type="hidden" id="questionId" name="questionId" value="${question.questionId }" />
 			<input type="hidden" id="questionType" name="questionType" value="${question.questionType }" />
 			<input type="hidden" id="selectGrade" name="selectGrade" />

@@ -106,7 +106,7 @@ public class ReviewResultServiceImpl extends CommonServiceImpl implements IRevie
 
     private Map<String, ProjectResultVO> geneProjectReview(List<ReviewResultVO> resultList, boolean containClass) {
 
-        String configStr = FileUtil.readUtf8String(ResourceUtil.getClassPath() + "report_config.json");
+        String configStr = FileUtil.readUtf8String("report_config.json");
         JSONObject configJson = JSONObject.parseObject(configStr);
 
         Integer levelGradeAdd = 0;
@@ -123,45 +123,28 @@ public class ReviewResultServiceImpl extends CommonServiceImpl implements IRevie
 
         List<ReviewResultVO> childResult = new ArrayList<>();
 
+        ReviewResultVO preResult = null;
+
         for (int i=0; i < resultList.size(); i++) {
             ReviewResultVO reviewResult = resultList.get(i);
             String dupKey = String.format("%s_%s", reviewResult.getUserId(), reviewResult.getClassId());
             if (dupMap.get(dupKey) != null) {
+                if (i == resultList.size() - 1) {
+                    //用户维度统计数据
+                    populateProjectResult(preResult.getUserId(), levelGradeAdd, levelGradeMul, preResult, childResult, userMap, configJson);
+                }
                 continue;
             } else {
                 dupMap.put(dupKey, 1);
             }
             if (reviewResult.getLevelGrade() != null && reviewResult.getLevelGrade() > 0) {
-                if (!curUserId.equals(reviewResult.getUserId()) || i == resultList.size() - 1) {
-                    ReviewResultVO preResult = resultList.get(i-1);
-                    Integer totalLevelGrade = levelGradeAdd * levelGradeMul;
-                    ProjectResultVO projectResult = new ProjectResultVO();
-                    try {
-                        MyBeanUtils.copyBeanNotNull2Bean(preResult, projectResult);
-                        projectResult.setLevelGrade(totalLevelGrade);
-                    } catch (Exception e) {
-                        throw new RuntimeException("geneProjectReview error, ", e);
-                    }
-                    if (childResult.size() > 0) {
-                        JSONArray jsonArray = configJson.getJSONArray("AdaptVar");
-                        for (int a=0; a<jsonArray.size(); a++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(a);
-                            Integer scoreSmall = jsonObject.getInteger("scoreSmall");
-                            Integer scoreBig = jsonObject.getInteger("scoreBig");
-                            if (projectResult.getLevelGrade() >= scoreSmall && projectResult.getLevelGrade()<= scoreBig) {
-                                projectResult.setAllCompletion(jsonObject.getString("result"));
-                                projectResult.setSuggestion(jsonObject.getString("explain"));
-                                break;
-                            }
-                        }
-                        projectResult.setResultList(new ArrayList<>(childResult));
-                        childResult.clear();
-                    }
+                if (!curUserId.equals(reviewResult.getUserId())) {
+
+                    //用户维度统计数据
+                    populateProjectResult(curUserId, levelGradeAdd, levelGradeMul, preResult, childResult, userMap, configJson);
+
                     levelGradeAdd = 0;
                     levelGradeMul = 0;
-                    //用户维度统计数据
-                    userMap.put(curUserId, projectResult);
-                    curUserId = reviewResult.getUserId();
                 }
                 String combineRes = reviewResult.getCombineVarResult();
                 if(StrUtil.isNotEmpty(combineRes)) {
@@ -197,9 +180,54 @@ public class ReviewResultServiceImpl extends CommonServiceImpl implements IRevie
 
                     childResult.add(reviewResult);
                 }
+                preResult = reviewResult;
+                curUserId = reviewResult.getUserId();
+            }
+            if (i == resultList.size() - 1) {
+                //用户维度统计数据
+                populateProjectResult(preResult.getUserId(), levelGradeAdd, levelGradeMul, preResult, childResult, userMap, configJson);
             }
         }
         return userMap;
+    }
+
+    /**
+     * 包装项目维度测评结果
+     * @param curUserId
+     * @param levelGradeAdd
+     * @param levelGradeMul
+     * @param preResult
+     * @param childResult
+     * @param userMap
+     * @param configJson
+     */
+    private void populateProjectResult(String curUserId, Integer levelGradeAdd, Integer levelGradeMul, ReviewResultVO preResult,
+                                       List<ReviewResultVO> childResult, Map<String, ProjectResultVO> userMap, JSONObject configJson) {
+        Integer totalLevelGrade = levelGradeAdd * levelGradeMul;
+        ProjectResultVO projectResult = new ProjectResultVO();
+        try {
+            MyBeanUtils.copyBeanNotNull2Bean(preResult, projectResult);
+            projectResult.setLevelGrade(totalLevelGrade);
+        } catch (Exception e) {
+            throw new RuntimeException("geneProjectReview error, ", e);
+        }
+        if (childResult.size() > 0) {
+            JSONArray jsonArray = configJson.getJSONArray("AdaptVar");
+            for (int a=0; a<jsonArray.size(); a++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(a);
+                Integer scoreSmall = jsonObject.getInteger("scoreSmall");
+                Integer scoreBig = jsonObject.getInteger("scoreBig");
+                if (projectResult.getLevelGrade() >= scoreSmall && projectResult.getLevelGrade()<= scoreBig) {
+                    projectResult.setAllCompletion(jsonObject.getString("result"));
+                    projectResult.setSuggestion(jsonObject.getString("explain"));
+                    break;
+                }
+            }
+            projectResult.setResultList(new ArrayList<>(childResult));
+            childResult.clear();
+        }
+        //用户维度统计数据
+        userMap.put(curUserId, projectResult);
     }
 
 
@@ -241,13 +269,14 @@ public class ReviewResultServiceImpl extends CommonServiceImpl implements IRevie
     public List<ProjectResultVO> calReviewResult(List<String> userIds, Long projectId) {
 
         StringBuilder sql = new StringBuilder("select u.user_name   userName,\n" +
+                "       u.user_id userId,\n" +
                 "       u.real_name realName,\n" +
                 "       u.id_card     idCard,\n" +
                 "       r.result_id   resultId,\n" +
                 "       r.class_id    classId,\n" +
                 "       r.grade_total gradeTotal,\n" +
                 "       r.level_grade levelGrade,\n" +
-                "       r.combine_result combineResult,\n" +
+                "       r.combine_result combineVarResult,\n" +
                 "       r.project_id projectId,\n" +
                 "       DATE_FORMAT(u.`create_time`, '%Y-%m-%e %H:%i:%S') AS createTime\n" +
                 "from review_result r\n" +

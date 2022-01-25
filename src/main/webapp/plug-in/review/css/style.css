@@ -237,13 +237,13 @@ a:hover {
 }
 #testpage_c{
 	width:875px;
-	height:384px;
+	/*height:314px;*/
 	padding-left:70px;
 	overflow:hidden;
 }
 #zhidaoyu_c_bg{
 	width:845px;
-	height:435px;
+	/*height:435px;*/
 	padding:15px;
 	text-align:center;
 }
@@ -292,12 +292,14 @@ a:hover {
 }
 #maincontent_testpage{
 	width:1025px;
-	height:593px;
+	height: 95%;
+	/*height:593px;*/
 	margin:0 auto;
-	background:url(../images/testbody_bg.png) no-repeat 0 0;
+	/*background:url(../images/testbody_bg.png) no-repeat 0 0;*/
+	background-color: #fafaed;
 	position:relative;
 	text-align:center;
-	padding-top:120px;
+	padding-top:10%;
 	overflow:hidden;
 }
 #maincontent h1{
@@ -362,6 +364,7 @@ a:hover {
 	width:405px;
 	text-align:center;
 	margin:0 auto;
+	margin-top: 10px;
 	
 }
 .test_checkitemwrap p{

@@ -1,9 +1,8 @@
 package org.jeecgframework.web.system.manager;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.jeecgframework.core.util.ContextHolderUtils;
 import org.jeecgframework.web.system.pojo.base.Client;
 
@@ -61,7 +60,17 @@ public class ClientManager {
 	 * @return
 	 */
 	public Collection<Client> getAllClient(){
-		return map.values();
+		Collection<Client> result = map.values();
+		List<Client> adminClients = new ArrayList<>();
+		if (CollectionUtils.isNotEmpty(result)) {
+			for (Client client : result) {
+				if(client.getUser() != null) {
+					adminClients.add(client);
+				}
+			}
+		}
+
+		return adminClients;
 	}
 
 }

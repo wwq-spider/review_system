@@ -304,9 +304,9 @@ public class ReviewController extends BaseController{
 				list = (List<QuestionVO>) session.getAttribute(key);
 				int size = list.size();
 				if(size > 0) {
-					if(size > questionNum) {
+					if(size >= questionNum) {
 						list.set(questionNum-1, question);
-					} else if(list.get(size - 1).getQuestionNum() > questionNum) {
+					} else if(list.get(size - 1).getQuestionNum() < questionNum) {
 						list.add(question);
 					}
 				} else {
@@ -375,7 +375,10 @@ public class ReviewController extends BaseController{
 		ReviewResultEntity reviewResultEntity = null;
 		List<QuestionVO> resultList = Arrays.asList(resultArr);
 		if (user == null) {
-			reviewResultEntity = reviewFrontService.completeReview(resultList, resultArr[0].getClassId(), new ReviewUserEntity());
+			json.put("code", 301);
+			json.put("msg", "用户信息为空");
+			CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+			return;
 		} else {
 			reviewResultEntity = reviewFrontService.completeReview(resultList, resultArr[0].getClassId(), user);
 		}
