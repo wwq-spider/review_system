@@ -63,6 +63,7 @@
 					sortId: data.rows[i].sortId,
 					//type: typetext,
 					opt: "[<a href=\"#\" onclick=\"pubOrSave('题目设置','reviewClass.do?toAdd&classId="+data.rows[i].classId+"','reviewClassList',width,'100%')\">题目设置</a>]&nbsp;&nbsp;"+
+						 "[<a href=\"#\" onclick=\"add('报告设置','reviewReportTemplate.do?addorupdate&classId="+data.rows[i].classId+"','reviewReportTemplateList',600,600)\">报告设置</a>]&nbsp;&nbsp;"+
 						  puburl +"[<a href=\"#\" onclick=\"delObj('reviewClass.do?del&classId="+data.rows[i].classId+"','删除')\">删除</a>]"
 				});
 			}

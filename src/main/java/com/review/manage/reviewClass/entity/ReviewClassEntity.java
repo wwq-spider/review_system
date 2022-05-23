@@ -23,7 +23,7 @@ public class ReviewClassEntity implements Serializable{
 	@GeneratedValue(generator = "paymentableGenerator")
 	@GenericGenerator(name = "paymentableGenerator", strategy = "uuid")
 	@Column(name ="class_id",nullable=false,length=32)
-	private java.lang.String classId;   
+	private java.lang.String classId;
 	
  	@Column(name="sort_id")
  	private Integer sortId;
@@ -31,7 +31,9 @@ public class ReviewClassEntity implements Serializable{
     @Column(name="title")
     private java.lang.String title;   
     @Column(name="status")
-    private java.lang.Integer status;   
+    private java.lang.Integer status;
+    @Column(name="video_analysis")
+    private java.lang.Integer videoAnalysis;
     @Column(name="guide")
     private java.lang.String guide;
     @Column(name="class_desc")
@@ -48,6 +50,9 @@ public class ReviewClassEntity implements Serializable{
     private BigDecimal orgPrice;
     @Column(name = "dicount_price")
     private BigDecimal dicountPrice;
+
+    @Column(name = "report_tips")
+    private String reportTips;
 
     private transient BigDecimal realPrice;
     
@@ -81,9 +86,17 @@ public class ReviewClassEntity implements Serializable{
        
     public java.lang.Integer getStatus(){    
         return this.status;    
-    }    
-       
-    public void setGuide(java.lang.String guide){  
+    }
+
+    public Integer getVideoAnalysis() {
+        return videoAnalysis;
+    }
+
+    public void setVideoAnalysis(Integer videoAnalysis) {
+        this.videoAnalysis = videoAnalysis;
+    }
+
+    public void setGuide(java.lang.String guide){
         this.guide=guide;   
     }    
        
@@ -153,5 +166,13 @@ public class ReviewClassEntity implements Serializable{
 
     public void setRealPrice(BigDecimal realPrice) {
         this.realPrice = realPrice;
+    }
+
+    public String getReportTips() {
+        return reportTips;
+    }
+
+    public void setReportTips(String reportTips) {
+        this.reportTips = reportTips;
     }
 }

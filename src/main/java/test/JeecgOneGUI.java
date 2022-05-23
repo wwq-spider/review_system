@@ -1,8 +1,5 @@
 package test;
-
-import org.jeecgframework.codegenerate.util.CodeResourceUtil;
 import org.jeecgframework.codegenerate.window.CodeWindow;
-
 
 /**
  * 【单表模型】代码生成器入口

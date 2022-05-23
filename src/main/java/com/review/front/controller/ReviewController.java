@@ -530,6 +530,21 @@ public class ReviewController extends BaseController{
 			return;
 		}
 		ReviewClassEntity reviewClassInfo = reviewClassService.get(ReviewClassEntity.class, reviewClass.getClassId());
+
+		if (reviewClassInfo == null) {
+			json.put("code", 404);
+			json.put("msg", "量表不存在");
+			CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+			return;
+		}
+
+		if (reviewClassInfo.getStatus() == null || reviewClassInfo.getStatus() != 1) {
+			json.put("code", 401);
+			json.put("msg", "量表未发布，暂不能测评");
+			CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+			return;
+		}
+
 		if (reviewClassInfo.getCharge() != null && reviewClassInfo.getCharge() == Constants.ClassCharge) {
 			reviewClassInfo.setRealPrice(reviewClassInfo.getOrgPrice().subtract(reviewClassInfo.getDicountPrice()));
 		}

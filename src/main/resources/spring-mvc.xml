@@ -157,6 +157,7 @@
 						<value>newsItemController.do?newscontent</value>
 						<!-- 保存用户 -->
 						<value>userController.do?saveUser</value>
+						<value>reviewFront/user/uploadFile.do</value>
 					</list>
 				</property>
 			</bean>
@@ -181,6 +182,7 @@
 						<value>reviewFront/notice/detail.do</value>
 						<value>reviewFront/order/wxPayNotify.do</value>
 						<value>reviewFront/banner/list.do</value>
+						<value>reviewFront/user/uploadFile.do</value>
 					</list>
 				</property>
 			</bean>

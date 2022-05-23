@@ -1,6 +1,9 @@
 package com.review.manage.reviewClass.vo;
+import com.review.manage.reviewClass.entity.ReviewReportTemplateEntity;
 import org.jeecgframework.core.common.model.json.DataGrid;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
+import java.util.List;
 
 public class ReviewClassVO {
 
@@ -43,6 +46,12 @@ public class ReviewClassVO {
 	private Boolean buy;
 
 	private Integer buyCount;
+
+	private Integer videoAnalysis;
+
+	private String reportTips;
+
+	private List<ReviewReportTemplateEntity> reportTemplateList;
 
 	public java.lang.String getClassId() {
 		return classId;
@@ -202,5 +211,29 @@ public class ReviewClassVO {
 
 	public void setBuyCount(Integer buyCount) {
 		this.buyCount = buyCount;
+	}
+
+	public Integer getVideoAnalysis() {
+		return videoAnalysis;
+	}
+
+	public void setVideoAnalysis(Integer videoAnalysis) {
+		this.videoAnalysis = videoAnalysis;
+	}
+
+	public String getReportTips() {
+		return reportTips;
+	}
+
+	public void setReportTips(String reportTips) {
+		this.reportTips = reportTips;
+	}
+
+	public List<ReviewReportTemplateEntity> getReportTemplateList() {
+		return reportTemplateList;
+	}
+
+	public void setReportTemplateList(List<ReviewReportTemplateEntity> reportTemplateList) {
+		this.reportTemplateList = reportTemplateList;
 	}
 }

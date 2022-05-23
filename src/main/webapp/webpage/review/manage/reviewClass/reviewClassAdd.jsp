@@ -76,6 +76,20 @@
 				<input type="button"  name="uploadBtn" onclick="uploadImg('contentImg');" value="上传封面"></input>
 			</td>
 		</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">是否视频测评:</label>
+			</td>
+			<td class="value" colspan="3">
+				<input name="videoAnalysis" type="radio"
+					   <c:if test="${reviewClass.videoAnalysis == 0}">checked="checked"</c:if>
+					   value="0">否</input>
+				<input name="videoAnalysis" type="radio"
+					   <c:if test="${reviewClass.videoAnalysis == 1}">checked="checked"</c:if>
+					   value="1">是</input>
+				<span class="Validform_checktip" id="videoAnalysisTip"></span>
+			</td>
+		</tr>
 	</table>
 	<div id="questionDiv" style="display: none;border-style: solid;border: 1px;border-color:#E6E6E6; width: 100%;padding-top:5px">
 		<table  cellpadding="0"  id="questionList">
@@ -417,51 +431,6 @@
 							}
 						});
 			})
-
-			// $("#addForm").Validform({
-			// 	tiptype : 3,
-			// 	btnSubmit : "#btn_sub",
-			// 	btnReset : "#btn_reset",
-			// 	ajaxPost : true,
-			// 	usePlugin : {
-			// 		passwordstrength : {
-			// 			minLen : 6,
-			// 			maxLen : 18,
-			// 			trigger : function(obj, error) {
-			// 				if (error) {
-			// 					obj.parent().next().find(
-			// 							".Validform_checktip")
-			// 							.show();
-			// 					obj.find(".passwordStrength")
-			// 							.hide();
-			// 				} else {
-			// 					$(".passwordStrength").show();
-			// 					obj.parent().next().find(
-			// 							".Validform_checktip")
-			// 							.hide();
-			// 				}
-			// 			}
-			// 		}
-			// 	},
-			// 	beforeSubmit:function(curForm){
-			// 		//alert($(curForm).attr("enctype"));
-			// 	},
-			// 	callback : function(data) {
-			// 		var win = frameElement.api.opener;
-			// 		if (data.success == true) {
-			// 			frameElement.api.close();
-			// 			win.tip(data.msg);
-			// 		} else {
-			// 			if (data.responseText == ''
-			// 					|| data.responseText == undefined)
-			// 				$("#addForm").html(data.msg);
-			// 			else
-			// 				$("#addForm").html(data.responseText);
-			// 			return false;
-			// 		}
-			// 		win.reloadTable();
-			// 	}
-			// });
 		});
 	</script>
 

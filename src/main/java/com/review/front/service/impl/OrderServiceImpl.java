@@ -97,6 +97,15 @@ public class OrderServiceImpl implements IOrderService {
                 orderEntity.setOperateTime(orderEntity.getCreateTime());
                 orderEntity.setOrgAmount(reviewClass.getOrgPrice());
                 orderEntity.setOrderAmount(reviewClass.getOrgPrice().subtract(reviewClass.getDicountPrice()));
+                //如果金额为0
+                if (orderEntity.getOrderAmount() == null || orderEntity.getOrderAmount().doubleValue() == 0) {
+                    orderEntity.setStatus(Constants.OrderStatus.SUCCESS);
+                    orderEntity.setPayId("000");
+                    reviewOrderService.save(orderEntity);
+                    PreOrderVO preOrderVO = new PreOrderVO();
+                    preOrderVO.setPrePayID("000");
+                    return preOrderVO;
+                }
                 orderEntity.setStatus(Constants.OrderStatus.PRE_PAY);
                 //创建微信预支付订单
                 PreOrderVO preOrder = this.generatePrePayOrder(reviewOrder.getOpenid(), reviewOrder.getIpAddr(),

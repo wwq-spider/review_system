@@ -1,10 +1,13 @@
 package com.review.front.controller;
-
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.review.common.CommonUtils;
 import com.review.common.Constants;
+import com.review.front.service.impl.AnalysisService;
+import com.review.front.vo.OssTmpAuth;
 import com.review.manage.userManage.entity.ReviewUserEntity;
 import com.review.manage.userManage.service.ReviewUserService;
+import com.review.manage.videoAnalysis.entity.ReviewVideoAnalysisEntity;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.jeecgframework.core.common.controller.BaseController;
@@ -15,14 +18,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.util.Date;
 
+/**
+ * 用户控制器
+ */
 @RequestMapping("/reviewFront/user")
 @Controller
 public class UserFrontController extends BaseController {
@@ -31,6 +35,9 @@ public class UserFrontController extends BaseController {
 
     @Autowired
     private ReviewUserService reviewUserService;
+
+    @Autowired
+    private AnalysisService analysisService;
 
     /**
      * 修改用户信息
@@ -89,6 +96,65 @@ public class UserFrontController extends BaseController {
         } catch (Exception e) {
             json.put("code", 302);
             json.put("msg", "用户信息修改失败，");
+            logger.error("register error, ", e);
+        }
+        CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+    }
+
+    /**
+     * 上传视频
+     * @param response
+     * @param multipartFile
+     */
+    @RequestMapping(value = "uploadVideo", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void uploadVideo(HttpServletResponse response, @RequestParam("file")MultipartFile multipartFile) {
+        JSONObject json = new JSONObject();
+        try {
+            byte[] videoBytes = multipartFile.getBytes();
+
+            //1.获取oss临时授权
+            OssTmpAuth ossTmpAuth = analysisService.getOssAuth();
+
+            //2.上传视频到OSS
+            String ossObjName = analysisService.uploadVideoToOss(ossTmpAuth, new ByteArrayInputStream(videoBytes));
+            FileUtil.mkdir(ossObjName.split("/")[0]);
+            FileUtil.writeBytes(videoBytes, ossObjName);
+
+            json.put("code", 200);
+            json.put("msg", "视频上传成功");
+            json.put("result", ossObjName);
+        } catch (Exception e) {
+            json.put("code", 500);
+            json.put("msg", "视频上传失败，");
+            logger.error("register error, ", e);
+        }
+        CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+    }
+
+    /**
+     * 视频分析
+     * @param response
+     * @param classId
+     * @param projectId
+     * @param multipartFile
+     */
+    @RequestMapping(value = "videoAnalysis", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void videoAnalysis(HttpServletResponse response,
+                              @RequestParam String classId,
+                              @RequestParam Long projectId,
+                              @RequestParam("file")MultipartFile multipartFile) {
+        JSONObject json = new JSONObject();
+        try {
+            ReviewVideoAnalysisEntity videoAnalysis = analysisService.analysis(multipartFile.getBytes(), classId,
+                    ContextHolderUtils.getLoginFrontUserID(), projectId);
+            json.put("code", 200);
+            json.put("msg", "视频分析成功");
+            json.put("result", videoAnalysis);
+        } catch (Exception e) {
+            json.put("code", 500);
+            json.put("msg", "视频分析失败，");
             logger.error("register error, ", e);
         }
         CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
