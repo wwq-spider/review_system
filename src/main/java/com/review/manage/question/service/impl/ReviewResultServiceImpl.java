@@ -13,6 +13,7 @@ import com.review.manage.project.vo.ProjectResultVO;
 import com.review.manage.question.service.IReviewResultService;
 import com.review.manage.reviewClass.entity.ReviewClassEntity;
 import com.review.manage.reviewClass.service.ReviewClassService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
@@ -83,6 +84,10 @@ public class ReviewResultServiceImpl extends CommonServiceImpl implements IRevie
 
         //按项目查询结果列表
         List<ReviewResultVO> resultList = this.getListByProjectId(groupId, projectId, startTime, endTime);
+        if (CollectionUtils.isEmpty(resultList)) {
+            logger.warn("projectId:{}, review result is null", projectId);
+            return null;
+        }
         //生成项目维度测评结果
         Map<String, ProjectResultVO> userMap = geneProjectReview(resultList, false);
 
@@ -246,6 +251,7 @@ public class ReviewResultServiceImpl extends CommonServiceImpl implements IRevie
         StringBuilder sql = new StringBuilder("select u.user_name   userName,\n" +
                 "       u.real_name realName,\n" +
                 "       u.id_card     idCard,\n" +
+                "       r.user_id     userId,\n" +
                 "       r.result_id   resultId,\n" +
                 "       r.class_id    classId,\n" +
                 "       r.grade_total gradeTotal,\n" +
@@ -255,13 +261,19 @@ public class ReviewResultServiceImpl extends CommonServiceImpl implements IRevie
                 "       DATE_FORMAT(u.`create_time`, '%Y-%m-%e %H:%i:%S') AS createTime\n" +
                 "from review_result r\n" +
                 "         inner join review_user u on r.user_id = u.user_id and r.project_id=:projectId\n" +
-                "where r.create_time between ':startTime' and ':endTime'\n" +
-                "order by r.create_time desc");
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("projectId", projectId);
-        paramMap.put("startTime", startTime);
-        paramMap.put("endTime", endTime);
+                "where 1=1");
 
+        Map<String, Object> paramMap = new HashMap<>();
+        if (StrUtil.isNotBlank(startTime)) {
+            paramMap.put("startTime", startTime);
+            sql.append(" and r.create_time >= :startTime");
+        }
+        if (StrUtil.isNotBlank(endTime)) {
+            paramMap.put("endTime", endTime);
+            sql.append(" and r.create_time <= :endTime");
+        }
+        sql.append(" order by r.create_time desc");
+        paramMap.put("projectId", projectId);
         return this.getObjectList(sql.toString(), paramMap, ReviewResultVO.class);
     }
 

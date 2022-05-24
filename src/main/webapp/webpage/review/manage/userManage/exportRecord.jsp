@@ -35,8 +35,7 @@
 				return
 			}
 
-
-			window.location.href = "${realPath}/reviewUser.do?exportQuestionAnswer&groupId=" + groupId + "&startTime=" + startTime
+			window.location.href = "${realPath}/reviewUser.do?exportReviewResult&groupId=" + groupId + "&startTime=" + startTime
 				+ "&projectId=" + projectId + "&endTime=" + $("#endTime").val()
 		}
 	</script>

@@ -409,7 +409,9 @@ public class ReviewUserController extends BaseController{
 			// 产生工作簿对象
 			Workbook workbook = reviewResultService.exportReviewResult(groupId, projectId, startTime, endTime, ContextHolderUtils.getLoginUserName());
 			fOut = response.getOutputStream();
-			workbook.write(fOut);
+			if (workbook != null) {
+				workbook.write(fOut);
+			}
 			fOut.flush();
 		} catch (Exception e) {
 			logger.error("exportReviewResult error, ", e);
