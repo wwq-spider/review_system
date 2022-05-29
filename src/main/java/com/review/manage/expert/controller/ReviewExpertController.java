@@ -6,6 +6,7 @@ import com.review.manage.expert.service.ReviewExpertServiceI;
 import com.review.manage.expert.vo.ReviewExpertCalendarVO;
 import com.review.manage.expert.vo.ReviewExpertVO;
 import net.sf.json.JSONObject;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.log4j.Logger;
 import org.jeecgframework.core.common.controller.BaseController;
 import org.jeecgframework.core.common.hibernate.qbc.CriteriaQuery;
@@ -24,6 +25,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**   
  * @Title: Controller
@@ -171,9 +179,24 @@ public class ReviewExpertController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(params = "toCalendarSet")
-	public ModelAndView toCalendarSet(ReviewExpertCalendarVO expertCalendar) {
-		ModelAndView modelAndView = new ModelAndView("review/manage/expert/expertCalendar");
+	public ModelAndView toCalendarSet(ReviewExpertCalendarVO expertCalendar,HttpServletRequest request) throws Exception{
+		//ModelAndView modelAndView = new ModelAndView("review/manage/expert/expertCalendar");
+		ModelAndView modelAndView = new ModelAndView("review/manage/expert/expertCalendarNew2");
+		String id = request.getParameter("id");
+		String expertName = request.getParameter("expertName");
 		modelAndView.addObject("expertCalendar", expertCalendar);
+		modelAndView.addObject("expertName",expertName);
+		modelAndView.addObject("id",id);
+		List list = new ArrayList();
+		Map map = new HashMap();
+		Map map1 = new HashMap();
+		map.put("calendar","周一|9.00|10.00");
+		map.put("id","1");
+		map1.put("calendar","周二|9.00|10.00");
+		map1.put("id","2");
+		list.add(map);
+		list.add(map1);
+		modelAndView.addObject("list",list);
 		return modelAndView;
 	}
 
