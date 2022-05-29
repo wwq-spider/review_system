@@ -181,7 +181,7 @@ public class ReviewExpertController extends BaseController {
 	@RequestMapping(params = "toCalendarSet")
 	public ModelAndView toCalendarSet(ReviewExpertCalendarVO expertCalendar,HttpServletRequest request) throws Exception{
 		//ModelAndView modelAndView = new ModelAndView("review/manage/expert/expertCalendar");
-		ModelAndView modelAndView = new ModelAndView("review/manage/expert/expertCalendarNew2");
+		ModelAndView modelAndView = new ModelAndView("review/manage/expert/expertCalendarNew");
 		String id = request.getParameter("id");
 		String expertName = request.getParameter("expertName");
 		modelAndView.addObject("expertCalendar", expertCalendar);
