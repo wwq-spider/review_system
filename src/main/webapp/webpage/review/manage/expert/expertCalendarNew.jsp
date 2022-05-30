@@ -57,6 +57,14 @@
             </td>
             <td id="Mon">
                 <input type="hidden" id="MonI" value=""/>
+                <c:forEach items="${list}" var="item">
+                    <c:if test="${item.weekDay == '1'}">
+                        <div id="${item.id}" style="display: inline-block;white-space: nowrap;float: left">
+                                ${item.beginTime}|${item.endTime}[<a href='#'
+                                                                     onclick="deleteCalendar(${item.id})">删除</a>],
+                        </div>
+                    </c:if>
+                </c:forEach>
             </td>
         </tr>
         <tr>
@@ -78,6 +86,14 @@
             </td>
             <td id="Tues">
                 <input type="hidden" id="TuesI" value=""/>
+                <c:forEach items="${list}" var="item">
+                    <c:if test="${item.weekDay == '2'}">
+                        <div id="${item.id}" style="display: inline-block;white-space: nowrap;float: left">
+                                ${item.beginTime}|${item.endTime}[<a href='#'
+                                                                     onclick="deleteCalendar(${item.id})">删除</a>],
+                        </div>
+                    </c:if>
+                </c:forEach>
             </td>
         </tr>
         <tr>
@@ -99,6 +115,14 @@
             </td>
             <td id="Wednes">
                 <input type="hidden" id="WednesI" value=""/>
+                <c:forEach items="${list}" var="item">
+                    <c:if test="${item.weekDay == '3'}">
+                        <div id="${item.id}" style="display: inline-block;white-space: nowrap;float: left">
+                                ${item.beginTime}|${item.endTime}[<a href='#'
+                                                                     onclick="deleteCalendar(${item.id})">删除</a>],
+                        </div>
+                    </c:if>
+                </c:forEach>
             </td>
         </tr>
         <tr>
@@ -120,6 +144,14 @@
             </td>
             <td id="Thurs">
                 <input type="hidden" id="ThursI" value=""/>
+                <c:forEach items="${list}" var="item">
+                    <c:if test="${item.weekDay == '4'}">
+                        <div id="${item.id}" style="display: inline-block;white-space: nowrap;float: left">
+                                ${item.beginTime}|${item.endTime}[<a href='#'
+                                                                     onclick="deleteCalendar(${item.id})">删除</a>],
+                        </div>
+                    </c:if>
+                </c:forEach>
             </td>
         </tr>
         <tr>
@@ -141,6 +173,14 @@
             </td>
             <td id="Fri">
                 <input type="hidden" id="FriI" value=""/>
+                <c:forEach items="${list}" var="item">
+                    <c:if test="${item.weekDay == '5'}">
+                        <div id="${item.id}" style="display: inline-block;white-space: nowrap;float: left">
+                                ${item.beginTime}|${item.endTime}[<a href='#'
+                                                                     onclick="deleteCalendar(${item.id})">删除</a>],
+                        </div>
+                    </c:if>
+                </c:forEach>
             </td>
         </tr>
         <tr>
@@ -162,6 +202,14 @@
             </td>
             <td id="Satur">
                 <input type="hidden" id="SaturI" value=""/>
+                <c:forEach items="${list}" var="item">
+                    <c:if test="${item.weekDay == '6'}">
+                        <div id="${item.id}" style="display: inline-block;white-space: nowrap;float: left">
+                                ${item.beginTime}|${item.endTime}[<a href='#'
+                                                                     onclick="deleteCalendar(${item.id})">删除</a>],
+                        </div>
+                    </c:if>
+                </c:forEach>
             </td>
         </tr>
         <tr>
@@ -183,6 +231,14 @@
             </td>
             <td id="Sun">
                 <input type="hidden" id="SunI" value=""/>
+                <c:forEach items="${list}" var="item">
+                    <c:if test="${item.weekDay == '7'}">
+                        <div id="${item.id}" style="display: inline-block;white-space: nowrap;float: left">
+                                ${item.beginTime}|${item.endTime}[<a href='#'
+                                                                     onclick="deleteCalendar(${item.id})">删除</a>],
+                        </div>
+                    </c:if>
+                </c:forEach>
             </td>
         </tr>
         </tbody>
@@ -305,7 +361,6 @@
 
     //保存所有时间段数据
     function saveSchedulingTimeAll() {
-        alert(alltime);
         //保存日历信息
         var url = "reviewExpertController.do?saveCalendarInfo";
         var param = {
@@ -320,7 +375,21 @@
                 alert("保存失败！");
             }
         });
-
+    }
+    //删除单个时间点日历
+    function deleteCalendar(id) {
+        var Div = document.getElementById(id);
+        //删除数据
+        var url = "reviewExpertController.do?deleteCalendarInfo";
+        var param = {
+            "id": id
+        };
+        $.post(url, param, function (data) {
+            var d = $.parseJSON(data);
+            if (d.success) {
+                Div.innerHTML = "";
+            }
+        });
     }
 </script>
 </body>
