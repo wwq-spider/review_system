@@ -39,4 +39,11 @@ public interface ReviewExpertServiceI extends CommonService{
      * @return
      */
     List<ReviewExpertCalendarVO> getReviewExpertCalendars(ReviewExpertCalendarVO reviewExpertCalendar);
+
+    /**
+     * 保存日历
+     * @param allTime
+     * @param expertCalendar
+     */
+    boolean datahandle(String id,String allTime, ReviewExpertCalendarVO expertCalendar);
 }
