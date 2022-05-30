@@ -3,6 +3,7 @@ import cn.hutool.core.date.DateUtil;
 import com.review.common.CommonUtils;
 import com.review.common.Constants;
 import com.review.common.DateUtils;
+import com.review.manage.expert.entity.ReviewExpertCalendarEntity;
 import com.review.manage.expert.entity.ReviewExpertEntity;
 import com.review.manage.expert.service.ReviewExpertServiceI;
 import com.review.manage.expert.vo.ReviewExpertCalendarVO;
@@ -13,6 +14,11 @@ import org.jeecgframework.core.util.MyBeanUtils;
 import org.jeecgframework.core.util.StringUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -181,5 +187,48 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("expertId", reviewExpertCalendar.getExpertId());
         return this.getObjectList(sql.toString(), paramMap, ReviewExpertCalendarVO.class);
+    }
+
+    /**
+     * 保存日历
+     * @param allTime
+     * @param expertCalendar
+     */
+    @Override
+    public boolean datahandle(String id,String allTime, ReviewExpertCalendarVO expertCalendar) {
+        //对时间进行处理
+        System.out.println(allTime);
+        String[] allTimeSplitTemp = allTime.split("-");
+        String allTimeSplit =null;
+        String[] timeSplit = null;
+        int week_day = 0;
+        String beginTime = "";
+        String endTime = "";
+        Time beginTimeMysql = null;
+        Time endTimeMysql = null;
+        Timestamp timestamp = new Timestamp(new Date().getTime());
+        DateFormat dateFormat = new SimpleDateFormat("\"hh:mm:ss\"");
+        if (!"".equals(allTimeSplitTemp[0])){
+            for (int i = 0; i < allTimeSplitTemp.length; i++) {
+                ReviewExpertCalendarEntity reviewExpertEntity = new ReviewExpertCalendarEntity();
+                allTimeSplit = allTimeSplitTemp[i];
+                timeSplit = allTimeSplit.split(",");
+                week_day = Integer.parseInt(timeSplit[0]);
+                beginTime = timeSplit[1]+":00";
+                endTime = timeSplit[2]+":00";
+                beginTimeMysql = Time.valueOf(beginTime);
+                endTimeMysql = Time.valueOf(endTime);
+                //保存
+                reviewExpertEntity.setExpertId(Long.valueOf(id));
+                reviewExpertEntity.setWeekDay(week_day);
+                reviewExpertEntity.setBeginTime(beginTimeMysql);
+                reviewExpertEntity.setEndTime(endTimeMysql);
+                reviewExpertEntity.setStatus(1);
+                reviewExpertEntity.setCreateTime(new Date());
+                this.delete(reviewExpertEntity);
+                this.save(reviewExpertEntity);
+            }
+        }
+        return true;
     }
 }
