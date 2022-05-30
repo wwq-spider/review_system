@@ -1,6 +1,7 @@
 package com.review.manage.expert.controller;
 
 import com.review.common.CommonUtils;
+import com.review.manage.expert.entity.ReviewExpertCalendarEntity;
 import com.review.manage.expert.entity.ReviewExpertEntity;
 import com.review.manage.expert.service.ReviewExpertServiceI;
 import com.review.manage.expert.vo.ReviewExpertCalendarVO;
@@ -187,16 +188,15 @@ public class ReviewExpertController extends BaseController {
 		modelAndView.addObject("expertCalendar", expertCalendar);
 		modelAndView.addObject("expertName",expertName);
 		modelAndView.addObject("id",id);
-		List list = new ArrayList();
-		Map map = new HashMap();
-		Map map1 = new HashMap();
-		map.put("calendar","周一|9.00|10.00");
-		map.put("id","1");
-		map1.put("calendar","周二|9.00|10.00");
-		map1.put("id","2");
-		list.add(map);
-		list.add(map1);
-		modelAndView.addObject("list",list);
+		expertCalendar.setExpertId(expertCalendar.getId());
+		List<ReviewExpertCalendarVO> haveSaveCalendarInfoList = reviewExpertService.getReviewExpertCalendars(expertCalendar);
+		for (ReviewExpertCalendarVO map : haveSaveCalendarInfoList){
+			String beginTime = map.getBeginTime().substring(9);
+			map.setBeginTime(beginTime);
+			String endTime = map.getEndTime().substring(9);
+			map.setEndTime(endTime);
+		}
+		modelAndView.addObject("list",haveSaveCalendarInfoList);
 		return modelAndView;
 	}
 
@@ -209,5 +209,41 @@ public class ReviewExpertController extends BaseController {
 	@ResponseBody
 	public void listCalendar(HttpServletResponse response, ReviewExpertCalendarVO reviewExpertCalendar) {
 		responseRowsJson(response, 200, reviewExpertService.getReviewExpertCalendars(reviewExpertCalendar));
+	}
+
+	/**
+	 * 保存专家日历
+	 * @param expertCalendar
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(params = "saveCalendarInfo")
+	@ResponseBody
+	public AjaxJson saveCalendarInfo(ReviewExpertCalendarVO expertCalendar,HttpServletRequest request){
+		String id = request.getParameter("id");
+		String allTime = request.getParameter("alltime");
+		AjaxJson ajaxJson = new AjaxJson();
+		ajaxJson.setSuccess(true);
+		boolean flag = reviewExpertService.datahandle(id,allTime,expertCalendar);
+		if (!flag){
+			ajaxJson.setSuccess(false);
+		}
+		return ajaxJson;
+	}
+
+	/**
+	 * 删除单个专家日历
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(params = "deleteCalendarInfo")
+	@ResponseBody
+	public AjaxJson deleteCalendarInfo(HttpServletRequest request){
+		String id = request.getParameter("id");
+		ReviewExpertCalendarEntity reviewExpertCalendar = new ReviewExpertCalendarEntity();
+		reviewExpertCalendar.setId(Long.valueOf(id));
+		AjaxJson ajaxJson = new AjaxJson();
+		reviewExpertService.delete(reviewExpertCalendar);
+		return ajaxJson;
 	}
 }
