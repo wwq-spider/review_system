@@ -9,16 +9,19 @@
     <meta charset='utf-8'/>
     <link rel="stylesheet" href="plug-in/Validform/css/style.css" type="text/css"/>
     <link rel="stylesheet" href="plug-in/Validform/css/tablefrom.css" type="text/css"/>
-    <script src="plug-in/jquery/jquery-1.8.3.js"/>
-    <script src='plug-in/fullCalendar/lib/jquery.min.js'></script>
-    <script src='plug-in/fullCalendar/lib/moment.min.js'></script>
+    <%--<script src="plug-in/jquery/jquery-1.8.3.js"/>--%>
+    <%--<script src='plug-in/fullCalendar/lib/jquery.min.js'></script>--%>
+    <%--<script src='plug-in/fullCalendar/lib/moment.min.js'></script>
     <script type="text/javascript" src="plug-in/Validform/js/Validform_v5.3.1_min.js"></script>
     <script type="text/javascript" src="plug-in/Validform/js/Validform_Datatype.js"></script>
-    <script type="text/javascript" src="plug-in/Validform/js/datatype.js"></script>
-    <script type="text/javascript" src="plug-in/Validform/plugin/passwordStrength/passwordStrength-min.js"></script>
+    <script type="text/javascript" src="plug-in/Validform/js/datatype.js"></script>--%>
+    <%--<script type="text/javascript" src="plug-in/Validform/plugin/passwordStrength/passwordStrength-min.js"></script>--%>
 </head>
 <body style="overflow-y: hidden" scroll="no">
 <form id="addForm" method="post" action="reviewExpertController.do?saveCalendarInfo" enctype="multipart/form-data">
+    <input type="hidden" id="btn_sub" class="btn_sub" onclick="saveSchedulingTimeAll();"/>
+    <input id="alltime" name="alltime" type="hidden" value="">
+    <input id="id" name="id" type="hidden" value="${id}">
     <table id="SchedulingTimeTable" style="width: 100%;" align="center" cellpadding="0" cellspacing="1"
            class="formtable">
         <thead>
@@ -361,6 +364,8 @@
 
     //保存所有时间段数据
     function saveSchedulingTimeAll() {
+        $("#alltime").val(alltime);
+        /*$("#addForm").form('submit',{
         //保存日历信息
         var url = "reviewExpertController.do?saveCalendarInfo";
         var param = {
@@ -373,6 +378,29 @@
                 alert("保存成功！");
             } else {
                 alert("保存失败！");
+            }
+        }
+        });*/
+        $("#addForm").form('submit',{
+            onSubmit : function() {
+            },
+            success : function(data) {
+                debugger;
+                var d = $.parseJSON(data);
+                var win = frameElement.api.opener;
+                window.top.$.messager.progress('close');
+                if (d.success == true) {
+                    frameElement.api.close();
+                    win.tip(d.msg);
+                } else {
+                    if (d.responseText == ''
+                        || d.responseText == undefined)
+                        $("#addForm").html(d.msg);
+                    else
+                        $("#addForm").html(d.responseText);
+                    return false;
+                }
+                win.reloadTable();
             }
         });
     }
