@@ -246,7 +246,7 @@
         </tr>
         </tbody>
     </table>
-    <table style="width: 100%;" align="center" cellpadding="0" cellspacing="1" class="formtable">
+   <%-- <table style="width: 100%;" align="center" cellpadding="0" cellspacing="1" class="formtable">
         <tr style="text-align: center">
             <td>
                 <div>
@@ -254,7 +254,7 @@
                 </div>
             </td>
         </tr>
-    </table>
+    </table>--%>
 </form>
 <style type="text/css">
     table {
