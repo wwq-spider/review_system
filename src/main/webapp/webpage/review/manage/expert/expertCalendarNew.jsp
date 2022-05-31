@@ -9,13 +9,6 @@
     <meta charset='utf-8'/>
     <link rel="stylesheet" href="plug-in/Validform/css/style.css" type="text/css"/>
     <link rel="stylesheet" href="plug-in/Validform/css/tablefrom.css" type="text/css"/>
-    <%--<script src="plug-in/jquery/jquery-1.8.3.js"/>--%>
-    <%--<script src='plug-in/fullCalendar/lib/jquery.min.js'></script>--%>
-    <%--<script src='plug-in/fullCalendar/lib/moment.min.js'></script>
-    <script type="text/javascript" src="plug-in/Validform/js/Validform_v5.3.1_min.js"></script>
-    <script type="text/javascript" src="plug-in/Validform/js/Validform_Datatype.js"></script>
-    <script type="text/javascript" src="plug-in/Validform/js/datatype.js"></script>--%>
-    <%--<script type="text/javascript" src="plug-in/Validform/plugin/passwordStrength/passwordStrength-min.js"></script>--%>
 </head>
 <body style="overflow-y: hidden" scroll="no">
 <form id="addForm" method="post" action="reviewExpertController.do?saveCalendarInfo" enctype="multipart/form-data">
@@ -26,13 +19,13 @@
            class="formtable">
         <thead>
         <tr>
-            <th colspan="1" style="width: 20px">
+            <th colspan="1" style="width: 10px">
                 <label class="Validform_label">专家姓名</label>
             </th>
-            <th colspan="4" style="width: 40px">
+            <th colspan="1" style="width: 40px">
                 <label class="Validform_label">日期</label>
             </th>
-            <th colspan="1" style="width: 40px">
+            <th colspan="1" style="width: 50px">
                 <label class="Validform_label">日历</label>
             </th>
         </tr>
@@ -42,20 +35,17 @@
             <td style="text-align: center" rowspan="7">
                 ${expertName}
             </td>
-            <td style="text-align: center">周一&nbsp;</td>
-            <td>
+            <td style="text-align: center;white-space: nowrap;overflow: hidden;word-break: keep-all;width: 90px">
+                <label class="Validform_label">周一</label>
                 <input type="text" id="Mstart" name="Mstart" list="MstartList" style="width:70px;height:15px;">
                 <datalist id="MstartList">
                     <select name="Mstart"></select>
                 </datalist>
-            </td>
-            <td>
+                &nbsp;&nbsp;——&nbsp;&nbsp;
                 <input type="text" id="Mend" name="Mend" list="MendList" style="width:70px;height:15px;">
                 <datalist id="MendList">
                     <select name="Mend"></select>
                 </datalist>
-            </td>
-            <td>
                 [<a href="#" onclick="saveSchedulingTime('1')">添加</a>]
             </td>
             <td id="Mon">
@@ -63,28 +53,25 @@
                 <c:forEach items="${list}" var="item">
                     <c:if test="${item.weekDay == '1'}">
                         <div id="${item.id}" style="display: inline-block;white-space: nowrap;float: left">
-                                ${item.beginTime}|${item.endTime}[<a href='#'
-                                                                     onclick="deleteCalendar(${item.id})">删除</a>],
+                                ${item.beginTime}&nbsp;-${item.endTime}[<a href='#'
+                                                                           onclick="deleteCalendar(${item.id})">删除</a>],
                         </div>
                     </c:if>
                 </c:forEach>
             </td>
         </tr>
         <tr>
-            <td style="text-align: center">周二&nbsp;</td>
-            <td>
+            <td style="text-align: center;white-space: nowrap;overflow: hidden;word-break: keep-all;width: 90px">
+                <label class="Validform_label">周二</label>
                 <input type="text" id="Tustart" name="Tustart" list="TustartList" style="width:70px;height:15px;">
                 <datalist id="TustartList">
                     <select name="Tustart"></select>
                 </datalist>
-            </td>
-            <td>
+                &nbsp;&nbsp;——&nbsp;&nbsp;
                 <input type="text" id="Tuend" name="Tuend" list="TuendList" style="width:70px;height:15px;">
                 <datalist id="TuendList">
                     <select name="Tuend"></select>
                 </datalist>
-            </td>
-            <td>
                 [<a href="#" onclick="saveSchedulingTime('2')">添加</a>]
             </td>
             <td id="Tues">
@@ -92,28 +79,25 @@
                 <c:forEach items="${list}" var="item">
                     <c:if test="${item.weekDay == '2'}">
                         <div id="${item.id}" style="display: inline-block;white-space: nowrap;float: left">
-                                ${item.beginTime}|${item.endTime}[<a href='#'
-                                                                     onclick="deleteCalendar(${item.id})">删除</a>],
+                                ${item.beginTime}&nbsp;-${item.endTime}[<a href='#'
+                                                                           onclick="deleteCalendar(${item.id})">删除</a>],
                         </div>
                     </c:if>
                 </c:forEach>
             </td>
         </tr>
         <tr>
-            <td style="text-align: center">周三&nbsp;</td>
-            <td>
+            <td style="text-align: center;white-space: nowrap;overflow: hidden;word-break: keep-all;width: 90px">
+                <label class="Validform_label">周三</label>
                 <input type="text" id="Westart" name="Westart" list="WestartList" style="width:70px;height:15px;">
                 <datalist id="WestartList">
                     <select name="Westart"></select>
                 </datalist>
-            </td>
-            <td>
+                &nbsp;&nbsp;——&nbsp;&nbsp;
                 <input type="text" id="Weend" name="Weend" list="WeendList" style="width:70px;height:15px;">
                 <datalist id="WeendList">
                     <select name="Weend"></select>
                 </datalist>
-            </td>
-            <td>
                 [<a href="#" onclick="saveSchedulingTime('3')">添加</a>]
             </td>
             <td id="Wednes">
@@ -121,28 +105,25 @@
                 <c:forEach items="${list}" var="item">
                     <c:if test="${item.weekDay == '3'}">
                         <div id="${item.id}" style="display: inline-block;white-space: nowrap;float: left">
-                                ${item.beginTime}|${item.endTime}[<a href='#'
-                                                                     onclick="deleteCalendar(${item.id})">删除</a>],
+                                ${item.beginTime}&nbsp;-${item.endTime}[<a href='#'
+                                                                           onclick="deleteCalendar(${item.id})">删除</a>],
                         </div>
                     </c:if>
                 </c:forEach>
             </td>
         </tr>
         <tr>
-            <td style="text-align: center">周四&nbsp;</td>
-            <td>
+            <td style="text-align: center;white-space: nowrap;overflow: hidden;word-break: keep-all;width: 90px">
+                <label class="Validform_label">周四</label>
                 <input type="text" id="Thstart" name="Thstart" list="ThstartList" style="width:70px;height:15px;">
                 <datalist id="ThstartList">
                     <select name="Thstart"></select>
                 </datalist>
-            </td>
-            <td>
+                &nbsp;&nbsp;——&nbsp;&nbsp;
                 <input type="text" id="Thend" name="Thend" list="ThendList" style="width:70px;height:15px;">
                 <datalist id="ThendList">
                     <select name="Thend"></select>
                 </datalist>
-            </td>
-            <td>
                 [<a href="#" onclick="saveSchedulingTime('4')">添加</a>]
             </td>
             <td id="Thurs">
@@ -150,28 +131,25 @@
                 <c:forEach items="${list}" var="item">
                     <c:if test="${item.weekDay == '4'}">
                         <div id="${item.id}" style="display: inline-block;white-space: nowrap;float: left">
-                                ${item.beginTime}|${item.endTime}[<a href='#'
-                                                                     onclick="deleteCalendar(${item.id})">删除</a>],
+                                ${item.beginTime}&nbsp;-${item.endTime}[<a href='#'
+                                                                           onclick="deleteCalendar(${item.id})">删除</a>],
                         </div>
                     </c:if>
                 </c:forEach>
             </td>
         </tr>
         <tr>
-            <td style="text-align: center">周五&nbsp;</td>
-            <td>
+            <td style="text-align: center;white-space: nowrap;overflow: hidden;word-break: keep-all;width: 90px">
+                <label class="Validform_label">周五</label>
                 <input type="text" id="Frstart" name="Frstart" list="FrstartList" style="width:70px;height:15px;">
                 <datalist id="FrstartList">
                     <select name="Frstart"></select>
                 </datalist>
-            </td>
-            <td>
+                &nbsp;&nbsp;——&nbsp;&nbsp;
                 <input type="text" id="Frend" name="Frend" list="FrendList" style="width:70px;height:15px;">
                 <datalist id="FrendList">
                     <select name="Frend"></select>
                 </datalist>
-            </td>
-            <td>
                 [<a href="#" onclick="saveSchedulingTime('5')">添加</a>]
             </td>
             <td id="Fri">
@@ -179,28 +157,25 @@
                 <c:forEach items="${list}" var="item">
                     <c:if test="${item.weekDay == '5'}">
                         <div id="${item.id}" style="display: inline-block;white-space: nowrap;float: left">
-                                ${item.beginTime}|${item.endTime}[<a href='#'
-                                                                     onclick="deleteCalendar(${item.id})">删除</a>],
+                                ${item.beginTime}&nbsp;-${item.endTime}[<a href='#'
+                                                                           onclick="deleteCalendar(${item.id})">删除</a>],
                         </div>
                     </c:if>
                 </c:forEach>
             </td>
         </tr>
         <tr>
-            <td style="text-align: center">周六&nbsp;</td>
-            <td>
+            <td style="text-align: center;white-space: nowrap;overflow: hidden;word-break: keep-all;width: 90px">
+                <label class="Validform_label">周六</label>
                 <input type="text" id="Sastart" name="MeSastart" list="SastartList" style="width:70px;height:15px;">
                 <datalist id="SastartList">
                     <select name="Sastart"></select>
                 </datalist>
-            </td>
-            <td>
+                &nbsp;&nbsp;——&nbsp;&nbsp;
                 <input type="text" id="Saend" name="Saend" list="SaendList" style="width:70px;height:15px;">
                 <datalist id="SaendList">
                     <select name="Saend"></select>
                 </datalist>
-            </td>
-            <td>
                 [<a href="#" onclick="saveSchedulingTime('6')">添加</a>]
             </td>
             <td id="Satur">
@@ -208,28 +183,25 @@
                 <c:forEach items="${list}" var="item">
                     <c:if test="${item.weekDay == '6'}">
                         <div id="${item.id}" style="display: inline-block;white-space: nowrap;float: left">
-                                ${item.beginTime}|${item.endTime}[<a href='#'
-                                                                     onclick="deleteCalendar(${item.id})">删除</a>],
+                                ${item.beginTime}&nbsp;-${item.endTime}[<a href='#'
+                                                                           onclick="deleteCalendar(${item.id})">删除</a>],
                         </div>
                     </c:if>
                 </c:forEach>
             </td>
         </tr>
         <tr>
-            <td style="text-align: center">周日&nbsp;</td>
-            <td>
+            <td style="text-align: center;white-space: nowrap;overflow: hidden;word-break: keep-all;width: 90px">
+                <label class="Validform_label">周日</label>
                 <input type="text" id="Sustart" name="MeSustartd" list="SustartList" style="width:70px;height:15px;">
                 <datalist id="SustartList">
                     <select name="Sustart"></select>
                 </datalist>
-            </td>
-            <td>
+                &nbsp;&nbsp;——&nbsp;&nbsp;
                 <input type="text" id="Suend" name="Suend" list="SuendList" style="width:70px;height:15px;">
                 <datalist id="SuendList">
                     <select name="Suend"></select>
                 </datalist>
-            </td>
-            <td>
                 [<a href="#" onclick="saveSchedulingTime('7')">添加</a>]
             </td>
             <td id="Sun">
@@ -237,8 +209,8 @@
                 <c:forEach items="${list}" var="item">
                     <c:if test="${item.weekDay == '7'}">
                         <div id="${item.id}" style="display: inline-block;white-space: nowrap;float: left">
-                                ${item.beginTime}|${item.endTime}[<a href='#'
-                                                                     onclick="deleteCalendar(${item.id})">删除</a>],
+                                ${item.beginTime}&nbsp;-${item.endTime}[<a href='#'
+                                                                           onclick="deleteCalendar(${item.id})">删除</a>],
                         </div>
                     </c:if>
                 </c:forEach>
@@ -246,15 +218,6 @@
         </tr>
         </tbody>
     </table>
-   <%-- <table style="width: 100%;" align="center" cellpadding="0" cellspacing="1" class="formtable">
-        <tr style="text-align: center">
-            <td>
-                <div>
-                    <button type="button" onclick="saveSchedulingTimeAll()">保存</button>
-                </div>
-            </td>
-        </tr>
-    </table>--%>
 </form>
 <style type="text/css">
     table {
@@ -307,6 +270,8 @@
     var id = ${id};
     //所有时间段
     var alltime = "";
+    var startTimeTemp="";
+    var endTimeTemp="";
 
     //时间段构造函数
     function SchedulingTimeTable(startTime, endTime) {
@@ -350,9 +315,26 @@
         } else {
             return false;
         }
+        var weekDayTemp="";
+        var startTimeTemp="";
+        var endTimeTemp="";
+        if (""!=alltime){
+            var allTimeAry = alltime.split("-");
+            for (let i = 0; i < allTimeAry.length; i++) {
+                var allTimeAryTemp = allTimeAry[i].split(",");
+                weekDayTemp = allTimeAryTemp[0];
+                startTimeTemp = allTimeAryTemp[1];
+                endTimeTemp = allTimeAryTemp[2];
+                if (flag==weekDayTemp&&startTime==startTimeTemp&&endTime==endTimeTemp){
+                    alert("时间段重复，请重新添加！");
+                    isRepeatFlag="1";
+                    return false;
+                }
+            }
+        }
         var div = document.createElement('div');
         div.style = "display: inline;";
-        div.innerHTML = startTime + "|" + endTime + "|" + "[<a href= 'javascript:;'>删除</a>]" + "，";
+        div.innerHTML = startTime + "&nbsp;-&nbsp;" + endTime + "[<a href= 'javascript:;'>删除</a>]" + "，";
         td.appendChild(div);
         var temp = alltime;//时间段中间变量
         alltime += flag + "," + startTime + "," + endTime + "-";
@@ -365,26 +347,10 @@
     //保存所有时间段数据
     function saveSchedulingTimeAll() {
         $("#alltime").val(alltime);
-        /*$("#addForm").form('submit',{
-        //保存日历信息
-        var url = "reviewExpertController.do?saveCalendarInfo";
-        var param = {
-            "id": id,
-            "alltime": alltime
-        };
-        $.post(url, param, function (data) {
-            var d = $.parseJSON(data);
-            if (d.success) {
-                alert("保存成功！");
-            } else {
-                alert("保存失败！");
-            }
-        }
-        });*/
-        $("#addForm").form('submit',{
-            onSubmit : function() {
+        $("#addForm").form('submit', {
+            onSubmit: function () {
             },
-            success : function(data) {
+            success: function (data) {
                 debugger;
                 var d = $.parseJSON(data);
                 var win = frameElement.api.opener;
@@ -404,6 +370,7 @@
             }
         });
     }
+
     //删除单个时间点日历
     function deleteCalendar(id) {
         var Div = document.getElementById(id);
