@@ -148,7 +148,6 @@ public class ExpertController extends BaseController {
     public void queryMyConsultationDetail(HttpServletResponse response, @RequestBody ConsultationVO consultationVO) {
         JSONObject json = new JSONObject();
         List<ConsultationVO> reviewExpertReserveList = reviewExpertService.getMyConsultationDetail(consultationVO);
-
         json.put("code", 200);
         json.put("result", reviewExpertReserveList);
         json.put("msg", "查询成功");
@@ -165,6 +164,7 @@ public class ExpertController extends BaseController {
     public void cancelReservation(HttpServletResponse response, @RequestBody ConsultationVO consultationVO){
         JSONObject json = new JSONObject();
         reviewExpertService.cancelReservation(consultationVO.getId());
+        reviewExpertService.updateCalendarStatus(consultationVO.getCalendarId());
         json.put("code", 200);
         json.put("id", consultationVO.getId());
         json.put("msg", "取消预约成功");
