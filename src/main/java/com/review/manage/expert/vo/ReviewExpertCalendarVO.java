@@ -27,6 +27,7 @@ public class ReviewExpertCalendarVO implements Serializable {
     private String updateTime;
     /**创建人*/
     private String creator;
+    private String weekDayName;
 
     public Long getId() {
         return id;
@@ -106,5 +107,13 @@ public class ReviewExpertCalendarVO implements Serializable {
 
     public void setCreator(String creator) {
         this.creator = creator;
+    }
+
+    public String getWeekDayName() {
+        return weekDayName;
+    }
+
+    public void setWeekDayName(String weekDayName) {
+        this.weekDayName = weekDayName;
     }
 }
