@@ -1,5 +1,7 @@
 package com.review.manage.expert.service;
 
+import com.review.front.vo.ConsultationVO;
+import com.review.manage.expert.entity.ReviewExpertReserveEntity;
 import com.review.manage.expert.vo.ReviewExpertCalendarVO;
 import com.review.manage.expert.vo.ReviewExpertVO;
 import org.jeecgframework.core.common.service.CommonService;
@@ -46,4 +48,42 @@ public interface ReviewExpertServiceI extends CommonService{
      * @param expertCalendar
      */
     boolean datahandle(String id,String allTime, ReviewExpertCalendarVO expertCalendar);
+
+    /**
+     * 处理时间数据
+     * @param reviewExpertCalendarList
+     */
+    void handleCalendarTime(List<ReviewExpertCalendarVO> reviewExpertCalendarList);
+
+    /**
+     * 预约专家
+     * @param Id
+     */
+    void orderExpert(Long Id);
+
+    /**
+     * 保存预约信息
+     * @param reviewExpertReserveEntity
+     */
+    void saveOoderInfo(ReviewExpertReserveEntity[] reviewExpertReserveEntity);
+
+    /**
+     * 我的问诊列表
+     * @param consultationVO
+     * @return
+     */
+    List<ConsultationVO> getMyConsultation(ConsultationVO consultationVO);
+
+    /**
+     * 我的问诊详情
+     * @param consultationVO
+     * @return
+     */
+    List<ConsultationVO> getMyConsultationDetail(ConsultationVO consultationVO);
+
+    /**
+     * 取消预约
+     * @param id
+     */
+    void cancelReservation(Integer id);
 }
