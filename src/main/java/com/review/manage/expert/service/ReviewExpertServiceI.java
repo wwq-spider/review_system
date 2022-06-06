@@ -82,8 +82,14 @@ public interface ReviewExpertServiceI extends CommonService{
     List<ConsultationVO> getMyConsultationDetail(ConsultationVO consultationVO);
 
     /**
-     * 取消预约
+     * 取消预约-将预约人信息status置为3：取消预约
      * @param id
      */
     void cancelReservation(Integer id);
+
+    /**
+     *  取消预约-将专家日历状态status置为1：可预约
+     * @param calendarId
+     */
+    void updateCalendarStatus(Integer calendarId);
 }
