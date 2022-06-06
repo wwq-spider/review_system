@@ -310,6 +310,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
         }
         StringBuilder sql = new StringBuilder(
             "select rer.id,\n" +
+                    "rec.id calendarId,\n"+
                     "re.expert_name expertName,\n"+
                     "re.sex expertSex,\n"+
                     "re.job_title expertJobTitle,\n"+
@@ -355,6 +356,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
         }
         StringBuilder sql = new StringBuilder(
                 "select rer.id,\n" +
+                        "rec.id calendarId,\n"+
                         "re.expert_name expertName,\n"+
                         "re.sex expertSex,\n"+
                         "re.job_title expertJobTitle,\n"+
@@ -389,13 +391,23 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
     }
 
     /**
-     * 取消预约
+     * 取消预约-将预约人信息status置为3：取消预约
      * @param id
      */
     @Override
     public void cancelReservation(Integer id) {
         String sql = "update review_expert_reserve set status=3 where id = ?";
         executeSql(sql,new Object[]{id});
+    }
+
+    /**
+     * 取消预约-将专家日历状态status置为1：可预约
+     * @param calendarId
+     */
+    @Override
+    public void updateCalendarStatus(Integer calendarId) {
+        String sql = "update review_expert_calendar set status=1 where id = ?";
+        executeSql(sql,new Object[]{calendarId});
     }
 
     /**
