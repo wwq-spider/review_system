@@ -332,7 +332,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
                     "when 1 then '周一' when 2 then '周二' when 3 then '周三' when 4 then '周四' when 5 then '周五' when 6 then '周六' when 7 then '周日'\n"+
                     "end weekDayName\n"+
                     "from review_expert_reserve rer \n"+
-                    "left join review_expert_calendar rec ON rer.expert_id = rec.expert_id\n"+
+                    "left join review_expert_calendar rec ON rer.calendar_id = rec.id\n"+
                     "left join review_expert re ON rer.expert_id = re.id\n"+
                     "left join review_user ru ON rer.user_id = ru.user_id\n"+
                     "where rer.user_id = :userId and rer.del_flag = 1 group by rer.id order by rer.status"
@@ -378,7 +378,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
                         "when 1 then '周一' when 2 then '周二' when 3 then '周三' when 4 then '周四' when 5 then '周五' when 6 then '周六' when 7 then '周日'\n"+
                         "end weekDayName\n"+
                         "from review_expert_reserve rer \n"+
-                        "left join review_expert_calendar rec ON rer.expert_id = rec.expert_id\n"+
+                        "left join review_expert_calendar rec ON rer.calendar_id = rec.id\n"+
                         "left join review_expert re ON rer.expert_id = re.id\n"+
                         "left join review_user ru ON rer.user_id = ru.user_id\n"+
                         "where rer.id = :id and rer.del_flag = 1 group by rer.id order by rer.create_time desc"
