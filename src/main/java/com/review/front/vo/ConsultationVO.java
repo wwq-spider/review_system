@@ -12,6 +12,10 @@ public class ConsultationVO implements Serializable {
      */
     private Integer id;
     /*
+        日历id
+     */
+    private Integer calendarId;
+    /*
         用户id
      */
     private String userId;
@@ -83,6 +87,14 @@ public class ConsultationVO implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getCalendarId() {
+        return calendarId;
+    }
+
+    public void setCalendarId(Integer calendarId) {
+        this.calendarId = calendarId;
     }
 
     public String getUserId() {
