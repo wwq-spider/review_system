@@ -67,6 +67,25 @@ public class AliYunSmsUtils {
         return null;
     }
 
+    /**
+     * 预约成功短信通知
+     * @param mobilePhone
+     * @return
+     * @throws Exception
+     */
+    public static SendSmsResponseBody sendMsg(String code,String templateCode, String mobilePhone) throws Exception{
+        SendSmsRequest sendSmsRequest = new SendSmsRequest()
+                .setPhoneNumbers(mobilePhone)
+                .setSignName("筑心康")
+                .setTemplateCode(templateCode);
+        SendSmsResponse smsResponse = getClient(accessKey, accessKeySecert).sendSms(sendSmsRequest);
+        if (smsResponse != null) {
+            logger.info("mobilePhone:{}, sendMsgResp:{}", mobilePhone, JSONObject.toJSONString(smsResponse));
+            return smsResponse.getBody();
+        }
+        return null;
+    }
+
     public static void main(String[] args_) throws Exception {
         java.util.List<String> args = java.util.Arrays.asList(args_);
         com.aliyun.dysmsapi20170525.Client client = AliYunSmsUtils.getClient(accessKey, accessKeySecert);
