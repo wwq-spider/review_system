@@ -2,9 +2,10 @@ package com.review.manage.expert.service.impl;
 import cn.hutool.core.date.DateUtil;
 import com.review.common.CommonUtils;
 import com.review.common.Constants;
-import com.review.common.DateUtils;
+import com.review.front.vo.ConsultationVO;
 import com.review.manage.expert.entity.ReviewExpertCalendarEntity;
 import com.review.manage.expert.entity.ReviewExpertEntity;
+import com.review.manage.expert.entity.ReviewExpertReserveEntity;
 import com.review.manage.expert.service.ReviewExpertServiceI;
 import com.review.manage.expert.vo.ReviewExpertCalendarVO;
 import com.review.manage.expert.vo.ReviewExpertVO;
@@ -19,10 +20,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service("reviewExpertService")
 @Transactional
@@ -230,5 +228,192 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
             }
         }
         return true;
+    }
+
+    /**
+     * 处理专家日历-周几&开始时间&结束时间
+     * @param reviewExpertCalendarList
+     */
+    @Override
+    public void handleCalendarTime(List<ReviewExpertCalendarVO> reviewExpertCalendarList) {
+        String beginTime = "";
+        String endTime = "";
+        for (ReviewExpertCalendarVO reviewExpertCalendarVO : reviewExpertCalendarList){
+            //处理开始时间和结束时间
+            beginTime = reviewExpertCalendarVO.getBeginTime();
+            String[] beginTimeArray = beginTime.split(" ");
+            beginTime = beginTimeArray[1];
+            endTime = reviewExpertCalendarVO.getEndTime();
+            String[] endTimeArray = endTime.split(" ");
+            endTime = endTimeArray[1];
+            reviewExpertCalendarVO.setBeginTime(beginTime);
+            reviewExpertCalendarVO.setEndTime(endTime);
+            //处理周几
+            Integer weekDay = reviewExpertCalendarVO.getWeekDay();
+            if (weekDay == 1){
+                reviewExpertCalendarVO.setWeekDayName("周一");
+            }else if (weekDay == 2){
+                reviewExpertCalendarVO.setWeekDayName("周二");
+            }else if (weekDay == 3){
+                reviewExpertCalendarVO.setWeekDayName("周三");
+            }else if (weekDay == 4){
+                reviewExpertCalendarVO.setWeekDayName("周四");
+            }else if (weekDay == 5){
+                reviewExpertCalendarVO.setWeekDayName("周五");
+            }else if (weekDay == 6){
+                reviewExpertCalendarVO.setWeekDayName("周六");
+            }else if (weekDay == 7){
+                reviewExpertCalendarVO.setWeekDayName("周日");
+            }
+        }
+    }
+
+    /**
+     * 预约专家
+     * @param Id
+     */
+    @Override
+    public void orderExpert(Long Id) {
+        String sql = "update review_expert_calendar set status=2 where id = ?";
+        executeSql(sql,new Object[]{Id});
+    }
+
+    /**
+     * 保存预约信息
+     * @param reviewExpertReserveEntity
+     */
+    @Override
+    public void saveOoderInfo(ReviewExpertReserveEntity[] reviewExpertReserveEntity) {
+        ReviewExpertReserveEntity reserveEntity = new ReviewExpertReserveEntity();
+        reserveEntity.setExpertId(reviewExpertReserveEntity[0].getExpertId());
+        reserveEntity.setUserId(reviewExpertReserveEntity[0].getUserId());
+        reserveEntity.setCalendarId(reviewExpertReserveEntity[0].getCalendarId());
+        reserveEntity.setStatus(reviewExpertReserveEntity[0].getStatus());
+        reserveEntity.setType(reviewExpertReserveEntity[0].getType());
+        reserveEntity.setPatientName(reviewExpertReserveEntity[0].getPatientName());
+        reserveEntity.setPatientSex(reviewExpertReserveEntity[0].getPatientSex());
+        reserveEntity.setPatientAge(reviewExpertReserveEntity[0].getPatientAge());
+        reserveEntity.setDelFlag(1);
+        reserveEntity.setCreateTime(new Date());
+        this.save(reserveEntity);
+    }
+
+    /**
+     * 我的问诊列表
+     * @param consultationVO
+     * @return
+     */
+    @Override
+    public List<ConsultationVO> getMyConsultation(ConsultationVO consultationVO) {
+        if (consultationVO.getUserId() == null) {
+            return null;
+        }
+        StringBuilder sql = new StringBuilder(
+            "select rer.id,\n" +
+                    "re.expert_name expertName,\n"+
+                    "re.sex expertSex,\n"+
+                    "re.job_title expertJobTitle,\n"+
+                    "re.introduction expertIntroduction,\n"+
+                    "re.label expertLable,\n"+
+                    "rer.patient_name patientName,\n"+
+                    "rer.patient_sex patientSex,\n"+
+                    "rer.patient_age patientAge,\n"+
+                    "ru.mobile_phone userPhone,\n"+
+                    "ru.id_card userIdCard,\n"+
+                    "rec.begin_time beginTime,\n"+
+                    "rec.end_time endTime,\n"+
+                    "rec.week_day weekDay,\n"+
+                    "rer.status status,\n"+
+                    "case rer.status\n"+
+                    "when 1 then '待问诊' when 2 then '问诊结束' when 3 then '已取消'\n"+
+                    "end statusName,\n"+
+                    "case rec.week_day\n"+
+                    "when 1 then '周一' when 2 then '周二' when 3 then '周三' when 4 then '周四' when 5 then '周五' when 6 then '周六' when 7 then '周日'\n"+
+                    "end weekDayName\n"+
+                    "from review_expert_reserve rer \n"+
+                    "left join review_expert_calendar rec ON rer.expert_id = rec.expert_id\n"+
+                    "left join review_expert re ON rer.expert_id = re.id\n"+
+                    "left join review_user ru ON rer.user_id = ru.user_id\n"+
+                    "where rer.user_id = :userId and rer.del_flag = 1 group by rer.id order by rer.status"
+            );
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("userId", consultationVO.getUserId());
+        List<ConsultationVO> list = null;
+        list = this.getObjectList(sql.toString(), paramMap, ConsultationVO.class);
+        return this.beginAndEndTimehandle(list);
+    }
+
+    /**
+     * 我的问诊详情
+     * @param consultationVO
+     * @return
+     */
+    @Override
+    public List<ConsultationVO> getMyConsultationDetail(ConsultationVO consultationVO) {
+        if (consultationVO.getId() == null) {
+            return null;
+        }
+        StringBuilder sql = new StringBuilder(
+                "select rer.id,\n" +
+                        "re.expert_name expertName,\n"+
+                        "re.sex expertSex,\n"+
+                        "re.job_title expertJobTitle,\n"+
+                        "re.introduction expertIntroduction,\n"+
+                        "re.label expertLable,\n"+
+                        "rer.patient_name patientName,\n"+
+                        "rer.patient_sex patientSex,\n"+
+                        "rer.patient_age patientAge,\n"+
+                        "ru.mobile_phone userPhone,\n"+
+                        "ru.id_card userIdCard,\n"+
+                        "rec.begin_time beginTime,\n"+
+                        "rec.end_time endTime,\n"+
+                        "rec.week_day weekDay,\n"+
+                        "rer.status status,\n"+
+                        "case rer.status\n"+
+                        "when 1 then '待问诊' when 2 then '问诊结束' when 3 then '已取消'\n"+
+                        "end statusName,\n"+
+                        "case rec.week_day\n"+
+                        "when 1 then '周一' when 2 then '周二' when 3 then '周三' when 4 then '周四' when 5 then '周五' when 6 then '周六' when 7 then '周日'\n"+
+                        "end weekDayName\n"+
+                        "from review_expert_reserve rer \n"+
+                        "left join review_expert_calendar rec ON rer.expert_id = rec.expert_id\n"+
+                        "left join review_expert re ON rer.expert_id = re.id\n"+
+                        "left join review_user ru ON rer.user_id = ru.user_id\n"+
+                        "where rer.id = :id and rer.del_flag = 1 group by rer.id order by rer.create_time desc"
+        );
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("id", consultationVO.getId());
+        List<ConsultationVO> list = null;
+        list = this.getObjectList(sql.toString(), paramMap, ConsultationVO.class);
+        return this.beginAndEndTimehandle(list);
+    }
+
+    /**
+     * 取消预约
+     * @param id
+     */
+    @Override
+    public void cancelReservation(Integer id) {
+        String sql = "update review_expert_reserve set status=3 where id = ?";
+        executeSql(sql,new Object[]{id});
+    }
+
+    /**
+     * 时间处理
+     * @param list
+     */
+    private List<ConsultationVO> beginAndEndTimehandle(List<ConsultationVO> list) {
+        String beginTime = "";
+        String endTime = "";
+        for (int i = 0; i < list.size(); i++) {
+            //处理就诊开始时间和结束时间
+            beginTime = list.get(i).getBeginTime();
+            endTime = list.get(i).getEndTime();
+            beginTime = beginTime.split(":")[0]+":"+beginTime.split(":")[1];
+            endTime = endTime.split(":")[0]+":"+endTime.split(":")[1];
+            list.get(i).setBeginTime(beginTime);
+            list.get(i).setEndTime(endTime);
+        }
+        return list;
     }
 }
