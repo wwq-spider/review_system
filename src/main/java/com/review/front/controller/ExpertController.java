@@ -18,6 +18,8 @@ import com.review.manage.userManage.entity.ReviewUserEntity;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.ArrayUtils;
 import org.jeecgframework.core.common.controller.BaseController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -39,6 +41,9 @@ public class ExpertController extends BaseController {
 
     @Autowired
     private ReviewExpertServiceI reviewExpertService;
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
 
     /**
      * 查询专家列表
@@ -163,8 +168,18 @@ public class ExpertController extends BaseController {
     @ResponseBody
     public void cancelReservation(HttpServletResponse response, @RequestBody ConsultationVO consultationVO){
         JSONObject json = new JSONObject();
+        //取消预约-将预约人信息status置为3：取消预约
         reviewExpertService.cancelReservation(consultationVO.getId());
+        //取消预约-将专家日历状态status置为1：可预约
         reviewExpertService.updateCalendarStatus(consultationVO.getCalendarId());
+        //预约短信提醒：to-预约人&专家
+        System.out.println("--------------取消预约人信息---------------"+
+                "预约人姓名："+consultationVO.getPatientName()+"----"+"预约人电话：" +consultationVO.getUserPhone());
+        System.out.println("--------------预约专家信息---------------"+
+                "专家姓名："+consultationVO.getExpertName()+"----"+"专家电话："+consultationVO.getExpertPhone());
+        System.out.println("--------------预约时间段信息---------------"+
+                "周几："+consultationVO.getWeekDayName()+"----"+"开始时间："+consultationVO.getBeginTime()+"----"+"结束时间："+consultationVO.getEndTime());
+
         json.put("code", 200);
         json.put("id", consultationVO.getId());
         json.put("msg", "取消预约成功");
