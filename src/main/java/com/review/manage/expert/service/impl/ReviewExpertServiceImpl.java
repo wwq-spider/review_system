@@ -316,6 +316,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
                     "re.job_title expertJobTitle,\n"+
                     "re.introduction expertIntroduction,\n"+
                     "re.label expertLable,\n"+
+                    "re.mobile_phone expertPhone,\n"+
                     "rer.patient_name patientName,\n"+
                     "rer.patient_sex patientSex,\n"+
                     "rer.patient_age patientAge,\n"+
@@ -362,6 +363,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
                         "re.job_title expertJobTitle,\n"+
                         "re.introduction expertIntroduction,\n"+
                         "re.label expertLable,\n"+
+                        "re.mobile_phone expertPhone,\n"+
                         "rer.patient_name patientName,\n"+
                         "rer.patient_sex patientSex,\n"+
                         "rer.patient_age patientAge,\n"+
