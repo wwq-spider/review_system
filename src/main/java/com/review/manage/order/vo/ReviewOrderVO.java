@@ -55,6 +55,8 @@ public class ReviewOrderVO implements Serializable {
     /**微信订单id*/
     private String transactionId;
 
+    private Long expertId;
+
     public Long getId() {
         return id;
     }
@@ -239,5 +241,13 @@ public class ReviewOrderVO implements Serializable {
 
     public void setTransactionId(String transactionId) {
         this.transactionId = transactionId;
+    }
+
+    public Long getExpertId() {
+        return expertId;
+    }
+
+    public void setExpertId(Long expertId) {
+        this.expertId = expertId;
     }
 }
