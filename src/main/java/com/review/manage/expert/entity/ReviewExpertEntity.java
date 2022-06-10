@@ -4,6 +4,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**   
@@ -52,6 +53,12 @@ public class ReviewExpertEntity implements java.io.Serializable {
 	private Date updateTime;
 	/**创建人*/
 	private String creator;
+
+	private Integer charge;
+
+	private BigDecimal orgPrice;
+
+	private BigDecimal dicountPrice;
 	
 	/**
 	 *方法: 取得java.lang.Integer
@@ -298,5 +305,32 @@ public class ReviewExpertEntity implements java.io.Serializable {
 	 */
 	public void setCreator(String creator){
 		this.creator = creator;
+	}
+
+	@Column(name ="charge",nullable=true,length=1)
+	public Integer getCharge() {
+		return charge;
+	}
+
+	public void setCharge(Integer charge) {
+		this.charge = charge;
+	}
+
+	@Column(name ="org_price",nullable=true,length=20)
+	public BigDecimal getOrgPrice() {
+		return orgPrice;
+	}
+
+	public void setOrgPrice(BigDecimal orgPrice) {
+		this.orgPrice = orgPrice;
+	}
+
+	@Column(name ="dicount_price",nullable=true,length=20)
+	public BigDecimal getDicountPrice() {
+		return dicountPrice;
+	}
+
+	public void setDicountPrice(BigDecimal dicountPrice) {
+		this.dicountPrice = dicountPrice;
 	}
 }
