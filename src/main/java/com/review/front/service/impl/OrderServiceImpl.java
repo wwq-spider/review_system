@@ -214,25 +214,30 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
-    public Integer updateStatusByPayId(Long orderNo, Integer status, String transactionId, String payResultCode,
+    public Integer updateStatusByPayId(Long orderNo,String payId, Integer status, String transactionId, String payResultCode,
                                        String payResultMsg, Integer totalFee) {
         //check
         Map<String, Object> map = reviewOrderService.findOneForJdbc("select order_amount, status, order_no from review_order where order_no=?",
                 new Object[]{orderNo});
+        Map<String, Object> map1 = reviewOrderService.findOneForJdbc("select order_amount, status, order_no from review_order where pay_id=?",
+                new Object[]{payId});
         if (map == null || map.isEmpty()) {
-            logger.warn("orderNo:{} is not exist", orderNo);
-            return -1;
+            if (map1 == null || map1.isEmpty()){
+                logger.warn("payId:{} is not exist", payId);
+                logger.warn("orderNo:{} is not exist", orderNo);
+                return -1;
+            }
         }
 
         //处理成功的订单 不再重复处理
-        Integer orderStatus = (Integer)map.get("status");
+        Integer orderStatus = (Integer)map1.get("status");
         if (orderStatus == Constants.OrderStatus.SUCCESS) {
-            logger.warn("order_no:{}  had process success", map.get("order_no"));
+            logger.warn("order_no:{}  had process success", map1.get("order_no"));
             return -2;
         }
 
         //check支付金额
-        int orderAmount = BigDecimal.valueOf(Double.valueOf(map.get("order_amount").toString())).multiply(BigDecimal.valueOf(100)).intValue();
+        int orderAmount = BigDecimal.valueOf(Double.valueOf(map1.get("order_amount").toString())).multiply(BigDecimal.valueOf(100)).intValue();
         if (Constants.OrderStatus.SUCCESS == status && (totalFee == null || totalFee != orderAmount)) {
             logger.warn("totalFee:{} not equals orderAmount:{} ", totalFee == null ? "null" : totalFee, orderAmount);
             return -3;
@@ -259,8 +264,8 @@ public class OrderServiceImpl implements IOrderService {
             updSql.append(", pay_result_msg=?");
             params.add(payResultMsg);
         }
-        updSql.append("where order_no=? and status != ?");
-        params.add(orderNo);
+        updSql.append("where pay_id=? and status != ?");
+        params.add(payId);
         params.add(Constants.OrderStatus.SUCCESS);
 
         //采用cas 自旋锁 保证成功状态不被更新
