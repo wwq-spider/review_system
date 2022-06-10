@@ -1,6 +1,7 @@
 package com.review.front.vo;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * @author javabage
@@ -19,6 +20,10 @@ public class ConsultationVO implements Serializable {
         用户id
      */
     private String userId;
+    /**
+     * 专家id
+     */
+    private Long expertId;
     /**
         专家姓名
      */
@@ -84,6 +89,31 @@ public class ConsultationVO implements Serializable {
      */
     private Integer status;
     private String statusName;
+    /**
+     *  是否收费(0:免费；1:收费)
+     */
+    private Integer charge;
+    /**
+     *  原始价格
+     */
+    private String orgPrice;
+    /**
+     *  优惠价格
+     */
+    private String dicountPrice;
+    /**
+     *  用户是否支付专家问诊
+     */
+    private Boolean buy;
+    /**
+     * 实际价格
+     */
+    private String realPrice;
+    /**
+     * 支付状态
+     */
+    private Integer payStatus;
+    private String payStatusName;
 
     public Integer getId() {
         return id;
@@ -107,6 +137,14 @@ public class ConsultationVO implements Serializable {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public Long getExpertId() {
+        return expertId;
+    }
+
+    public void setExpertId(Long expertId) {
+        this.expertId = expertId;
     }
 
     public String getExpertName() {
@@ -243,5 +281,61 @@ public class ConsultationVO implements Serializable {
 
     public void setStatusName(String statusName) {
         this.statusName = statusName;
+    }
+
+    public Integer getCharge() {
+        return charge;
+    }
+
+    public void setCharge(Integer charge) {
+        this.charge = charge;
+    }
+
+    public String getOrgPrice() {
+        return orgPrice;
+    }
+
+    public void setOrgPrice(String orgPrice) {
+        this.orgPrice = orgPrice;
+    }
+
+    public String getDicountPrice() {
+        return dicountPrice;
+    }
+
+    public void setDicountPrice(String dicountPrice) {
+        this.dicountPrice = dicountPrice;
+    }
+
+    public Boolean getBuy() {
+        return buy;
+    }
+
+    public void setBuy(Boolean buy) {
+        this.buy = buy;
+    }
+
+    public String getRealPrice() {
+        return realPrice;
+    }
+
+    public void setRealPrice(String realPrice) {
+        this.realPrice = realPrice;
+    }
+
+    public Integer getPayStatus() {
+        return payStatus;
+    }
+
+    public void setPayStatus(Integer payStatus) {
+        this.payStatus = payStatus;
+    }
+
+    public String getPayStatusName() {
+        return payStatusName;
+    }
+
+    public void setPayStatusName(String payStatusName) {
+        this.payStatusName = payStatusName;
     }
 }
