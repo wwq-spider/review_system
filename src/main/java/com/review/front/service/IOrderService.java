@@ -34,7 +34,7 @@ public interface IOrderService {
      * @param totalFee
      * @return
      */
-    Integer updateStatusByPayId(Long orderNo, Integer status, String transactionId, String payResultCode,
+    Integer updateStatusByPayId(Long orderNo,String payId, Integer status, String transactionId, String payResultCode,
                                 String payResultMsg, Integer totalFee);
 
     /**
