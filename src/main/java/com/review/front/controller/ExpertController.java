@@ -173,13 +173,7 @@ public class ExpertController extends BaseController {
         //取消预约-将专家日历状态status置为1：可预约
         reviewExpertService.updateCalendarStatus(consultationVO.getCalendarId());
         //预约短信提醒：to-预约人&专家
-        System.out.println("--------------取消预约人信息---------------"+
-                "预约人姓名："+consultationVO.getPatientName()+"----"+"预约人电话：" +consultationVO.getUserPhone());
-        System.out.println("--------------预约专家信息---------------"+
-                "专家姓名："+consultationVO.getExpertName()+"----"+"专家电话："+consultationVO.getExpertPhone());
-        System.out.println("--------------预约时间段信息---------------"+
-                "周几："+consultationVO.getWeekDayName()+"----"+"开始时间："+consultationVO.getBeginTime()+"----"+"结束时间："+consultationVO.getEndTime());
-
+        logger.info(consultationVO.toString());
         json.put("code", 200);
         json.put("id", consultationVO.getId());
         json.put("msg", "取消预约成功");
