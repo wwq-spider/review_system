@@ -21,6 +21,7 @@ import org.jeecgframework.core.util.IpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,6 +46,8 @@ public class OrderController extends BaseController {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+
+    @Qualifier("orderServiceImpl")
     @Autowired
     private IOrderService orderService;
 
@@ -118,7 +121,7 @@ public class OrderController extends BaseController {
 
         Integer total_fee = BigDecimal.valueOf(Double.valueOf(reviewOrder.getOrderAmount())).multiply(BigDecimal.valueOf(100)).intValue();
 
-        int updNum = orderService.updateStatusByPayId(reviewOrder.getOrderNo(), Constants.OrderStatus.PRE_SUCCESS, "",
+        int updNum = orderService.updateStatusByPayId(reviewOrder.getOrderNo(),reviewOrder.getPayId(), Constants.OrderStatus.PRE_SUCCESS, "",
                 "", "", total_fee);
 
         if (updNum > 0) {
@@ -169,7 +172,7 @@ public class OrderController extends BaseController {
                     Integer status = Constants.WX_PAY_STATUS_SUCCESS.equals(resultCode) ? Constants.OrderStatus.SUCCESS : Constants.OrderStatus.PAY_FAIL;
 
                     //更新顶单状态
-                    int updNum = orderService.updateStatusByPayId(Long.valueOf(out_trade_no), status, transaction_id, err_code, err_code_des, total_fee);
+                    int updNum = orderService.updateStatusByPayId(Long.valueOf(out_trade_no),null, status, transaction_id, err_code, err_code_des, total_fee);
                     if (updNum > 0) {
                         //通知微信服务器已经支付成功
                         resXml = "<xml><return_code><![CDATA[SUCCESS]]></return_code>"
