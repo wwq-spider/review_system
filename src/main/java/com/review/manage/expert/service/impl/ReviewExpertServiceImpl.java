@@ -1,5 +1,6 @@
 package com.review.manage.expert.service.impl;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import com.review.common.CommonUtils;
 import com.review.common.Constants;
 import com.review.front.vo.ConsultationVO;
@@ -9,10 +10,15 @@ import com.review.manage.expert.entity.ReviewExpertReserveEntity;
 import com.review.manage.expert.service.ReviewExpertServiceI;
 import com.review.manage.expert.vo.ReviewExpertCalendarVO;
 import com.review.manage.expert.vo.ReviewExpertVO;
+import com.review.manage.order.service.impl.ReviewOrderServiceImpl;
+import com.review.manage.order.vo.ReviewOrderVO;
 import org.apache.commons.collections.CollectionUtils;
 import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
+import org.jeecgframework.core.util.ContextHolderUtils;
 import org.jeecgframework.core.util.MyBeanUtils;
 import org.jeecgframework.core.util.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +31,7 @@ import java.util.*;
 @Service("reviewExpertService")
 @Transactional
 public class ReviewExpertServiceImpl extends CommonServiceImpl implements ReviewExpertServiceI {
+
     @Override
     public void addExpert(ReviewExpertVO reviewExpertVO) {
         ReviewExpertEntity reviewExpertEntity = new ReviewExpertEntity();
@@ -331,11 +338,14 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
                     "end statusName,\n"+
                     "case rec.week_day\n"+
                     "when 1 then '周一' when 2 then '周二' when 3 then '周三' when 4 then '周四' when 5 then '周五' when 6 then '周六' when 7 then '周日'\n"+
-                    "end weekDayName\n"+
+                    "end weekDayName,\n"+
+                    "ro.status payStatus,\n"+
+                    "CASE ro.status when 2 then '已支付' when 3 then '已支付' else '待支付' end payStatusName\n"+
                     "from review_expert_reserve rer \n"+
                     "left join review_expert_calendar rec ON rer.calendar_id = rec.id\n"+
                     "left join review_expert re ON rer.expert_id = re.id\n"+
                     "left join review_user ru ON rer.user_id = ru.user_id\n"+
+                    "LEFT JOIN review_order ro ON rer.user_id = ro.user_id AND ro.class_id = rer.id\n"+
                     "where rer.user_id = :userId and rer.del_flag = 1 group by rer.id order by rer.status"
             );
         Map<String, Object> paramMap = new HashMap<>();
@@ -357,6 +367,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
         }
         StringBuilder sql = new StringBuilder(
                 "select rer.id,\n" +
+                        "re.id expertId,\n"+
                         "rec.id calendarId,\n"+
                         "re.expert_name expertName,\n"+
                         "re.sex expertSex,\n"+
@@ -369,6 +380,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
                         "rer.patient_age patientAge,\n"+
                         "ru.mobile_phone userPhone,\n"+
                         "ru.id_card userIdCard,\n"+
+                        "ru.user_id userId,\n"+
                         "rec.begin_time beginTime,\n"+
                         "rec.end_time endTime,\n"+
                         "rec.week_day weekDay,\n"+
@@ -378,7 +390,11 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
                         "end statusName,\n"+
                         "case rec.week_day\n"+
                         "when 1 then '周一' when 2 then '周二' when 3 then '周三' when 4 then '周四' when 5 then '周五' when 6 then '周六' when 7 then '周日'\n"+
-                        "end weekDayName\n"+
+                        "end weekDayName,\n"+
+                        "re.charge charge,\n"+
+                        "re.org_price orgPrice,\n"+
+                        "re.dicount_price dicountPrice,\n"+
+                        "(re.org_price - re.dicount_price) as realPrice\n"+
                         "from review_expert_reserve rer \n"+
                         "left join review_expert_calendar rec ON rer.calendar_id = rec.id\n"+
                         "left join review_expert re ON rer.expert_id = re.id\n"+
@@ -389,6 +405,12 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
         paramMap.put("id", consultationVO.getId());
         List<ConsultationVO> list = null;
         list = this.getObjectList(sql.toString(), paramMap, ConsultationVO.class);
+
+        String userId = ContextHolderUtils.getLoginFrontUserID();
+        if (StrUtil.isNotBlank(list.get(0).getUserId()) && list.get(0).getCharge() == Constants.ClassCharge) {
+            //判断用户是否支付了问诊费用
+            list.get(0).setBuy(this.userBuy(list.get(0).getId().toString(), ContextHolderUtils.getLoginFrontUserID()));
+        }
         return this.beginAndEndTimehandle(list);
     }
 
@@ -429,5 +451,30 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
             list.get(i).setEndTime(endTime);
         }
         return list;
+    }
+
+    public boolean userBuy(String classId, String userId) {
+        ReviewOrderVO reviewOrder = this.findOneOrder(classId, userId);
+        if (reviewOrder != null && (reviewOrder.getStatus() == Constants.OrderStatus.PRE_SUCCESS || reviewOrder.getStatus() == Constants.OrderStatus.SUCCESS)) {
+            return true;
+        }
+        return false;
+    }
+
+
+    public ReviewOrderVO findOneOrder(String classId, String userId) {
+        Map<String, Object> resMap = this.findOneForJdbc("select id, pay_id payId, status,DATE_FORMAT(create_time, '%Y-%m-%e %H:%i:%S') as createTime " +
+                        "from review_order where class_id=? and user_id=? and status in(?,?,?,?,?)",
+                new Object[]{classId, userId, Constants.OrderStatus.CREATE, Constants.OrderStatus.PRE_PAY, Constants.OrderStatus.PRE_SUCCESS,
+                        Constants.OrderStatus.SUCCESS, Constants.OrderStatus.PAY_FAIL});
+        if (resMap != null && !resMap.isEmpty()) {
+            ReviewOrderVO orderVO = new ReviewOrderVO();
+            orderVO.setId((Long)resMap.get("id"));
+            orderVO.setPayId(resMap.get("payId").toString());
+            orderVO.setStatus((Integer) resMap.get("status"));
+            orderVO.setCreateTime((String) resMap.get("createTime"));
+            return orderVO;
+        }
+        return null;
     }
 }
