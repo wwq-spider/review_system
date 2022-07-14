@@ -153,9 +153,12 @@ public class ExpertController extends BaseController {
     public void queryMyConsultationDetail(HttpServletResponse response, @RequestBody ConsultationVO consultationVO) {
         JSONObject json = new JSONObject();
         List<ConsultationVO> reviewExpertReserveList = reviewExpertService.getMyConsultationDetail(consultationVO);
+        //判断当前时间是否可发起视频咨询
+        String videoConsultcondition = reviewExpertService.videoConsultcondition(reviewExpertReserveList);
         json.put("code", 200);
         json.put("result", reviewExpertReserveList);
         json.put("msg", "查询成功");
+        json.put("videoConsult",videoConsultcondition);
         CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
     }
 
