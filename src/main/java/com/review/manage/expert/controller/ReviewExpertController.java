@@ -7,7 +7,6 @@ import com.review.manage.expert.service.ReviewExpertServiceI;
 import com.review.manage.expert.vo.ReviewExpertCalendarVO;
 import com.review.manage.expert.vo.ReviewExpertVO;
 import net.sf.json.JSONObject;
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.log4j.Logger;
 import org.jeecgframework.core.common.controller.BaseController;
 import org.jeecgframework.core.common.hibernate.qbc.CriteriaQuery;
@@ -26,12 +25,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
 import java.util.List;
 
 /**   
@@ -190,12 +185,6 @@ public class ReviewExpertController extends BaseController {
 		modelAndView.addObject("id",id);
 		expertCalendar.setExpertId(expertCalendar.getId());
 		List<ReviewExpertCalendarVO> haveSaveCalendarInfoList = reviewExpertService.getReviewExpertCalendars(expertCalendar);
-		for (ReviewExpertCalendarVO map : haveSaveCalendarInfoList){
-			String beginTime = map.getBeginTime().substring(9);
-			map.setBeginTime(beginTime);
-			String endTime = map.getEndTime().substring(9);
-			map.setEndTime(endTime);
-		}
 		modelAndView.addObject("list",haveSaveCalendarInfoList);
 		return modelAndView;
 	}
@@ -220,8 +209,6 @@ public class ReviewExpertController extends BaseController {
 	@RequestMapping(params = "saveCalendarInfo")
 	@ResponseBody
 	public AjaxJson saveCalendarInfo(ReviewExpertCalendarVO expertCalendar,HttpServletRequest request){
-		/*String id = request.getParameter("id");
-		String allTime = request.getParameter("alltime");*/
 		AjaxJson ajaxJson = new AjaxJson();
 		ajaxJson.setSuccess(true);
 		//boolean flag = reviewExpertService.datahandle(id,allTime,expertCalendar);
