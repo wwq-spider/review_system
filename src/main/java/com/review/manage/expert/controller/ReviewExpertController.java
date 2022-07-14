@@ -27,12 +27,12 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 /**   
  * @Title: Controller
@@ -220,11 +220,12 @@ public class ReviewExpertController extends BaseController {
 	@RequestMapping(params = "saveCalendarInfo")
 	@ResponseBody
 	public AjaxJson saveCalendarInfo(ReviewExpertCalendarVO expertCalendar,HttpServletRequest request){
-		String id = request.getParameter("id");
-		String allTime = request.getParameter("alltime");
+		/*String id = request.getParameter("id");
+		String allTime = request.getParameter("alltime");*/
 		AjaxJson ajaxJson = new AjaxJson();
 		ajaxJson.setSuccess(true);
-		boolean flag = reviewExpertService.datahandle(id,allTime,expertCalendar);
+		//boolean flag = reviewExpertService.datahandle(id,allTime,expertCalendar);
+		boolean flag = reviewExpertService.saveCalendarInfo(expertCalendar);
 		if (!flag){
 			ajaxJson.setSuccess(false);
 		}
@@ -246,4 +247,23 @@ public class ReviewExpertController extends BaseController {
 		reviewExpertService.delete(reviewExpertCalendar);
 		return ajaxJson;
 	}
+	@RequestMapping(params = "ajaxCalendarInfo")
+	@ResponseBody
+	public PrintWriter ajaxCalendarInfo(HttpServletResponse response,ReviewExpertCalendarVO expertCalendar){
+		List<ReviewExpertCalendarVO> list = reviewExpertService.getReviewExpertCalendars(expertCalendar);
+		ModelAndView modelAndView = new ModelAndView();
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			out.print(list);
+			out.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			out.close();
+			out = null;
+		}
+		return out;
+	}
+
 }
