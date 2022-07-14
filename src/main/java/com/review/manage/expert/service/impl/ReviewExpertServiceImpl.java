@@ -10,22 +10,16 @@ import com.review.manage.expert.entity.ReviewExpertReserveEntity;
 import com.review.manage.expert.service.ReviewExpertServiceI;
 import com.review.manage.expert.vo.ReviewExpertCalendarVO;
 import com.review.manage.expert.vo.ReviewExpertVO;
-import com.review.manage.order.service.impl.ReviewOrderServiceImpl;
 import com.review.manage.order.vo.ReviewOrderVO;
 import org.apache.commons.collections.CollectionUtils;
 import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
 import org.jeecgframework.core.util.ContextHolderUtils;
 import org.jeecgframework.core.util.MyBeanUtils;
 import org.jeecgframework.core.util.StringUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Time;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -193,8 +187,8 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
                 "       END weekDayName,\n"    +
                 "       c.status,\n" +
                 "       c.`visit_date` AS visitDate,\n" +
-                "       DATE_FORMAT(c.`begin_time`, '%Y-%m-%e %H:%i') AS beginTime,\n" +
-                "       DATE_FORMAT(c.`end_time`, '%Y-%m-%e %H:%i') AS endTime,\n" +
+                "       DATE_FORMAT(c.`begin_time`, '%H:%i') AS beginTime,\n" +
+                "       DATE_FORMAT(c.`end_time`, '%H:%i') AS endTime,\n" +
                 "       DATE_FORMAT(c.`create_time`, '%Y-%m-%e %H:%i:%S') AS createTime\n" +
                 "from review_expert_calendar c\n" +
                 "where c.expert_id = :expertId and c.status=1 and c.visit_date >= DATE_FORMAT(now(), '%Y-%m-%e') order by c.visit_date, c.`begin_time` asc");
@@ -250,23 +244,12 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
     }*/
 
     /**
-     * 处理专家日历-周几&开始时间&结束时间
+     * 处理专家日历-周几
      * @param reviewExpertCalendarList
      */
     @Override
     public void handleCalendarTime(List<ReviewExpertCalendarVO> reviewExpertCalendarList) {
-        String beginTime = "";
-        String endTime = "";
         for (ReviewExpertCalendarVO reviewExpertCalendarVO : reviewExpertCalendarList){
-            //处理开始时间和结束时间
-            beginTime = reviewExpertCalendarVO.getBeginTime();
-            String[] beginTimeArray = beginTime.split(" ");
-            beginTime = beginTimeArray[1];
-            endTime = reviewExpertCalendarVO.getEndTime();
-            String[] endTimeArray = endTime.split(" ");
-            endTime = endTimeArray[1];
-            reviewExpertCalendarVO.setBeginTime(beginTime);
-            reviewExpertCalendarVO.setEndTime(endTime);
             //处理周几
             Integer weekDay = reviewExpertCalendarVO.getWeekDay();
             if (weekDay == 1){
@@ -331,7 +314,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
             return null;
         }
         StringBuilder sql = new StringBuilder(
-            "select rer.id,\n" +
+            "select DISTINCT rer.id,\n" +
                     "rec.id calendarId,\n"+
                     "re.expert_name expertName,\n"+
                     "re.sex expertSex,\n"+
@@ -362,7 +345,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
                     "left join review_expert re ON rer.expert_id = re.id\n"+
                     "left join review_user ru ON rer.user_id = ru.user_id\n"+
                     "LEFT JOIN review_order ro ON rer.user_id = ro.user_id AND ro.class_id = rer.id\n"+
-                    "where rer.user_id = :userId and rer.del_flag = 1 group by rer.id order by rer.status"
+                    "where rer.user_id = :userId and rer.del_flag = 1 order by rer.status"
             );
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("userId", consultationVO.getUserId());
@@ -382,7 +365,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
             return null;
         }
         StringBuilder sql = new StringBuilder(
-                "select rer.id,\n" +
+                "select DISTINCT rer.id,\n" +
                         "re.id expertId,\n"+
                         "rec.id calendarId,\n"+
                         "re.expert_name expertName,\n"+
@@ -416,7 +399,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
                         "left join review_expert_calendar rec ON rer.calendar_id = rec.id\n"+
                         "left join review_expert re ON rer.expert_id = re.id\n"+
                         "left join review_user ru ON rer.user_id = ru.user_id\n"+
-                        "where rer.id = :id and rer.del_flag = 1 group by rer.id order by rer.create_time desc"
+                        "where rer.id = :id and rer.del_flag = 1 order by rer.create_time desc"
         );
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("id", consultationVO.getId());
@@ -555,27 +538,6 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
      * @return
      */
     public static int getDay(Date date){
-        /*Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        Integer a = calendar.get(Calendar.DAY_OF_WEEK);
-        int b = weekDay - a;
-        if (b == -1){
-            calendar.add(Calendar.DATE,0);
-        }else if (b == 0){
-            calendar.add(Calendar.DATE,1);
-        }else if (b == 1){
-            calendar.add(Calendar.DATE,2);
-        }else if (b == 2){
-            calendar.add(Calendar.DATE,3);
-        }else if (b == 3){
-            calendar.add(Calendar.DATE,4);
-        }else if (b == 4){
-            calendar.add(Calendar.DATE,5);
-        }else if (b == 5){
-            calendar.add(Calendar.DATE,6);
-        }
-        date = calendar.getTime();
-        return date;*/
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         return cal.get(Calendar.DAY_OF_WEEK) - 1;
