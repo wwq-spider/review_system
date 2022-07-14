@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -182,13 +183,21 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
         StringBuilder sql = new StringBuilder("select c.id,\n" +
                 "       c.expert_id          expertId,\n" +
                 "       c.week_day           weekDay,\n" +
+                "       CASE c.week_day WHEN '1' THEN '周一' " +
+                "       WHEN '2' THEN '周二'\n" +
+                "       WHEN '3' THEN '周三'\n" +
+                "       WHEN '4' THEN '周四'\n" +
+                "       WHEN '5' THEN '周五'\n" +
+                "       WHEN '6' THEN '周六'\n" +
+                "       WHEN '7' THEN '周日'\n" +
+                "       END weekDayName,\n"    +
                 "       c.status,\n" +
-                "       DATE_FORMAT(c.`begin_time`, '%Y-%m-%e') AS visitDate,\n" +
+                "       c.`visit_date` AS visitDate,\n" +
                 "       DATE_FORMAT(c.`begin_time`, '%Y-%m-%e %H:%i') AS beginTime,\n" +
                 "       DATE_FORMAT(c.`end_time`, '%Y-%m-%e %H:%i') AS endTime,\n" +
                 "       DATE_FORMAT(c.`create_time`, '%Y-%m-%e %H:%i:%S') AS createTime\n" +
                 "from review_expert_calendar c\n" +
-                "where c.expert_id = :expertId and c.status=1 order by c.`begin_time` asc");
+                "where c.expert_id = :expertId and c.status=1 and c.visit_date >= DATE_FORMAT(now(), '%Y-%m-%e') order by c.visit_date, c.`begin_time` asc");
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("expertId", reviewExpertCalendar.getExpertId());
         return this.getObjectList(sql.toString(), paramMap, ReviewExpertCalendarVO.class);
@@ -199,7 +208,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
      * @param allTime
      * @param expertCalendar
      */
-    @Override
+/*    @Override
     public boolean datahandle(String id,String allTime, ReviewExpertCalendarVO expertCalendar) {
         //对时间进行处理
         System.out.println(allTime);
@@ -230,12 +239,15 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
                 reviewExpertEntity.setEndTime(endTimeMysql);
                 reviewExpertEntity.setStatus(1);
                 reviewExpertEntity.setCreateTime(new Date());
+                //获取周几对应的日期
+                Date weekTime = getDay(new Date(),week_day);
+                reviewExpertEntity.setVisitDate(weekTime);
                 this.delete(reviewExpertEntity);
                 this.save(reviewExpertEntity);
             }
         }
         return true;
-    }
+    }*/
 
     /**
      * 处理专家日历-周几&开始时间&结束时间
@@ -272,6 +284,9 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
             }else if (weekDay == 7){
                 reviewExpertCalendarVO.setWeekDayName("周日");
             }
+            /*//获取周几对应的日期
+            Date weekTime = getDay(new Date(),weekDay);
+            reviewExpertCalendarVO.setVisitDate(new SimpleDateFormat("yyyy-MM-dd").format(weekTime));*/
         }
     }
 
@@ -332,6 +347,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
                     "rec.begin_time beginTime,\n"+
                     "rec.end_time endTime,\n"+
                     "rec.week_day weekDay,\n"+
+                    "DATE_FORMAT(rec.visit_date, '%Y-%m-%e') AS visitDate,\n" +
                     "rer.status status,\n"+
                     "case rer.status\n"+
                     "when 1 then '待问诊' when 2 then '问诊结束' when 3 then '已取消'\n"+
@@ -384,6 +400,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
                         "rec.begin_time beginTime,\n"+
                         "rec.end_time endTime,\n"+
                         "rec.week_day weekDay,\n"+
+                        "DATE_FORMAT(rec.visit_date, '%Y-%m-%e') AS visitDate,\n" +
                         "rer.status status,\n"+
                         "case rer.status\n"+
                         "when 1 then '待问诊' when 2 then '问诊结束' when 3 then '已取消'\n"+
@@ -435,6 +452,59 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
     }
 
     /**
+     * 保存专家日历
+     * @param expertCalendar
+     * @return
+     */
+    @Override
+    public boolean saveCalendarInfo(ReviewExpertCalendarVO expertCalendar) {
+        String beginTime = "";
+        String endTime = "";
+        beginTime = expertCalendar.getBeginTime().trim() + ":00";
+        endTime = expertCalendar.getEndTime().trim() + ":00";
+        ReviewExpertCalendarEntity reviewExpertEntity = new ReviewExpertCalendarEntity();
+        //保存
+        try {
+            reviewExpertEntity.setExpertId(expertCalendar.getExpertId());
+            reviewExpertEntity.setVisitDate(new SimpleDateFormat("yyyy-MM-dd").parse(expertCalendar.getVisitDate()));
+            reviewExpertEntity.setBeginTime(Time.valueOf(beginTime));
+            reviewExpertEntity.setEndTime(Time.valueOf(endTime));
+            reviewExpertEntity.setStatus(1);
+            reviewExpertEntity.setCreateTime(new Date());
+            //获取周几对应的日期
+            int weekDay = getDay(new SimpleDateFormat("yyyy-MM-dd").parse(expertCalendar.getVisitDate()));
+            reviewExpertEntity.setWeekDay(weekDay);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.delete(reviewExpertEntity);
+        this.save(reviewExpertEntity);
+        return true;
+    }
+
+    @Override
+    public String videoConsultcondition(List<ConsultationVO> reviewExpertReserveList) {
+        //判断当前时间是否可以发起视频咨询
+        String currentTime = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
+        if (reviewExpertReserveList.get(0).getVisitDate().equals(currentTime)){
+            System.out.println("当天");
+            String beginTime = reviewExpertReserveList.get(0).getBeginTime();
+            int currentHours = new Date().getHours();
+            int beginTimeHours = Integer.valueOf(beginTime.split(":")[0]);
+            if (currentHours == beginTimeHours ){
+                int currentMinute = new Date().getMinutes();//30分
+                int beginTimeMinute = Integer.valueOf(beginTime.split(":")[1]);//34分
+                //提前后延迟5分钟内才可发起视频咨询
+                if (beginTimeMinute - currentMinute <= 5 && currentMinute - beginTimeMinute <= 5 ){
+                    System.out.println("可发起视频咨询");
+                    return "Y";
+                }
+            }
+        }
+        return "N";
+    }
+
+    /**
      * 时间处理
      * @param list
      */
@@ -476,5 +546,38 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
             return orderVO;
         }
         return null;
+    }
+
+    /**
+     * 根据周几获取对应的日期
+     * 1 星期日，2星期一，3星期二，4星期三，5星期四，6星期五，7星期六
+     * @param date
+     * @return
+     */
+    public static int getDay(Date date){
+        /*Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        Integer a = calendar.get(Calendar.DAY_OF_WEEK);
+        int b = weekDay - a;
+        if (b == -1){
+            calendar.add(Calendar.DATE,0);
+        }else if (b == 0){
+            calendar.add(Calendar.DATE,1);
+        }else if (b == 1){
+            calendar.add(Calendar.DATE,2);
+        }else if (b == 2){
+            calendar.add(Calendar.DATE,3);
+        }else if (b == 3){
+            calendar.add(Calendar.DATE,4);
+        }else if (b == 4){
+            calendar.add(Calendar.DATE,5);
+        }else if (b == 5){
+            calendar.add(Calendar.DATE,6);
+        }
+        date = calendar.getTime();
+        return date;*/
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return cal.get(Calendar.DAY_OF_WEEK) - 1;
     }
 }
