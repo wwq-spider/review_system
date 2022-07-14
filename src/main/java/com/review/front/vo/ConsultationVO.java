@@ -69,6 +69,10 @@ public class ConsultationVO implements Serializable {
      */
     private String userIdCard;
     /**
+     * 预约日期
+     */
+    private String visitDate;
+    /**
         预约开始时间
      */
     private String beginTime;
@@ -235,6 +239,14 @@ public class ConsultationVO implements Serializable {
         this.userIdCard = userIdCard;
     }
 
+    public String getVisitDate() {
+        return visitDate;
+    }
+
+    public void setVisitDate(String visitDate) {
+        this.visitDate = visitDate;
+    }
+
     public String getBeginTime() {
         return beginTime;
     }
@@ -338,4 +350,5 @@ public class ConsultationVO implements Serializable {
     public void setPayStatusName(String payStatusName) {
         this.payStatusName = payStatusName;
     }
+
 }
