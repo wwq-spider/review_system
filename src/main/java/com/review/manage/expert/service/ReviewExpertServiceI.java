@@ -47,7 +47,7 @@ public interface ReviewExpertServiceI extends CommonService{
      * @param allTime
      * @param expertCalendar
      */
-    boolean datahandle(String id,String allTime, ReviewExpertCalendarVO expertCalendar);
+    /*boolean datahandle(String id,String allTime, ReviewExpertCalendarVO expertCalendar);*/
 
     /**
      * 处理时间数据
@@ -92,4 +92,8 @@ public interface ReviewExpertServiceI extends CommonService{
      * @param calendarId
      */
     void updateCalendarStatus(Integer calendarId);
+
+    boolean saveCalendarInfo(ReviewExpertCalendarVO expertCalendar);
+
+    String videoConsultcondition(List<ConsultationVO> reviewExpertReserveList);
 }
