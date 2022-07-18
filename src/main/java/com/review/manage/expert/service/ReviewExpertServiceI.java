@@ -65,7 +65,7 @@ public interface ReviewExpertServiceI extends CommonService{
      * 保存预约信息
      * @param reviewExpertReserveEntity
      */
-    void saveOoderInfo(ReviewExpertReserveEntity[] reviewExpertReserveEntity);
+    long saveOoderInfo(ReviewExpertReserveEntity[] reviewExpertReserveEntity);
 
     /**
      * 我的问诊列表
