@@ -288,7 +288,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
      * @param reviewExpertReserveEntity
      */
     @Override
-    public void saveOoderInfo(ReviewExpertReserveEntity[] reviewExpertReserveEntity) {
+    public long saveOoderInfo(ReviewExpertReserveEntity[] reviewExpertReserveEntity) {
         ReviewExpertReserveEntity reserveEntity = new ReviewExpertReserveEntity();
         reserveEntity.setExpertId(reviewExpertReserveEntity[0].getExpertId());
         reserveEntity.setUserId(reviewExpertReserveEntity[0].getUserId());
@@ -300,7 +300,8 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
         reserveEntity.setPatientAge(reviewExpertReserveEntity[0].getPatientAge());
         reserveEntity.setDelFlag(1);
         reserveEntity.setCreateTime(new Date());
-        this.save(reserveEntity);
+        long id = (long) this.save(reserveEntity);
+        return id;
     }
 
     /**
@@ -409,7 +410,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
         String userId = ContextHolderUtils.getLoginFrontUserID();
         if (StrUtil.isNotBlank(list.get(0).getUserId()) && list.get(0).getCharge() == Constants.ClassCharge) {
             //判断用户是否支付了问诊费用
-            list.get(0).setBuy(this.userBuy(list.get(0).getId().toString(), ContextHolderUtils.getLoginFrontUserID()));
+            list.get(0).setBuy(this.userBuy(list.get(0).getId().toString(), userId));
         }
         return this.beginAndEndTimehandle(list);
     }
