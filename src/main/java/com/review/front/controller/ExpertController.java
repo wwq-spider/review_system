@@ -120,10 +120,11 @@ public class ExpertController extends BaseController {
     @ResponseBody
     public void saveOoderInfo(HttpServletRequest request,HttpServletResponse response, @RequestBody ReviewExpertReserveEntity[] reviewExpertReserveEntity){
         JSONObject json = new JSONObject();
-        reviewExpertService.saveOoderInfo(reviewExpertReserveEntity);
+        long id = reviewExpertService.saveOoderInfo(reviewExpertReserveEntity);
         json.put("code", 200);
         json.put("getPatientName", reviewExpertReserveEntity[0].getPatientName());
         json.put("msg", "预约成功");
+        json.put("id",id);
         CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
     }
 
