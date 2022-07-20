@@ -27,7 +27,7 @@
   	  }
   </style>
  </head>
- <body style="overflow-y: auto;overflow-x: hidden;" >
+ <body style="overflow-y: auto;" >
  	<form id="addForm" action= "variate.do?addScoreSet" method="post" enctype="multipart/form-data">
  		<input type="hidden" id="btn_sub" class="btn_sub"/>
  		<input type="hidden" id="selectCount" name="selectCount"/>
