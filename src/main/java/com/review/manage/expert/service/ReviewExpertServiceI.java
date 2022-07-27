@@ -43,13 +43,6 @@ public interface ReviewExpertServiceI extends CommonService{
     List<ReviewExpertCalendarVO> getReviewExpertCalendars(ReviewExpertCalendarVO reviewExpertCalendar);
 
     /**
-     * 保存日历
-     * @param allTime
-     * @param expertCalendar
-     */
-    /*boolean datahandle(String id,String allTime, ReviewExpertCalendarVO expertCalendar);*/
-
-    /**
      * 处理时间数据
      * @param reviewExpertCalendarList
      */
@@ -93,7 +86,17 @@ public interface ReviewExpertServiceI extends CommonService{
      */
     void updateCalendarStatus(Integer calendarId);
 
+    /**
+     * 保存专家日历
+     * @param expertCalendar
+     * @return
+     */
     boolean saveCalendarInfo(ReviewExpertCalendarVO expertCalendar);
 
+    /**
+     * 判断当前时间是否可以发起视频咨询
+     * @param reviewExpertReserveList
+     * @return
+     */
     String videoConsultcondition(List<ConsultationVO> reviewExpertReserveList);
 }
