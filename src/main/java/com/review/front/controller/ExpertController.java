@@ -1,23 +1,20 @@
 package com.review.front.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.aliyun.dysmsapi20170525.models.SendSmsResponseBody;
 import com.review.common.AliYunSmsUtils;
 import com.review.common.CommonUtils;
 import com.review.common.Constants;
-import com.review.front.entity.ReviewResultEntity;
 import com.review.front.vo.ConsultationVO;
-import com.review.manage.expert.entity.ReviewExpertCalendarEntity;
 import com.review.manage.expert.entity.ReviewExpertEntity;
 import com.review.manage.expert.entity.ReviewExpertReserveEntity;
 import com.review.manage.expert.service.ReviewExpertServiceI;
 import com.review.manage.expert.vo.ReviewExpertCalendarVO;
 import com.review.manage.expert.vo.ReviewExpertVO;
-import com.review.manage.question.vo.QuestionVO;
-import com.review.manage.reviewClass.vo.ReviewClassVO;
 import com.review.manage.userManage.entity.ReviewUserEntity;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang.ArrayUtils;
 import org.jeecgframework.core.common.controller.BaseController;
+import org.jeecgframework.core.util.ContextHolderUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/reviewFront/expert")
@@ -181,6 +175,54 @@ public class ExpertController extends BaseController {
         json.put("code", 200);
         json.put("id", consultationVO.getId());
         json.put("msg", "取消预约成功");
+        CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+    }
+
+    /**
+     * 判断是否为专家
+     * @param response
+     * @param reviewUser
+     */
+    @RequestMapping(value = "isExpert", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void isExpert(HttpServletResponse response, @RequestBody ReviewUserEntity reviewUser){
+        JSONObject json = new JSONObject();
+
+        json.put("code", 200);
+        json.put("isExpert", true);
+        json.put("msg", "取消预约成功");
+        CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+    }
+
+    /**
+     * 咨客发起视频咨询，给专家发送房间号
+     * @param response
+     * @param request
+     */
+    @RequestMapping(value = "sendRoomId", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void sendRoomId(HttpServletResponse response, HttpServletRequest request,@RequestBody ConsultationVO consultationVO){
+        JSONObject json = new JSONObject();
+        if (StrUtil.isBlank(consultationVO.getExpertPhone())) {
+            json.put("code", 300);
+            json.put("msg", "手机号不能为空");
+        } else {
+            try {
+                SendSmsResponseBody body = AliYunSmsUtils.sendMsg(consultationVO.getRoomId(), consultationVO.getExpertPhone());
+                if (body != null && "ok".equalsIgnoreCase(body.getCode())) {
+                    ContextHolderUtils.getSession().setAttribute(consultationVO.getExpertPhone() + Constants.MSG_CODE_KEY, consultationVO.getRoomId());
+                    json.put("code", 200);
+                    json.put("msg", "验证码发送成功");
+                } else {
+                    json.put("code", 400);
+                    json.put("msg", "验证码发送失败");
+                }
+            } catch (Exception e) {
+                logger.error("sendMsg error, ", e);
+                json.put("code", 500);
+                json.put("msg", "验证码发送异常，请联系管理员");
+            }
+        }
         CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
     }
 }
