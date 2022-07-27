@@ -118,6 +118,7 @@ public class ConsultationVO implements Serializable {
      */
     private Integer payStatus;
     private String payStatusName;
+    private String roomId;
 
     public Integer getId() {
         return id;
@@ -351,4 +352,11 @@ public class ConsultationVO implements Serializable {
         this.payStatusName = payStatusName;
     }
 
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
+    }
 }
