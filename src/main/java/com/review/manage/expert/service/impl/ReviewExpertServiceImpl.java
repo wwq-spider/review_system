@@ -20,12 +20,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Time;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service("reviewExpertService")
 @Transactional
 public class ReviewExpertServiceImpl extends CommonServiceImpl implements ReviewExpertServiceI {
+
+    private static final Integer dValue = 300000;
 
     @Override
     public void addExpert(ReviewExpertVO reviewExpertVO) {
@@ -418,22 +421,16 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
     }
 
     @Override
-    public String videoConsultcondition(List<ConsultationVO> reviewExpertReserveList) {
+    public String videoConsultcondition(List<ConsultationVO> reviewExpertReserveList) throws ParseException {
         //判断当前时间是否可以发起视频咨询
-        String currentTime = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
-        if (reviewExpertReserveList.get(0).getVisitDate().equals(currentTime)){
-            String beginTime = reviewExpertReserveList.get(0).getBeginTime();
-            int currentHours = new Date().getHours();
-            int beginTimeHours = Integer.valueOf(beginTime.split(":")[0]);
-            if (currentHours == beginTimeHours ){
-                int currentMinute = new Date().getMinutes();//30分
-                int beginTimeMinute = Integer.valueOf(beginTime.split(":")[1]);//34分
-                //提前后延迟5分钟内才可发起视频咨询
-                if (beginTimeMinute - currentMinute <= 5 && currentMinute - beginTimeMinute <= 5 ){
-                    System.out.println("可发起视频咨询");
-                    return "Y";
-                }
-            }
+        String completeTime = reviewExpertReserveList.get(0).getVisitDate() + " " + reviewExpertReserveList.get(0).getBeginTime()+":00";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = simpleDateFormat.format(new Date());
+        long complete = Long.valueOf(com.review.common.DateUtil.dateToStamp(completeTime));
+        long current = Long.valueOf(com.review.common.DateUtil.dateToStamp(currentTime));
+        if (Math.abs(complete-current) <= dValue){
+            System.out.println("可发起视频咨询");
+            return "Y";
         }
         return "N";
     }
