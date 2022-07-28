@@ -111,6 +111,16 @@
         $("#visitDay").attr("class","Wdate").attr("style","height:20px;width:150px;").click(function(){WdatePicker({dateFmt:'yyyy-MM-dd'});});
     })
     function selectAll(flag){
+        var beginTimeCurrent = flag.split("-")[0];
+        var td = document.getElementById("timeSlot");
+        var timeSlotText = td.textContent.trim();
+        var allTimeSlotArray = timeSlotText.split(",");
+        for (var i = 0; i < allTimeSlotArray.length-1; i++) {
+            beginTime = allTimeSlotArray[i].split("-")[0];
+            if (beginTime == beginTimeCurrent){//时间段重复，不添加
+                return false;
+            }
+        }
         var td = document.getElementById("timeSlot");
         var div = document.createElement('div');
         var ids = document.getElementsByName("time");
@@ -133,10 +143,14 @@
     }
     function addTime(){
         var visitDay = document.getElementById("visitDay").value;
+        if (visitDay==null || visitDay ==""){
+            alert("请选择日期！");
+            return false;
+        }
         var beginTime = "";
         var endTime = "";
         var td = document.getElementById("timeSlot");
-        var timeSlotText = td.textContent;
+        var timeSlotText = td.textContent.trim();
         var allTimeSlotArray = timeSlotText.split(",");
         for (var i = 0; i < allTimeSlotArray.length - 1; i++) {
             beginTime = allTimeSlotArray[i].split("-")[0];
@@ -145,10 +159,6 @@
         }
     }
     function saveAllTimeInfo(visitDay,beginTime,endTime){
-        if (visitDay==null || visitDay ==""){
-            alert("请选择日期！");
-            return false;
-        }
         var url = "reviewExpertController.do?saveCalendarInfo";
         var param = {
             "expertId" : id,
