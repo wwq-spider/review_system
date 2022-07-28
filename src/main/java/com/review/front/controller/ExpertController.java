@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.ParseException;
 import java.util.List;
 
 @Controller
@@ -145,7 +146,7 @@ public class ExpertController extends BaseController {
      */
     @RequestMapping(value = "queryMyConsultationDetail", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void queryMyConsultationDetail(HttpServletResponse response, @RequestBody ConsultationVO consultationVO) {
+    public void queryMyConsultationDetail(HttpServletResponse response, @RequestBody ConsultationVO consultationVO) throws ParseException {
         JSONObject json = new JSONObject();
         List<ConsultationVO> reviewExpertReserveList = reviewExpertService.getMyConsultationDetail(consultationVO);
         //判断当前时间是否可发起视频咨询
