@@ -403,11 +403,17 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
             //获取周几对应的日期
             int weekDay = getDay(new SimpleDateFormat("yyyy-MM-dd").parse(expertCalendar.getVisitDate()));
             reviewExpertEntity.setWeekDay(weekDay);
+            String completebeginTime = expertCalendar.getVisitDate() + " " + beginTime;
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date completebeginDate = format.parse(completebeginTime);
+            Date currentDate = format.parse(format.format(new Date()));
+            if (completebeginDate.compareTo(currentDate)>=0){
+                this.delete(reviewExpertEntity);
+                this.save(reviewExpertEntity);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.delete(reviewExpertEntity);
-        this.save(reviewExpertEntity);
         return true;
     }
 
