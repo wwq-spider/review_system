@@ -198,28 +198,22 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
     }
 
     /**
-     * 处理专家日历-周几
+     * 处理专家日历-小于当前时间小时的日历剔除
      * @param reviewExpertCalendarList
      */
     @Override
     public void handleCalendarTime(List<ReviewExpertCalendarVO> reviewExpertCalendarList) {
-        for (ReviewExpertCalendarVO reviewExpertCalendarVO : reviewExpertCalendarList){
-            //处理周几
-            Integer weekDay = reviewExpertCalendarVO.getWeekDay();
-            if (weekDay == 1){
-                reviewExpertCalendarVO.setWeekDayName("周一");
-            }else if (weekDay == 2){
-                reviewExpertCalendarVO.setWeekDayName("周二");
-            }else if (weekDay == 3){
-                reviewExpertCalendarVO.setWeekDayName("周三");
-            }else if (weekDay == 4){
-                reviewExpertCalendarVO.setWeekDayName("周四");
-            }else if (weekDay == 5){
-                reviewExpertCalendarVO.setWeekDayName("周五");
-            }else if (weekDay == 6){
-                reviewExpertCalendarVO.setWeekDayName("周六");
-            }else if (weekDay == 7){
-                reviewExpertCalendarVO.setWeekDayName("周日");
+        GregorianCalendar calendar = new GregorianCalendar();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
+        for (int i = 0; i < reviewExpertCalendarList.size(); i++) {
+            if (reviewExpertCalendarList.get(i).getVisitDate().equals(formatter.format(new Date()))){
+                int begeinTimeHour = Integer.valueOf(reviewExpertCalendarList.get(i).getBeginTime().split(":")[0]);
+                if(begeinTimeHour < hour){
+                    reviewExpertCalendarList.remove(i);
+                    i--;
+                    continue;
+                }
             }
         }
     }
