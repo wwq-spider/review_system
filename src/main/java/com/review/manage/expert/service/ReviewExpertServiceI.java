@@ -6,6 +6,7 @@ import com.review.manage.expert.vo.ReviewExpertCalendarVO;
 import com.review.manage.expert.vo.ReviewExpertVO;
 import org.jeecgframework.core.common.service.CommonService;
 
+import java.text.ParseException;
 import java.util.List;
 
 public interface ReviewExpertServiceI extends CommonService{
@@ -98,5 +99,5 @@ public interface ReviewExpertServiceI extends CommonService{
      * @param reviewExpertReserveList
      * @return
      */
-    String videoConsultcondition(List<ConsultationVO> reviewExpertReserveList);
+    String videoConsultcondition(List<ConsultationVO> reviewExpertReserveList) throws ParseException;
 }
