@@ -831,5 +831,14 @@ public class DateUtil{
        String  firstDay = format.format(cal_1.getTime());
   		return firstDay;
   	  }
+    //时间转换为时间戳
+    public static String dateToStamp(String s) throws ParseException{
+        String res;
+        SimpleDateFormat SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = SimpleDateFormat.parse(s);
+        long ts = date.getTime();
+        res = String.valueOf(ts);
+        return res;
+    }
   	
 }
