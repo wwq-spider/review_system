@@ -109,6 +109,10 @@
     //初始化时间插件
     $(function () {
         $("#visitDay").attr("class","Wdate").attr("style","height:20px;width:150px;").click(function(){WdatePicker({dateFmt:'yyyy-MM-dd'});});
+        var year = new Date().getFullYear();
+        var month = new Date().getMonth()+1;
+        var day = new Date().getDate();
+        $("#visitDay").val(year + "-" + month + "-" + day);
     })
     function selectAll(flag){
         var beginTimeCurrent = flag.split("-")[0];
@@ -147,16 +151,8 @@
             alert("请选择日期！");
             return false;
         }
-        var beginTime = "";
-        var endTime = "";
-        var td = document.getElementById("timeSlot");
-        var timeSlotText = td.textContent.trim();
-        var allTimeSlotArray = timeSlotText.split(",");
-        for (var i = 0; i < allTimeSlotArray.length - 1; i++) {
-            beginTime = allTimeSlotArray[i].split("-")[0];
-            endTime = allTimeSlotArray[i].split("-")[1];
-            saveAllTimeInfo(visitDay,beginTime,endTime);
-        }
+        //所选日期是否过期,未过期则保存
+        checkDateLegal(visitDay);
     }
     function saveAllTimeInfo(visitDay,beginTime,endTime){
         var url = "reviewExpertController.do?saveCalendarInfo";
@@ -172,6 +168,28 @@
                 history.go(0);
             }
         });
+    }
+    function checkDateLegal(visitDay){
+        //获取当前时间
+        var currentTime = new Date().toLocaleDateString('cn',{hour12:false}); //转化成"yyyy/MM/dd"格式
+        currentTime = new Date(currentTime);
+        var visitDayTemp = visitDay.replace(/\-/g, "\/");//转化成"yyyy/MM/dd"格式
+        visitDayTemp = new Date(visitDayTemp);
+        if (currentTime > visitDayTemp){
+            alert("所选日期过期，请重新选择！");
+            return false;
+        }else {
+            var beginTime = "";
+            var endTime = "";
+            var td = document.getElementById("timeSlot");
+            var timeSlotText = td.textContent.trim();
+            var allTimeSlotArray = timeSlotText.split(",");
+            for (var i = 0; i < allTimeSlotArray.length - 1; i++) {
+                beginTime = allTimeSlotArray[i].split("-")[0];
+                endTime = allTimeSlotArray[i].split("-")[1];
+                saveAllTimeInfo(visitDay,beginTime,endTime);
+            }
+        }
     }
 
 </script>
