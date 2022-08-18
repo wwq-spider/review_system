@@ -186,7 +186,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
                 "       WHEN '4' THEN '周四'\n" +
                 "       WHEN '5' THEN '周五'\n" +
                 "       WHEN '6' THEN '周六'\n" +
-                "       WHEN '7' THEN '周日'\n" +
+                "       WHEN '0' THEN '周日'\n" +
                 "       END weekDayName,\n"    +
                 "       c.status,\n" +
                 "       c.`visit_date` AS visitDate,\n" +
@@ -360,6 +360,18 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
             //判断用户是否支付了问诊费用
             list.get(0).setBuy(this.userBuy(list.get(0).getId().toString(), userId));
         }
+        String consultaTime = list.get(0).getVisitDate()+ " " + list.get(0).getBeginTime();
+        String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        try {
+            long consultaTimeL = Long.valueOf(com.review.common.DateUtil.dateToStamp(consultaTime));
+            long currentTimeL = Long.valueOf(com.review.common.DateUtil.dateToStamp(currentTime));
+            if (consultaTimeL < currentTimeL){//判断该预约是否支付（过期不能支付）
+                list.get(0).setBuy(true);
+            }
+        }catch (ParseException e){
+            e.printStackTrace();
+        }
+
         return this.beginAndEndTimehandle(list);
     }
 
@@ -410,14 +422,30 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date completebeginDate = format.parse(completebeginTime);
             Date currentDate = format.parse(format.format(new Date()));
-            if (completebeginDate.compareTo(currentDate)>=0){
-                this.delete(reviewExpertEntity);
-                this.save(reviewExpertEntity);
+            //校验该条日历是否存在，存在：不保存
+            List isExit = checkThisCalendarIsExit(reviewExpertEntity);
+            if (isExit.size() == 0){
+                if (completebeginDate.compareTo(currentDate)>=0){
+                    //this.delete(reviewExpertEntity);
+                    this.save(reviewExpertEntity);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return true;
+    }
+
+    private List<ReviewExpertCalendarEntity> checkThisCalendarIsExit(ReviewExpertCalendarEntity reviewExpertEntity) {
+        StringBuilder sql = new StringBuilder("select c.id\n" +
+                "from review_expert_calendar c\n" +
+                "where c.expert_id = :expertId and c.begin_time = :beginTime and end_time =:endTime and visit_date =:visitDate");
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("expertId", reviewExpertEntity.getExpertId());
+        paramMap.put("beginTime", reviewExpertEntity.getBeginTime());
+        paramMap.put("endTime", reviewExpertEntity.getEndTime());
+        paramMap.put("visitDate", reviewExpertEntity.getVisitDate());
+        return this.getObjectList(sql.toString(), paramMap, ReviewExpertCalendarEntity.class);
     }
 
     @Override
@@ -429,7 +457,6 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
         long complete = Long.valueOf(com.review.common.DateUtil.dateToStamp(completeTime));
         long current = Long.valueOf(com.review.common.DateUtil.dateToStamp(currentTime));
         if (Math.abs(complete-current) <= dValue){
-            System.out.println("可发起视频咨询");
             return "Y";
         }
         return "N";
