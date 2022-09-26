@@ -15,4 +15,6 @@ public interface DongLiangTestService extends CommonService {
     List<EvalCodeEntity> verifyEvalCode(EvalCodeEntity evalCodeEntity);
 
     void handleQuestNo(List<TestRecord> testRecordListOld, int i, List<TestRecord> testRecordList,int type,String MNtype);
+
+    void evalCodeSetInvalid(String testCode, String userId);
 }
