@@ -104,7 +104,20 @@ function Login() {
 		error : function() {// 请求失败处理函数
 		},
 		success : function(data) {
-			var d = $.parseJSON(data);
+			if (data.success) {
+				loginsuccess();
+				setTimeout("window.location.href='"+actionurl+"'", 1000);
+			} else {
+				if(data.msg == "a"){
+					$.dialog.confirm("数据库无数据,是否初始化数据?", function(){
+						window.location = "init.jsp";
+					}, function(){
+						//
+					});
+				} else
+					showError(data.msg);
+			}
+			/*var d = $.parseJSON(data);
 			if (d.success) {
 				loginsuccess();
 				setTimeout("window.location.href='"+actionurl+"'", 1000);
@@ -117,7 +130,7 @@ function Login() {
 					});
 				} else
 					showError(d.msg);
-			}
+			}*/
 		}
 	});
 }
