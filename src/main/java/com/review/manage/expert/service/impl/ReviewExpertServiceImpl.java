@@ -285,7 +285,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
                     "when 1 then '待问诊' when 2 then '问诊结束' when 3 then '已取消'\n"+
                     "end statusName,\n"+
                     "case rec.week_day\n"+
-                    "when 1 then '周一' when 2 then '周二' when 3 then '周三' when 4 then '周四' when 5 then '周五' when 6 then '周六' when 7 then '周日'\n"+
+                    "when 1 then '周一' when 2 then '周二' when 3 then '周三' when 4 then '周四' when 5 then '周五' when 6 then '周六' when 0 then '周日'\n"+
                     "end weekDayName,\n"+
                     "ro.status payStatus,\n"+
                     "CASE ro.status when 2 then '已支付' when 3 then '已支付' else '待支付' end payStatusName\n"+
