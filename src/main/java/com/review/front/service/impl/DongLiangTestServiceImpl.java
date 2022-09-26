@@ -1,5 +1,6 @@
 package com.review.front.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import com.review.front.entity.EvalCodeEntity;
 import com.review.front.entity.TestRecord;
 import com.review.front.service.DongLiangTestService;
@@ -94,5 +95,11 @@ public class DongLiangTestServiceImpl extends CommonServiceImpl implements DongL
             testRecordList.add(testRecordA);
             testRecordList.add(testRecordB);
         }
+    }
+
+    @Override
+    public void evalCodeSetInvalid(String testCode, String userId) {
+        String sql = "update review_eval_code set status=2 where user_id= ? and eval_code = ?";
+        this.executeSql(sql, new Object[]{userId, testCode});
     }
 }
