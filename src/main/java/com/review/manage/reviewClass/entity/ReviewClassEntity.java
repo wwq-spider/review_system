@@ -44,6 +44,8 @@ public class ReviewClassEntity implements Serializable{
     private java.lang.String createBy;
     @Column(name = "banner_img")
     private String bannerImg;
+    @Column(name = "type")
+    private Integer type;
     @Column(name = "charge")
     private Integer charge;
     @Column(name = "org_price")
@@ -174,5 +176,13 @@ public class ReviewClassEntity implements Serializable{
 
     public void setReportTips(String reportTips) {
         this.reportTips = reportTips;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }
