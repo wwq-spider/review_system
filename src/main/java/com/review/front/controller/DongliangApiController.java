@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +50,7 @@ public class DongliangApiController extends BaseController {
      */
     @RequestMapping(value = "commitTest", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void commitTest(HttpServletResponse response, @RequestBody DongliangTestQuestionVO[] dongliangTestQuestionVO){
+    public void commitTest(HttpServletResponse response, @RequestBody DongliangTestQuestionVO[] dongliangTestQuestionVO) throws Exception{
 
         /*
         * 1、调用栋梁测评码加密接口
@@ -101,12 +102,22 @@ public class DongliangApiController extends BaseController {
         String param = JSON.toJSONString(dongliangTestQuestionVO);
         String paramSub = param.substring(1,param.length()-1);
         String resultJson = HttpClientUtils.doPost(dongLiangApiurl,JSONObject.parseObject(paramSub),"utf-8");
-
-        net.sf.json.JSONObject json = new net.sf.json.JSONObject();
-        json.put("code", 200);
-        json.put("msg", "查询成功");
-        //net.sf.json.JSONObject json = net.sf.json.JSONObject.fromObject(resultJson);
-        CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+        if (resultJson != null && !"".equals(resultJson)){
+            net.sf.json.JSONObject json = net.sf.json.JSONObject.fromObject(resultJson);
+            if (json.get("code").equals(200)){//提交成功，将测评码置为无效
+                dongLiangTestService.evalCodeSetInvalid(dongliangTestQuestionVO[0].getTestCode(),dongliangTestQuestionVO[0].getUserInfo().getUserId());
+            }
+            String pdfUrl = json.get("data").toString();
+            String[] pdfUfrl = pdfUrl.split("/");
+            pdfUrl = "http://www.zhuxinkang.com/review_system/upload2/" + pdfUfrl[pdfUfrl.length - 1];
+            json.put("pdfUrl",pdfUrl);
+            CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+        }else {
+            net.sf.json.JSONObject json = new net.sf.json.JSONObject();
+            json.put("code", 500);
+            json.put("msg", "提交失败");
+            CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+        }
     }
 
     /**
