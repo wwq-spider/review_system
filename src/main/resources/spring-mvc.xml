@@ -21,7 +21,7 @@
 	<!--	<mvc:resources location="/upload/" mapping="/upload/**" />-->
 	<mvc:default-servlet-handler/>
 	<mvc:annotation-driven />
-	<mvc:resources location="file:D:/upload/" mapping="/upload2/**" />
+	<mvc:resources location="data/dk/PDF/create/" mapping="/upload2/**" />
 
 	<mvc:resources location="/plug-in/" mapping="/plug-in/**" />
 
