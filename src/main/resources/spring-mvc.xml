@@ -19,6 +19,16 @@
 	<bean class="org.jeecgframework.core.util.ApplicationContextUtil"></bean>
 
 	<!--	<mvc:resources location="/upload/" mapping="/upload/**" />-->
+	<mvc:default-servlet-handler/>
+	<mvc:annotation-driven />
+	<mvc:resources location="file:D:/upload/" mapping="/upload2/**" />
+
+	<mvc:resources location="/plug-in/" mapping="/plug-in/**" />
+
+	<mvc:resources location="/css/" mapping="/css/**" />
+
+	<mvc:resources location="/images/" mapping="/images/**" />
+	<!--<mvc:resources location="/upload/" mapping="/upload/**" />-->
 
 	<!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
 	<bean id="mappingJacksonHttpMessageConverter"
@@ -158,6 +168,7 @@
 						<!-- 保存用户 -->
 						<value>userController.do?saveUser</value>
 						<value>reviewFront/user/uploadFile.do</value>
+						<value>upload2/2.pdf</value>
 					</list>
 				</property>
 			</bean>
