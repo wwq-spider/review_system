@@ -2,6 +2,7 @@ package com.review.manage.expert.vo;
 import org.jeecgframework.core.common.model.json.DataGrid;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 public class ReviewExpertVO implements Serializable {
 
@@ -38,6 +39,12 @@ public class ReviewExpertVO implements Serializable {
     private CommonsMultipartFile contentImg;
 
     private DataGrid dataGrid;
+
+    private Integer charge;
+
+    private BigDecimal orgPrice;
+
+    private BigDecimal dicountPrice;
 
     public Long getId() {
         return id;
@@ -181,5 +188,29 @@ public class ReviewExpertVO implements Serializable {
 
     public void setDataGrid(DataGrid dataGrid) {
         this.dataGrid = dataGrid;
+    }
+
+    public Integer getCharge() {
+        return charge;
+    }
+
+    public void setCharge(Integer charge) {
+        this.charge = charge;
+    }
+
+    public BigDecimal getOrgPrice() {
+        return orgPrice;
+    }
+
+    public void setOrgPrice(BigDecimal orgPrice) {
+        this.orgPrice = orgPrice;
+    }
+
+    public BigDecimal getDicountPrice() {
+        return dicountPrice;
+    }
+
+    public void setDicountPrice(BigDecimal dicountPrice) {
+        this.dicountPrice = dicountPrice;
     }
 }
