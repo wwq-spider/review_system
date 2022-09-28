@@ -21,8 +21,11 @@
 	<!--	<mvc:resources location="/upload/" mapping="/upload/**" />-->
 	<mvc:default-servlet-handler/>
 	<mvc:annotation-driven />
-	<mvc:resources location="data/dk/PDF/create/" mapping="/upload2/**" />
-
+	<!--<mvc:resources location="file:D:/upload/" mapping="/upload2/**" />-->
+	<!--<mvc:resources location="classpath:/data/dk/PDF/" mapping="/upload2/**" />-->
+	<!--可以访问到的配置-->
+	<!--<mvc:resources location="file:///data/dk/PDF/create/2022/09/20/" mapping="/upload2/**" />-->
+	<mvc:resources location="file:///data/dk/" mapping="/upload2/**" />
 	<mvc:resources location="/plug-in/" mapping="/plug-in/**" />
 
 	<mvc:resources location="/css/" mapping="/css/**" />
@@ -168,7 +171,7 @@
 						<!-- 保存用户 -->
 						<value>userController.do?saveUser</value>
 						<value>reviewFront/user/uploadFile.do</value>
-						<value>upload2/2.pdf</value>
+						<!--<value>upload2/1.pdf</value>-->
 					</list>
 				</property>
 			</bean>
