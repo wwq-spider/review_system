@@ -613,14 +613,14 @@ public class ReviewUserServiceImpl extends CommonServiceImpl implements ReviewUs
 			file = entity.getValue();// 获取上传文件对象
 			
 			userList = (List<ReviewUserEntity>) ExcelUtil.importExcelByIs(file.getInputStream(), ReviewUserEntity.class);
-			
+			Date now = new Date();
 			for(ReviewUserEntity user : userList) {
 				user.setGroupId(groupId);
 				userEntity= this.findUniqueByProperty(ReviewUserEntity.class, "mobilePhone", user.getMobilePhone());
 				if(userEntity == null) {
-					userEntity.setSource(Constants.UserSource.SystemImport);
-					userEntity.setCreateTime(new Date());
-					userEntity.setUpdateTime(userEntity.getUpdateTime());
+					user.setSource(Constants.UserSource.SystemImport);
+					user.setCreateTime(now);
+					user.setUpdateTime(user.getUpdateTime());
 					this.save(user);
 				} else {
 					if("".equals(userNames)) {

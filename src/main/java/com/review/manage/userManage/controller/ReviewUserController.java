@@ -361,12 +361,12 @@ public class ReviewUserController extends BaseController{
 			codedFileName = "答题记录_" + DateUtil.getCurrentDateTimeStr1();
 			// 根据浏览器进行转码，使其支持中文文件名
 			if (BrowserUtils.isIE(ContextHolderUtils.getRequest())) {
-				response.setHeader("content-disposition", "attachment;filename=" + java.net.URLEncoder.encode(codedFileName,"UTF-8") + ".xls");
+				response.setHeader("content-disposition", "attachment;filename=" + java.net.URLEncoder.encode(codedFileName,"UTF-8") + ".xlsx");
 			} else {
 				String newtitle = new String(codedFileName.getBytes("UTF-8"),
 						"ISO8859-1");
 				response.setHeader("content-disposition",
-						"attachment;filename=" + newtitle + ".xls");
+						"attachment;filename=" + newtitle + ".xlsx");
 			}
 			// 产生工作簿对象
 			Workbook workbook = reviewQuestionAnswerService.getExportWorkbook(groupId, projectId, startTime, endTime);

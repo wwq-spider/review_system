@@ -105,7 +105,7 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
             }
         }
 
-        ExcelWriter excelWriter = ExcelUtil.getWriter();
+        ExcelWriter excelWriter = ExcelUtil.getWriter(true);
 
         excelWriter.getSheets().clear();
         for (String classId : classMap.keySet()) {

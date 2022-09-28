@@ -455,6 +455,11 @@ public class ReviewController extends BaseController{
 			return;
 		}
 
+		if (reviewUserEntity.getGroupId().indexOf(reviewProject.getGroupId()) > -1) {
+			responseJson(response, 200, "该用户已是项目组成员");
+			return;
+		}
+
 		if (StringUtils.isBlank(reviewProject.getGroupId())) {
 			responseJson(response, 303, "项目未绑定用户组");
 			return;
