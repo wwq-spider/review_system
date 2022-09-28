@@ -93,7 +93,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 		String requestPath = ResourceUtil.getRequestPath(request);// 用户访问的资源地址
 		HttpSession session = ContextHolderUtils.getSession();
 
-		if (requestPath.startsWith("css/") || requestPath.startsWith("images/") || requestPath.startsWith("plug-in/") || requestPath.startsWith("upload/")) {
+		if (requestPath.startsWith("css/") || requestPath.startsWith("images/") || requestPath.startsWith("plug-in/") || requestPath.startsWith("upload2/")) {
 			return true;
 		}
 		Client client = ClientManager.getInstance().getClient(session.getId());
