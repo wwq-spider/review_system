@@ -39,6 +39,8 @@ public class DongliangApiController extends BaseController {
     //栋梁测评提交接口地址
     private static final String dongLiangApiurl = "http://www.zhuxinkang.com:9999/api/commitTest";
 
+    private static final String reportUrl = "https://www.zhuxinkang.com/review/upload2";
+
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
@@ -50,68 +52,28 @@ public class DongliangApiController extends BaseController {
      */
     @RequestMapping(value = "commitTest", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void commitTest(HttpServletResponse response, @RequestBody DongliangTestQuestionVO[] dongliangTestQuestionVO) throws Exception{
+    public void commitTest(HttpServletResponse response, HttpServletRequest request,@RequestBody DongliangTestQuestionVO[] dongliangTestQuestionVO) throws Exception{
 
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
         /*
         * 1、调用栋梁测评码加密接口
         * 2、调用答题提交接口
         * 3、提交成功后变更测评码状态为已使用
         */
-        //questNo及第二套试题处理
-        int I = 1;//第一套试题题号
-        int M = 1;//第二套试题题号
-        int N = 1;
-        int A = 1;//第三套试题题号
-        int P = 1;//第四套试题题号
-        List<TestRecord> testRecordList = new ArrayList<>();
-        List<TestRecord> testRecordListOld = dongliangTestQuestionVO[0].getTestRecord();
-        for (int i = 0; i < testRecordListOld.size(); i++) {
-            if (i < 162){
-                TestRecord testRecord = new TestRecord();
-                testRecord.setQuesNo("I" + I);
-                testRecord.setAnswer(testRecordListOld.get(i).getAnswer());
-                testRecord.setScoreA(testRecordListOld.get(i).getScoreA());
-                testRecord.setScoreB(testRecordListOld.get(i).getScoreB());
-                testRecordList.add(testRecord);
-                I++;
-            } else if (i >= 162 && i < 204){
-                dongLiangTestService.handleQuestNo(testRecordListOld,i,testRecordList,M,"M");
-                M++;
-            } else if (i >= 204 && i < 246){
-                dongLiangTestService.handleQuestNo(testRecordListOld,i,testRecordList,N,"N");
-                N++;
-            } else if (i >= 246 && i < 336 ){
-                TestRecord testRecord = new TestRecord();
-                testRecord.setQuesNo("A" + A);
-                testRecord.setAnswer(testRecordListOld.get(i).getAnswer());
-                testRecord.setScoreA(testRecordListOld.get(i).getScoreA());
-                testRecord.setScoreB(testRecordListOld.get(i).getScoreB());
-                testRecordList.add(testRecord);
-                A++;
-            } else if ( i >= 336 ){
-                TestRecord testRecord = new TestRecord();
-                testRecord.setQuesNo("P" + P);
-                testRecord.setAnswer(testRecordListOld.get(i).getAnswer());
-                testRecord.setScoreA(testRecordListOld.get(i).getScoreA());
-                testRecord.setScoreB(testRecordListOld.get(i).getScoreB());
-                testRecordList.add(testRecord);
-                P++;
-            }
-        }
-        dongliangTestQuestionVO[0].setTestRecord(testRecordList);
+        dongLiangTestService.handleData(dongliangTestQuestionVO);
         String param = JSON.toJSONString(dongliangTestQuestionVO);
         String paramSub = param.substring(1,param.length()-1);
         String resultJson = HttpClientUtils.doPost(dongLiangApiurl,JSONObject.parseObject(paramSub),"utf-8");
         if (resultJson != null && !"".equals(resultJson)){
             net.sf.json.JSONObject json = net.sf.json.JSONObject.fromObject(resultJson);
-            if (json.get("code").equals(200)){//提交成功，将测评码置为无效
+            if ((Integer) json.get("code") == 200){//提交成功，将测评码置为无效
                 dongLiangTestService.evalCodeSetInvalid(dongliangTestQuestionVO[0].getTestCode(),dongliangTestQuestionVO[0].getUserInfo().getUserId());
+                String pdfUrl = json.getString("data");
+                String pdfUrlView = reportUrl + pdfUrl;
+                json.put("pdfUrl",pdfUrlView);
+                CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
             }
-            String pdfUrl = json.get("data").toString();
-            String[] pdfUfrl = pdfUrl.split("/");
-            pdfUrl = "http://www.zhuxinkang.com/review_system/upload2/" + pdfUfrl[pdfUfrl.length - 1];
-            json.put("pdfUrl",pdfUrl);
-            CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
         }else {
             net.sf.json.JSONObject json = new net.sf.json.JSONObject();
             json.put("code", 500);
