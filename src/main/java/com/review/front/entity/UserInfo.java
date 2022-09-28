@@ -18,5 +18,6 @@ public class UserInfo {
     private String area;
     private String school;
     private String userId;
+    private String select;
 
 }
