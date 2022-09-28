@@ -1,6 +1,7 @@
 package com.review.front.service.impl;
 
 import cn.hutool.core.date.DateUtil;
+import com.review.front.entity.DongliangTestQuestionVO;
 import com.review.front.entity.EvalCodeEntity;
 import com.review.front.entity.TestRecord;
 import com.review.front.service.DongLiangTestService;
@@ -9,6 +10,7 @@ import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +43,58 @@ public class DongLiangTestServiceImpl extends CommonServiceImpl implements DongL
     }
 
     @Override
+    public void handleData(DongliangTestQuestionVO[] dongliangTestQuestionVO) {
+
+        //questNo及第二套试题处理
+        int I = 1;//第一套试题题号
+        int M = 1;//第二套试题题号
+        int N = 1;
+        int A = 1;//第三套试题题号
+        int P = 1;//第四套试题题号
+        List<TestRecord> testRecordList = new ArrayList<>();
+        List<TestRecord> testRecordListOld = dongliangTestQuestionVO[0].getTestRecord();
+        for (int i = 0; i < testRecordListOld.size(); i++) {
+            if (i < 162){
+                TestRecord testRecord = new TestRecord();
+                testRecord.setQuesNo("I" + I);
+                testRecord.setAnswer(testRecordListOld.get(i).getAnswer());
+                testRecord.setScoreA(testRecordListOld.get(i).getScoreA());
+                testRecord.setScoreB(testRecordListOld.get(i).getScoreB());
+                testRecordList.add(testRecord);
+                I++;
+            } else if (i >= 162 && i < 204){
+                this.handleQuestNo(testRecordListOld,i,testRecordList,M,"M");
+                M++;
+            } else if (i >= 204 && i < 246){
+                this.handleQuestNo(testRecordListOld,i,testRecordList,N,"N");
+                N++;
+            } else if (i >= 246 && i < 336 ){
+                TestRecord testRecord = new TestRecord();
+                testRecord.setQuesNo("A" + A);
+                testRecord.setAnswer(testRecordListOld.get(i).getAnswer());
+                testRecord.setScoreA(testRecordListOld.get(i).getScoreA());
+                testRecord.setScoreB(testRecordListOld.get(i).getScoreB());
+                testRecordList.add(testRecord);
+                A++;
+            } else if ( i >= 336 ){
+                TestRecord testRecord = new TestRecord();
+                testRecord.setQuesNo("P" + P);
+                testRecord.setAnswer(testRecordListOld.get(i).getAnswer());
+                testRecord.setScoreA(testRecordListOld.get(i).getScoreA());
+                testRecord.setScoreB(testRecordListOld.get(i).getScoreB());
+                testRecordList.add(testRecord);
+                P++;
+            }
+        }
+        dongliangTestQuestionVO[0].setTestRecord(testRecordList);
+        dongliangTestQuestionVO[0].getUserInfo().setSex(dongliangTestQuestionVO[0].getUserInfo().getSex().equals("1") ? "男" : "女");
+        String select = dongliangTestQuestionVO[0].getUserInfo().getSelect();
+        String[] provinceAndArea = select.split("--");
+        dongliangTestQuestionVO[0].getUserInfo().setProvince(provinceAndArea[0]);
+        dongliangTestQuestionVO[0].getUserInfo().setCity(provinceAndArea[1]);
+        dongliangTestQuestionVO[0].getUserInfo().setArea(provinceAndArea[2]);
+    }
+
     public void handleQuestNo(List<TestRecord> testRecordListOld, int i, List<TestRecord> testRecordList,int M,String MNtype) {
         if (testRecordListOld.get(i).getAnswer().equals("A")){
             TestRecord testRecordA = new TestRecord();
@@ -102,4 +156,5 @@ public class DongLiangTestServiceImpl extends CommonServiceImpl implements DongL
         String sql = "update review_eval_code set status=2 where user_id= ? and eval_code = ?";
         this.executeSql(sql, new Object[]{userId, testCode});
     }
+
 }
