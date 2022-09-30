@@ -3,11 +3,13 @@ package com.review.front.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.review.common.CommonUtils;
+import com.review.common.Constants;
 import com.review.common.httpclient.HttpClientUtils;
 import com.review.front.entity.DongliangTestQuestionVO;
 import com.review.front.entity.EvalCodeEntity;
 import com.review.front.entity.TestRecord;
 import com.review.front.service.DongLiangTestService;
+import com.review.manage.userManage.entity.ReviewUserEntity;
 import org.jeecgframework.core.common.controller.BaseController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,21 +56,21 @@ public class DongliangApiController extends BaseController {
 
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
-        /*
-        * 1、调用栋梁测评码加密接口
-        * 2、调用答题提交接口
-        * 3、提交成功后变更测评码状态为已使用
-        */
+        ReviewUserEntity user = (ReviewUserEntity) request.getSession().getAttribute(Constants.REVIEW_LOGIN_USER);
+        //接口入参处理
         dongLiangTestService.handleData(dongliangTestQuestionVO);
         String param = JSON.toJSONString(dongliangTestQuestionVO);
         String paramSub = param.substring(1,param.length()-1);
+        //调用栋梁答题提交接口
         String resultJson = HttpClientUtils.doPost(dongLiangApiurl,JSONObject.parseObject(paramSub),"utf-8");
         if (resultJson != null && !"".equals(resultJson)){
             net.sf.json.JSONObject json = net.sf.json.JSONObject.fromObject(resultJson);
-            if ((Integer) json.get("code") == 200){//提交成功，将测评码置为无效
-                dongLiangTestService.evalCodeSetInvalid(dongliangTestQuestionVO[0].getTestCode(),dongliangTestQuestionVO[0].getUserInfo().getUserId());
+            if ((Integer) json.get("code") == 200){
                 String pdfUrl = json.getString("data");
                 String pdfUrlView = reportUrl + pdfUrl;
+                dongliangTestQuestionVO[0].setReportUrl(pdfUrlView);
+                //业务数据处理
+                dongLiangTestService.handleBusinessData(dongliangTestQuestionVO,new ReviewUserEntity());
                 json.put("pdfUrl",pdfUrlView);
                 CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
             }
@@ -101,6 +101,10 @@ public class DongliangApiController extends BaseController {
             json.put("msg", "测评码无效或不存在");
         }
         CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+    }
+
+    public void getReportUrl(HttpServletRequest request,HttpServletResponse response){
+
     }
 
     /**
