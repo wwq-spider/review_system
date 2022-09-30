@@ -3,6 +3,7 @@ package com.review.front.service;
 import com.review.front.entity.DongliangTestQuestionVO;
 import com.review.front.entity.EvalCodeEntity;
 import com.review.front.entity.TestRecord;
+import com.review.manage.userManage.entity.ReviewUserEntity;
 import org.jeecgframework.core.common.service.CommonService;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public interface DongLiangTestService extends CommonService {
 
     List<EvalCodeEntity> verifyEvalCode(EvalCodeEntity evalCodeEntity);
 
-    void evalCodeSetInvalid(String testCode, String userId);
-
     void handleData(DongliangTestQuestionVO[] dongliangTestQuestionVO);
+
+    void handleBusinessData(DongliangTestQuestionVO[] dongliangTestQuestionVO, ReviewUserEntity reviewUser);
 }
