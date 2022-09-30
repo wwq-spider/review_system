@@ -381,7 +381,8 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 				"       DATE_FORMAT(r.`create_time`, '%Y-%m-%e %H:%i:%S') createTime,\n" +
 				"       r.grade_total                                     reportGrade,\n" +
 				"       c.banner_img                                      classCover,\n" +
-				"       c.title                                           classTitle\n" +
+				"       c.title                                           classTitle,\n" +
+				"       r.review_result                                   reportResult\n" +
 				" from review_result r\n" +
 				"         inner join review_class c on r.class_id = c.class_id\n" );
 
