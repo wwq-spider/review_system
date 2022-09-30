@@ -26,5 +26,17 @@ public class DongliangTestQuestionVO {
      * 答题信息
      */
     private List<TestRecord> testRecord;
+    /**
+     * 测评报告地址
+     */
+    private String reportUrl;
+    /**
+     * 测评id
+     */
+    private String classId;
+    /**
+     * 项目id
+     */
+    private Long projectId;
 
 }
