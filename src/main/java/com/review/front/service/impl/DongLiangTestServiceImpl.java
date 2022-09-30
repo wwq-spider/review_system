@@ -1,19 +1,22 @@
 package com.review.front.service.impl;
 
 import cn.hutool.core.date.DateUtil;
+import com.review.common.Constants;
 import com.review.front.entity.DongliangTestQuestionVO;
 import com.review.front.entity.EvalCodeEntity;
+import com.review.front.entity.ReviewResultEntity;
 import com.review.front.entity.TestRecord;
 import com.review.front.service.DongLiangTestService;
 import com.review.front.vo.SelectVO;
+import com.review.manage.project.entity.ReviewProjectEntity;
+import com.review.manage.project.service.IReviewProjectService;
+import com.review.manage.userManage.entity.ReviewUserEntity;
 import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author javabage
@@ -22,6 +25,9 @@ import java.util.Map;
 @Service("dongLiangTestService")
 @Transactional
 public class DongLiangTestServiceImpl extends CommonServiceImpl implements DongLiangTestService {
+
+    @Autowired
+    private IReviewProjectService reviewProjectService;
     @Override
     public List<EvalCodeEntity> verifyEvalCode(EvalCodeEntity evalCodeEntity) {
         StringBuilder sb =  new StringBuilder();
@@ -151,10 +157,24 @@ public class DongLiangTestServiceImpl extends CommonServiceImpl implements DongL
         }
     }
 
+    /**
+     * 业务数据处理：1、测评码置为已使用状态 2、添加测评结果
+     * @param dongliangTestQuestionVO
+     */
     @Override
-    public void evalCodeSetInvalid(String testCode, String userId) {
+    public void handleBusinessData(DongliangTestQuestionVO[] dongliangTestQuestionVO, ReviewUserEntity reviewUser) {
         String sql = "update review_eval_code set status=2 where user_id= ? and eval_code = ?";
-        this.executeSql(sql, new Object[]{userId, testCode});
+        this.executeSql(sql, new Object[]{dongliangTestQuestionVO[0].getUserInfo().getUserId(),dongliangTestQuestionVO[0].getTestCode()});
+
+        //添加测评结果
+        ReviewResultEntity reviewResult = new ReviewResultEntity();
+        reviewResult.setUserId(dongliangTestQuestionVO[0].getUserInfo().getUserId());
+        reviewResult.setClassId(dongliangTestQuestionVO[0].getClassId());
+        reviewResult.setCreateTime(new Date());
+        reviewResult.setCreateBy(dongliangTestQuestionVO[0].getUserInfo().getName());
+        reviewResult.setProjectId(dongliangTestQuestionVO[0].getProjectId()); //项目id
+        reviewResult.setReviewResult(dongliangTestQuestionVO[0].getReportUrl());
+        this.save(reviewResult);
     }
 
 }
