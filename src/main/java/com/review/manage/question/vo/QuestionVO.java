@@ -27,6 +27,8 @@ public class QuestionVO implements Serializable {
     
     private String classId;         //分类ID
 
+	private String nextClassId;    //下个量表id
+
 	private Long projectId;    //关联项目ID
 
     private String answerId;
@@ -283,5 +285,13 @@ public class QuestionVO implements Serializable {
 
 	public void setProjectId(Long projectId) {
 		this.projectId = projectId;
+	}
+
+	public String getNextClassId() {
+		return nextClassId;
+	}
+
+	public void setNextClassId(String nextClassId) {
+		this.nextClassId = nextClassId;
 	}
 }

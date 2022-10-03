@@ -64,6 +64,16 @@ public final class Constants {
 		
 		return map;
 	}
+
+	/**
+	 * 积分兑换-已兑换
+	 */
+	public final static String YES = "Y";
+
+	/**
+	 * 积分兑换-未兑换
+	 */
+	public final static String NO = "N";
 	
 	/**
 	 * 声音发布状态--未发布

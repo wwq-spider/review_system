@@ -1,9 +1,12 @@
 package com.review.manage.userManage.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.review.common.CommonUtils;
 import com.review.common.DateUtil;
 import com.review.manage.project.entity.ReviewProjectEntity;
 import com.review.manage.project.service.IReviewProjectService;
+import com.review.manage.project.vo.ProjectResultVO;
+import com.review.manage.question.service.IReviewResultService;
 import com.review.manage.question.service.ReviewQuestionAnswerServiceI;
 import com.review.manage.reviewClass.entity.ReviewClassEntity;
 import com.review.manage.userManage.entity.ReviewUserEntity;
@@ -35,9 +38,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/reviewUser")
@@ -53,7 +54,10 @@ public class ReviewUserController extends BaseController{
 
 	@Autowired
 	private ReviewQuestionAnswerServiceI reviewQuestionAnswerService;
-	
+
+	@Autowired
+	private IReviewResultService reviewResultService;
+
 	/**
 	 * 跳到测评用户页面 
 	 * @param request
@@ -378,5 +382,58 @@ public class ReviewUserController extends BaseController{
 		} finally {
 			IOUtils.closeQuietly(fOut);
 		}
+	}
+
+
+	/**
+	 * 导出测评结果
+	 * @param response
+	 * @param groupId
+	 * @param projectId
+	 * @param startTime
+	 * @param endTime
+	 */
+	@RequestMapping(params = "exportReviewResult")
+	public void exportReviewResult(HttpServletResponse response, String groupId, Long projectId, String startTime, String endTime) {
+		response.setContentType("application/vnd.ms-excel");
+		String codedFileName = null;
+		OutputStream fOut = null;
+		try {
+			codedFileName = "测评结果_" + DateUtil.getCurrentDateTimeStr1();
+			// 根据浏览器进行转码，使其支持中文文件名
+			if (BrowserUtils.isIE(ContextHolderUtils.getRequest())) {
+				response.setHeader("content-disposition", "attachment;filename=" + java.net.URLEncoder.encode(codedFileName,"UTF-8") + ".xls");
+			} else {
+				String newtitle = new String(codedFileName.getBytes("UTF-8"), "ISO8859-1");
+				response.setHeader("content-disposition", "attachment;filename=" + newtitle + ".xls");
+			}
+			// 产生工作簿对象
+			Workbook workbook = reviewResultService.exportReviewResult(groupId, projectId, startTime, endTime, ContextHolderUtils.getLoginUserName());
+			fOut = response.getOutputStream();
+			if (workbook != null) {
+				workbook.write(fOut);
+			}
+			fOut.flush();
+		} catch (Exception e) {
+			logger.error("exportReviewResult error, ", e);
+		} finally {
+			IOUtils.closeQuietly(fOut);
+		}
+	}
+
+	/**
+	 * 项目测评报告预览
+	 * @param userIds
+	 * @param projectId
+	 * @return
+	 */
+	@RequestMapping(params = "toReportPreview")
+	public ModelAndView toReportPreview(String userIds, Long projectId) {
+		Map<String, Object> paramMap = new HashMap<>();
+		if(StrUtil.isNotBlank(userIds)) {
+			List<ProjectResultVO> list = reviewResultService.calReviewResult(Arrays.asList(userIds.split(",")), projectId);
+			paramMap.put("projectResultList", list);
+		}
+		return new ModelAndView("review/manage/userManage/projectReport", paramMap);
 	}
 }

@@ -46,6 +46,9 @@ public class ReviewReportResultEntity implements Serializable {
 	
 	@Column(name="result_type")
 	private String resultType;
+
+	@Column(name="level_grade")
+	private Integer levelGrade;
 	
 	public String getReportResultId() {
 		return reportResultId;
@@ -111,5 +114,11 @@ public class ReviewReportResultEntity implements Serializable {
 		this.resultType = resultType;
 	}
 
+	public Integer getLevelGrade() {
+		return levelGrade;
+	}
 
+	public void setLevelGrade(Integer levelGrade) {
+		this.levelGrade = levelGrade;
+	}
 }

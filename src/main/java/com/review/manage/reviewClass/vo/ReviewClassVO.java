@@ -51,6 +51,16 @@ public class ReviewClassVO {
 
 	private String reportTips;
 
+	/**
+	 * 项目名称
+	 */
+	private String projectName;
+
+	/**
+	 * 测评次数
+	 */
+	private Integer reviewTimes;
+
 	private List<ReviewReportTemplateEntity> reportTemplateList;
 
 	public java.lang.String getClassId() {
@@ -235,5 +245,21 @@ public class ReviewClassVO {
 
 	public void setReportTemplateList(List<ReviewReportTemplateEntity> reportTemplateList) {
 		this.reportTemplateList = reportTemplateList;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+	public Integer getReviewTimes() {
+		return reviewTimes;
+	}
+
+	public void setReviewTimes(Integer reviewTimes) {
+		this.reviewTimes = reviewTimes;
 	}
 }

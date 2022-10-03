@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.review.front.entity.ReviewResultEntity;
 import com.review.front.vo.ReviewResultVO;
+import com.review.manage.reviewClass.vo.ReviewClassVO;
 import com.review.manage.userManage.entity.ReviewUserEntity;
 import net.sf.json.JSONObject;
 import org.jeecgframework.core.common.service.CommonService;
@@ -36,6 +37,14 @@ public interface ReviewFrontService extends CommonService{
 	 * @return
 	 */
 	QuestionVO getQuestionDetail(String classId,int page,  int num);
+
+	/**
+	 * 查询问题详情
+	 * @param classId
+	 * @param page
+	 * @return
+	 */
+	QuestionVO getQuestionDetail(String classId,int page);
 	
 	/**
 	 * 查询问题选项
@@ -89,4 +98,21 @@ public interface ReviewFrontService extends CommonService{
 	 * @return
 	 */
 	ReviewUserEntity getUserInfo(String openid);
+
+	/**
+	 * 根据用户组查询测评量表
+	 * @param groupId
+	 * @param userId
+	 * @return
+	 */
+	List<ReviewClassVO> getReviewClassByGroupId(String groupId, String userId);
+
+	/**
+	 * 获取下一题
+	 * @param curClassId
+	 * @param groupId
+	 * @param userId
+	 * @return
+	 */
+	String getNextClassId(String curClassId, String groupId, String userId);
 }
