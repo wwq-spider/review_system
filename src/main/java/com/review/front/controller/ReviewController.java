@@ -26,6 +26,7 @@ import com.review.manage.subject.vo.ReviewSubjectVO;
 import com.review.manage.userManage.entity.ReviewUserEntity;
 import com.review.manage.userManage.service.ReviewUserService;
 import net.sf.json.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jeecgframework.core.common.controller.BaseController;
@@ -122,6 +123,36 @@ public class ReviewController extends BaseController{
 		jsonObject.put("result", result);
 		CommonUtils.responseDatagrid(response, jsonObject);
 	}
+
+	/**
+	 * 退出登陆
+	 * @param response
+	 */
+	@RequestMapping(params="loginOut")
+	@ResponseBody
+	public void loginOut(HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject();
+		try {
+			HttpSession session = ContextHolderUtils.getSession();
+			List<String> keys = new ArrayList<>();
+			Enumeration enumeration = session.getAttributeNames();
+			while (enumeration.hasMoreElements()) {
+				keys.add(enumeration.nextElement().toString());
+			}
+			for (String key : keys) {
+				session.removeAttribute(key);
+			}
+			ClientManager.getInstance().removeClinet(session.getId());
+			session.invalidate();
+			jsonObject.put("code", 200);
+			jsonObject.put("msg", "退出成功");
+		} catch (Exception e) {
+			logger.error("loginOut error, ", e);
+			jsonObject.put("code", 500);
+			jsonObject.put("msg", "退出异常");
+		}
+		CommonUtils.responseDatagrid(response, jsonObject);
+	}
 	
 	/**
 	 * 跳到输入年龄页面
@@ -147,11 +178,76 @@ public class ReviewController extends BaseController{
 	public ModelAndView toQuestionStore(HttpServletRequest request,
 			HttpServletResponse response) {
 		ModelAndView model = new ModelAndView("review/front/questionStore");
-		List<ReviewClassEntity> list = reviewFrontService.findByQueryString("from ReviewClassEntity where status=1 ORDER BY createTime");
-		model.addObject("classList", list);
+		//List<ReviewClassEntity> list = reviewFrontService.findByQueryString("from ReviewClassEntity where status=1 ORDER BY createTime");
+		ReviewUserEntity reviewUser = ContextHolderUtils.getLoginFrontUser();
+
+		List<ReviewClassVO> reviewClassList = reviewFrontService.getReviewClassByGroupId(reviewUser.getGroupId(), reviewUser.getUserId());
+
+		Map<String, List<ReviewClassVO>> resultMap = new HashMap<>();
+
+		int finishCount = 0;
+		for (ReviewClassVO reviewClass : reviewClassList) {
+			if(reviewClass.getReviewTimes() != null && reviewClass.getReviewTimes() > 0) {
+				finishCount++;
+			}
+			String key = reviewClass.getProjectId() + "_" + reviewClass.getProjectName();
+			if (resultMap.get(key) == null) {
+				resultMap.put(key, new ArrayList<>());
+			}
+			resultMap.get(key).add(reviewClass);
+		}
+		model.addObject("userName", reviewUser.getUserName());
+		model.addObject("resultMap", resultMap);
+		model.addObject("finishCount", finishCount);
+		model.addObject("totalCount", reviewClassList.size());
 		return model;
 	}
-	
+
+	/**
+	 * 获取当前测评id
+	 * @param response
+	 */
+	@RequestMapping(value="getCurReviewId", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void getCurReviewId(HttpServletResponse response, Long projectId) {
+		JSONObject json = new JSONObject();
+		try{
+			ReviewUserEntity reviewUser = ContextHolderUtils.getLoginFrontUser();
+
+			if (reviewUser == null || StrUtil.isBlank(reviewUser.getUserId())) {
+				json.put("code", 401);
+				json.put("msg", "用户未登录");
+				CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+				return;
+			}
+			List<ReviewClassVO> reviewList = reviewFrontService.getReviewClassByGroupId(reviewUser.getGroupId(), reviewUser.getUserId());
+
+			if (CollectionUtils.isEmpty(reviewList)) {
+				json.put("code", 300);
+				json.put("msg", "用户无匹配测评量表");
+				CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+			}
+
+			for(ReviewClassVO reviewClass : reviewList) {
+				if (reviewClass.getReviewTimes() == null || reviewClass.getReviewTimes() == 0) {
+					json.put("code", 200);
+					json.put("reviewId", reviewClass.getClassId());
+					json.put("msg", "查询成功");
+					CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+					return;
+				}
+			}
+			json.put("code", 301);
+			json.put("msg", "用户已完成全部测评项目");
+			CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+		} catch (Exception e) {
+			logger.error("getCurReviewId error: {}", e);
+			json.put("code", 500);
+			json.put("msg", "服务器异常，请刷新页面重试或联系管理员");
+			CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+		}
+	}
+
 	/**
 	 * 跳到指导语页面
 	 * @param request
@@ -162,24 +258,27 @@ public class ReviewController extends BaseController{
 	public ModelAndView toGuide(HttpServletRequest request,
 			HttpServletResponse response) {
 		String classId = request.getParameter("classId");
+		String projectId = request.getParameter("projectId");
 		ReviewClassEntity reviewClass = reviewFrontService.get(ReviewClassEntity.class, classId);
 		ModelAndView model = new ModelAndView("review/front/guidePage");
+		if (StrUtil.isNotBlank(projectId)) {
+			ReviewProjectEntity reviewProjectEntity = reviewProjectService.get(ReviewProjectEntity.class, Long.valueOf(projectId));
+			model.addObject("projectCover", reviewProjectEntity.getCover());
+		}
 		model.addObject("classId", classId);
+		model.addObject("projectId", projectId);
 		model.addObject("reviewClass", reviewClass);
 		return model;
 	}
 	
 	/**
 	 * 开始测试
-	 * @param request
-	 * @param response
+	 * @param classId
+	 * @param questioinNum
 	 * @return
 	 */
 	@RequestMapping(params="beginTest")
-	public ModelAndView beginTest(HttpServletRequest request,
-			HttpServletResponse response) {
-		String classId = request.getParameter("classId");
-		String questioinNum = request.getParameter("questionNum");
+	public ModelAndView beginTest(String classId, String questioinNum) {
 		ModelAndView model = new ModelAndView("review/front/testPage");
 		model.addObject("classId", classId);
 		model.addObject("questionNum", questioinNum);
@@ -215,99 +314,90 @@ public class ReviewController extends BaseController{
 
 	/**
 	 * 初始化题目信息
-	 * @param request
-	 * @param response
 	 * @param question
 	 * @throws Exception 
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(params="nextQuestion")
-	public ModelAndView nextQuestion(HttpServletRequest request,
-			HttpServletResponse response, QuestionVO question) throws Exception {
-		String classId = request.getParameter("classId");
-		String questionNum = request.getParameter("questionNum");
+	public ModelAndView nextQuestion(QuestionVO question, HttpServletResponse response) {
+		String classId = question.getClassId();
+		Integer questionNum = question.getQuestionNum();
 		ModelAndView model = new ModelAndView();
-		HttpSession session = request.getSession();
+		HttpSession session = ContextHolderUtils.getSession();
 		List<QuestionVO> list = null;
-		if(!"".equals(StringUtils.trimToEmpty(questionNum))) {
-			if("0".equals(questionNum)) {
-				session.removeAttribute("resultList");
-				session.setAttribute("resultList", new ArrayList<QuestionVO>());
-			} else {
-				list = (List<QuestionVO>) session.getAttribute("resultList");
-				if(list.size() > 0) {
-					if(list.get(list.size() - 1).getQuestionNum() < Integer.parseInt(questionNum)) {
-						/*if(question.getVariateId().indexOf(",") > -1) {
-							String[] variateIdArr = question.getVariateId().split(",");
-							QuestionVO questionVO = null;
-							for(int i=0; i<variateIdArr.length; i++) {
-								questionVO = new QuestionVO();
-								MyBeanUtils.copyBean2Bean(questionVO, question);
-								questionVO.setVariateId(variateIdArr[i]);
-								list.add(questionVO);
-
-							}
-						} else {
-							list.add(question);
-						}*/
+		String key = "resultList_" + classId;
+		if(questionNum != null) {
+			if(questionNum == 0) {
+				session.removeAttribute(key);
+				session.setAttribute(key, new ArrayList<QuestionVO>());
+			} else if(session.getAttribute(key) != null) {
+				list = (List<QuestionVO>) session.getAttribute(key);
+				int size = list.size();
+				if(size > 0) {
+					if(size >= questionNum) {
+						list.set(questionNum-1, question);
+					} else if(list.get(size - 1).getQuestionNum() < questionNum) {
 						list.add(question);
 					}
 				} else {
 					list.add(question);
-					/*if(question.getVariateId().indexOf(",") > -1) {
-						String[] variateIdArr = question.getVariateId().split(",");
-						QuestionVO questionVO = null;
-						for(int i=0; i<variateIdArr.length; i++) {
-							questionVO = new QuestionVO();
-							MyBeanUtils.copyBean2Bean(questionVO, question);
-							questionVO.setVariateId(variateIdArr[i]);
-							list.add(questionVO);
-
-						}
-					} else {
-						list.add(question);
-					}*/
 				}
+			} else {
+				questionNum = 0;
 			}
-			
-			if(!"Y".equals(StringUtils.trimToEmpty(question.getIsLastQuestion()))) {
-				QuestionVO questionVO = reviewFrontService.getQuestionDetail(classId, Integer.parseInt(questionNum),1);
-				questionVO.setQuestionNum(Integer.parseInt(questionNum));
+			QuestionVO nextQuestion = reviewFrontService.getQuestionDetail(classId, questionNum);
+			if(nextQuestion != null) {
+				nextQuestion.setProjectId(question.getProjectId());
+				if (question.getProjectId() != null && question.getProjectId() > 0) {
+					ReviewProjectEntity reviewProjectEntity = reviewProjectService.get(ReviewProjectEntity.class, question.getProjectId());
+					model.addObject("projectCover", reviewProjectEntity.getCover());
+				}
 				model.setViewName("review/front/testPage");
-				model.addObject("question", questionVO);
+				model.addObject("question", nextQuestion);
 			} else {
 				model.setViewName("review/front/testEndPage");
-				
 				model.addObject("question", question);
 			}
+		} else {
+			return toQuestionStore(ContextHolderUtils.getRequest(), response);
 		}
 		return model;
 	}
 	
 	/**
 	 * 完成测试
-	 * @param request
+	 * @param question
 	 * @param response
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(params="complete")
-	public void commplete(HttpServletRequest request, HttpServletResponse response) {
-		String classId = request.getParameter("classId");
-		HttpSession session = request.getSession();
-		//List<QuestionVO> list = reviewFrontService.getQuestionVOList(classId, 0, 99999999);
-		
-		List<QuestionVO> resultList = (List<QuestionVO>) session.getAttribute("resultList");
-		ReviewUserEntity user = (ReviewUserEntity) session.getAttribute(Constants.REVIEW_LOGIN_USER);
-		
-		String result = "";
+	public void commplete(QuestionVO question, HttpServletResponse response) {
+		String classId = question.getClassId();
+		HttpSession session = ContextHolderUtils.getSession();
+		List<QuestionVO> resultList = (List<QuestionVO>) session.getAttribute("resultList_" + classId);
+		resultList.add(question);
+		ReviewUserEntity user = ContextHolderUtils.getLoginFrontUser();
+
+		JSONObject json = new JSONObject();
 		if(resultList != null) {
 			reviewFrontService.completeReview(resultList, classId, user);
-			result = "1";
+			ContextHolderUtils.getSession().removeAttribute("resultList_" + classId);
+			List<ReviewClassVO> reviewClassList = reviewClassService.getReviewClassByProjectId(question.getProjectId());
+			String nextClassId = "";
+			for (int i=0; i<reviewClassList.size(); i++) {
+				if (classId.equals(reviewClassList.get(i).getClassId()) && i < reviewClassList.size() - 1) {
+					nextClassId = reviewClassList.get(i+1).getClassId();
+				}
+			}
+			//String nextClassId = reviewFrontService.getNextClassId(classId, user.getGroupId(), user.getUserId());
+			json.put("projectId", question.getProjectId());
+			json.put("nextClassId", nextClassId);
+			json.put("result", 1);
+			json.put("msg", "提交成功");
 		} else {
-			result = "0";
+			json.put("result", 2);
+			json.put("msg", "无测评题目记录");
 		}
-		JSONObject json = new JSONObject();
-		json.put("result", result);
 		CommonUtils.responseDatagrid(response, json);
 	}
 

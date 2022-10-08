@@ -32,6 +32,9 @@ public class ReviewResultEntity implements Serializable {
 	@Column(name="class_id")
 	private String classId;
 
+	@Column(name="group_id")
+	private String groupId;
+
 	@Column(name="project_id")
 	private Long projectId;
 	
@@ -46,6 +49,12 @@ public class ReviewResultEntity implements Serializable {
 	
 	@Column(name="create_by")
 	private String createBy;
+
+	@Column(name="level_grade")
+	private Integer levelGrade;
+
+	@Column(name="combine_result")
+	private String combineVarResult;
 	
 	
 	public Date getCreateTime() {
@@ -88,6 +97,14 @@ public class ReviewResultEntity implements Serializable {
 		this.classId = classId;
 	}
 
+	public String getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
+	}
+
 	public Long getProjectId() {
 		return projectId;
 	}
@@ -111,6 +128,20 @@ public class ReviewResultEntity implements Serializable {
 	public void setReviewResult(String reviewResult) {
 		this.reviewResult = reviewResult;
 	}
-	
-	
+
+	public String getCombineVarResult() {
+		return combineVarResult;
+	}
+
+	public void setCombineVarResult(String combineVarResult) {
+		this.combineVarResult = combineVarResult;
+	}
+
+	public Integer getLevelGrade() {
+		return levelGrade;
+	}
+
+	public void setLevelGrade(Integer levelGrade) {
+		this.levelGrade = levelGrade;
+	}
 }

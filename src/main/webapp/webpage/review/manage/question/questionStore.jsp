@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>题库选择-北京心悦健康心理测评系统</title>
+<title>题库选择-筑心康5G+心理测评系统</title>
 <link rel="stylesheet" rev="stylesheet" href="<%=path%>/plug-in/review/css/style.css" type="text/css" />
 <script type="text/javascript" src="<%=path%>/plug-in/review/js/jquery-1.8.0.min.js"></script>
 <script type="text/javascript">

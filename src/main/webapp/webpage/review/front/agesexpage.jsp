@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>年龄男女-北京心悦健康心理测评系统</title>
+<title>年龄男女-筑心康5G+心理测评系统</title>
 <link rel="stylesheet" rev="stylesheet" href="<%=path%>/plug-in/review/css/style.css" type="text/css" />
 <link rel="stylesheet" rev="stylesheet" href="<%=path%>/plug-in/review/css/jqtransform.css" type="text/css" />
 <script type="text/javascript" src="<%=path%>/plug-in/review/js/jquery-1.8.0.min.js"></script>
@@ -45,7 +45,7 @@ $(function(){
 <body>
 <div class="w_centerwrapbox">
 	<div id="logincontent">
-		<h1><img src="<%=path%>/plug-in/review/images/welcome_text.jpg" alt="欢迎进入北京心悦健康心理测评系统" /></h1>
+		<h1><img src="<%=path%>/plug-in/review/images/welcome_text.jpg" alt="欢迎进入筑心康5G+心理测评系统" /></h1>
 	 <form action="<%=path%>/reviewFront.do?register" method="post" id="myloginform" onsubmit="return check();">
 	 	  <input type="hidden" id="userIdNumber" name="userIdNumber" value="<%=request.getParameter("userIdNumber") %>"/>
 	 	  <input type="hidden" id="source" name="source" value="beijing"/>

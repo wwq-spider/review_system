@@ -11,6 +11,8 @@ import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
 import org.jeecgframework.core.util.MyBeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,7 @@ public class ReviewClassServiceImpl extends CommonServiceImpl implements ReviewC
 		ReviewClassEntity reviewClassEntity = new ReviewClassEntity();
 		MyBeanUtils.copyBean2Bean(reviewClassEntity, reviewClass);
 		reviewClassEntity.setBannerImg(CommonUtils.saveCoverImg(reviewClass.getContentImg(), Constants.ReviewClassDir));
+		reviewClassEntity.setCreateTime(new Date());
 		this.save(reviewClassEntity);
 	}
 
@@ -47,6 +50,7 @@ public class ReviewClassServiceImpl extends CommonServiceImpl implements ReviewC
 			questionClass.setClassId(reviewClass.getClassId());
 			questionClass.setQuestionId(Integer.parseInt(questionId));
 		}*/
+		reviewClassEntity.setCreateTime(new Date());
 		this.saveOrUpdate(reviewClassEntity);
 	}
 
@@ -107,7 +111,7 @@ public class ReviewClassServiceImpl extends CommonServiceImpl implements ReviewC
 			sb.append("   review_class c,review_project_class pc");
 			sb.append(" WHERE c.`status`=1 and c.`class_id`=pc.class_id and pc.project_id=:projectId");
 		}
-		sb.append(" ORDER BY c.`sort_id` ASC ");
+		sb.append(" ORDER BY c.`sort_id` ASC, c.create_time desc");
 		return this.getObjectList(sb.toString(), paramMap, ReviewClassVO.class);
 	}
 

@@ -8,7 +8,7 @@ body{
    margin:0px;
    padding:0px;
    color:#000000;
-   background:#1e4063;
+   background:#fafaed;
 }
 img {
 	border: 0px;
@@ -75,13 +75,13 @@ a:hover {
 
 /******************LOGINPAGE*******************/
 .w_centerwrapbox{
-    position:absolute;
-    top:50%;
-    left:50%;
-    margin-left:-512px;
-	margin-top:-297px;
-    width:1025px;
-    height:594px;
+    /*position:absolute;*/
+    /*top:50%;*/
+    /*left:50%;*/
+    /*margin-left:-512px;*/
+	/*margin-top:-297px;*/
+    /*width:1025px;*/
+    /*height:594px;*/
 	overflow:hidden;
 }
 #logincontent{
@@ -215,7 +215,7 @@ a:hover {
 	width:1025px;
 	height:593px;
 	margin:0 auto;
-	background:url(../images/testbody_bg.jpg) no-repeat 0 0;
+	/*background:url(../images/testbody_bg.png) no-repeat 0 0;*/
 	position:relative;
 }
 #zhidaomaincontent h1{
@@ -237,13 +237,13 @@ a:hover {
 }
 #testpage_c{
 	width:875px;
-	height:384px;
+	/*height:314px;*/
 	padding-left:70px;
 	overflow:hidden;
 }
 #zhidaoyu_c_bg{
 	width:845px;
-	height:435px;
+	/*height:435px;*/
 	padding:15px;
 	text-align:center;
 }
@@ -281,10 +281,12 @@ a:hover {
 
 /******************TESTPAGE*******************/
 #maincontent{
-	width:1025px;
-	height:593px;
+	/*width:1025px;*/
+	/*height:593px;*/
+	width:100%;
+	height:100%;
 	margin:0 auto;
-	background:url(../images/testbody_bg.jpg) no-repeat 0 0;
+	background:url(../images/testbody_bg.png) no-repeat 0 0;
 	position:relative;
 	text-align:center;
 	padding-top:150px;
@@ -292,12 +294,14 @@ a:hover {
 }
 #maincontent_testpage{
 	width:1025px;
-	height:593px;
+	height: 95%;
+	/*height:593px;*/
 	margin:0 auto;
-	background:url(../images/testbody_bg.jpg) no-repeat 0 0;
+	/*background:url(../images/testbody_bg.png) no-repeat 0 0;*/
+	background-color: #fafaed;
 	position:relative;
 	text-align:center;
-	padding-top:120px;
+	padding-top:15%;
 	overflow:hidden;
 }
 #maincontent h1{
@@ -362,6 +366,7 @@ a:hover {
 	width:405px;
 	text-align:center;
 	margin:0 auto;
+	margin-top: 10px;
 	
 }
 .test_checkitemwrap p{

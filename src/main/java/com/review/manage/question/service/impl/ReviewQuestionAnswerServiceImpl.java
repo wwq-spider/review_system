@@ -15,6 +15,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,8 @@ import java.util.TreeMap;
 @Service("reviewQuestionAnswerService")
 @Transactional
 public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implements ReviewQuestionAnswerServiceI {
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private ReviewClassService reviewClassService;
@@ -47,7 +51,11 @@ public class ReviewQuestionAnswerServiceImpl extends CommonServiceImpl implement
     @Override
     public Workbook getExportWorkbook(String groupId, Long projectId, String startTime, String endTime) {
 
+        long begin = System.currentTimeMillis();
         List<ReviewQuestionAnswerVO> list = this.getListByGroupId(groupId, projectId, startTime, endTime);
+        long end = System.currentTimeMillis();
+
+        logger.info("getListByGroupId cost time: "+ (end - begin) + " ms");
 
         Map<String, TreeMap<String, Map<String, Object>>> classMap = new HashMap<>();
 

@@ -43,6 +43,9 @@ public class ReviewReportGradeEntity implements Serializable{
     
     @Column(name="grade_big")
     private Double gradeBig;
+
+	@Column(name="level_grade")
+	private Integer levelGrade;
     
     @Transient
     private CommonsMultipartFile file;
@@ -77,6 +80,15 @@ public class ReviewReportGradeEntity implements Serializable{
 	public void setGradeBig(Double gradeBig) {
 		this.gradeBig = gradeBig;
 	}
+
+	public Integer getLevelGrade() {
+		return levelGrade;
+	}
+
+	public void setLevelGrade(Integer levelGrade) {
+		this.levelGrade = levelGrade;
+	}
+
 	public CommonsMultipartFile getFile() {
 		return file;
 	}
