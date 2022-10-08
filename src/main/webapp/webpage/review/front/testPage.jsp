@@ -33,7 +33,7 @@
 
 		let projectCover = "${projectCover}"
 		if(projectCover && projectCover != "") {
-			$("#maincontent_testpage").css("cssText", "background: url(${aliyunOssHost}${projectCover}) no-repeat 0 0; background-position: 1px -120px; background-size: 50% 100%;")
+			$("#maincontent_testpage").css("cssText", "background: url(${aliyunOssHost}${projectCover}) no-repeat 0 0; background-position: 1px -150px; background-size: 50% 100%;")
 		} else {
 			$("#maincontent_testpage").css("background", "url(../images/testbody_bg.png) no-repeat 0 0;")
 		}
@@ -314,6 +314,7 @@
 			</div>
 			<input type="hidden" id="projectId" name="projectId" value="${question.projectId}" />
 			<input type="hidden" id="questionId" name="questionId" value="${question.questionId }" />
+			<input type="hidden" id="content" name="content" value="${question.content }" />
 			<input type="hidden" id="questionType" name="questionType" value="${question.questionType }" />
 			<input type="hidden" id="selectGrade" name="selectGrade" />
 			<input type="hidden" id="classId" name="classId" value="${question.classId }" />

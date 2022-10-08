@@ -28,16 +28,21 @@ $(function() {
 		background-color: #008CBA; /* 蓝色 */
 		border: none;
 		color: white;
-		padding: 15px 36px;
+		/*padding: 15px 36px;*/
 		text-align: center;
 		text-decoration: none;
 		display: inline-block;
 		font-size: 16px;
 		margin: 4px 2px;
 		cursor: pointer;
-		border-radius: 10px;
+		/*border-radius: 10px;*/
 		border: none;
-		box-shadow: 5px 5px 10px grey;
+		/*box-shadow: 5px 5px 10px grey;*/
+		background-color:#1aa0d4;
+		box-shadow:0;
+		border-radius:0;
+		padding: 10px 60px;
+
 	}
 </style>
 </head>
