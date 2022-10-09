@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>题库选择-筑心康5G+心理测评系统</title>
+	<title>题库选择-筑心康5G+心理健康管理平台</title>
 	<link rel="stylesheet" rev="stylesheet" href="<%=path%>/plug-in/review/css/style.css" type="text/css" />
 	<style type="text/css">
 		.reviewBtn {
@@ -124,7 +124,7 @@
 
 		//开始测评
 		function exit() {
-			if(confirm("您确认退出登陆吗？")) {
+			if(confirm("您确认退出登录吗？")) {
 				$.ajax({
 					url: rootPath + "/reviewFront.do?loginOut",
 					async : false,
@@ -154,7 +154,7 @@
 <div class="w_centerwrapbox">
 	<div id="maincontent">
 		<%--<h1 class="tikutitle"><img src="<%=path%>/plug-in/review/images/tiku_text.jpg" alt="题库选择" /></h1>--%>
-		<div style="float: right; font-size: 20px; margin-right: 10px;">
+		<div style="float: right; font-size: 20px; margin-right: 10px;margin-top: -50px">
 			欢迎<span style="padding: 5px;">${userName}</span>进入测评，
 			<a href="javascript:void(0);" onclick="javascript:exit()" style="color: #008CBA; text-decoration: underline;">退出</a>
 		</div>

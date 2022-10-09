@@ -16,7 +16,7 @@
 	})()
 </script>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>登陆测试系统-筑心康5G+心理测评系统</title>
+<title>登录-筑心康5G+心理健康管理平台</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
 <link rel="stylesheet" rev="stylesheet" href="<%=path%>/plug-in/review/css/style.css" type="text/css" media="screen" />
 <t:base type="jquery,easyui"></t:base>
