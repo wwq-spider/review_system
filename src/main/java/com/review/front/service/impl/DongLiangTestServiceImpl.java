@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -38,11 +39,12 @@ public class DongLiangTestServiceImpl extends CommonServiceImpl implements DongL
         sb.append(" FROM");
         sb.append(" review_eval_code");
         sb.append(" WHERE");
-        sb.append(" user_id =:userId");
-        sb.append(" AND eval_code =:evalCode");
-        sb.append(" AND STATUS = 1");
+        /*sb.append(" user_id =:userId");
+        sb.append(" AND eval_code =:evalCode");*/
+        sb.append(" eval_code =:evalCode");
+        sb.append(" AND STATUS IN (1,3)");
         Map<String,Object> map = new HashMap<String, Object>();
-        map.put("userId", evalCodeEntity.getUserId());
+        //map.put("userId", evalCodeEntity.getUserId());
         map.put("evalCode", evalCodeEntity.getEvalCode());
         List<EvalCodeEntity> list = this.getObjectList(sb.toString(), map,EvalCodeEntity.class);
         return list;
@@ -163,9 +165,10 @@ public class DongLiangTestServiceImpl extends CommonServiceImpl implements DongL
      */
     @Override
     public void handleBusinessData(DongliangTestQuestionVO[] dongliangTestQuestionVO, ReviewUserEntity reviewUser) {
-        String sql = "update review_eval_code set status=2 where user_id= ? and eval_code = ?";
-        this.executeSql(sql, new Object[]{dongliangTestQuestionVO[0].getUserInfo().getUserId(),dongliangTestQuestionVO[0].getTestCode()});
-
+        /*String sql = "update review_eval_code set status=2 where user_id= ? and eval_code = ?";
+        this.executeSql(sql, new Object[]{dongliangTestQuestionVO[0].getUserInfo().getUserId(),dongliangTestQuestionVO[0].getTestCode()});*/
+        String sql = "update review_eval_code set status=2 where eval_code = ?";
+        this.executeSql(sql, new Object[]{dongliangTestQuestionVO[0].getTestCode()});
         //添加测评结果
         ReviewResultEntity reviewResult = new ReviewResultEntity();
         reviewResult.setUserId(dongliangTestQuestionVO[0].getUserInfo().getUserId());
@@ -177,4 +180,42 @@ public class DongLiangTestServiceImpl extends CommonServiceImpl implements DongL
         this.save(reviewResult);
     }
 
+    @Override
+    public List<EvalCodeEntity> getEvalCode() {
+        StringBuilder sb =  new StringBuilder();
+        sb.append("SELECT ");
+        sb.append(" eval_code as evalCode");
+        sb.append(" FROM");
+            sb.append(" review_eval_code");
+        sb.append(" WHERE status = 1");
+        sb.append(" LIMIT 1");
+        List<EvalCodeEntity> list = this.getObjectList(sb.toString(), null,EvalCodeEntity.class);
+        //将该测评码暂设为已购买，如支付失败，恢复该测评码状态为可购买
+        if (list.size() > 0){
+            String sql = "update review_eval_code set status=3 where eval_code = ?";
+            this.executeSql(sql,list.get(0).getEvalCode());
+        }
+        return list;
+    }
+
+    /**
+     * 获取测评码价格
+     * @param evalCodeEntity
+     * @return
+     */
+    @Override
+    public String getEvalPrice(EvalCodeEntity evalCodeEntity) {
+        StringBuilder sb =  new StringBuilder();
+        sb.append("SELECT ");
+        sb.append(" price AS price");
+        sb.append(" FROM");
+        sb.append(" review_eval_code");
+        sb.append(" WHERE status = 1");
+        sb.append(" LIMIT 1");
+        List<EvalCodeEntity> list = this.getObjectList(sb.toString(), null,EvalCodeEntity.class);
+        if (list.size() > 0){
+            return list.get(0).getPrice();
+        }
+        return null;
+    }
 }

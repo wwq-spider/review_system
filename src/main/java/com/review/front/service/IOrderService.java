@@ -43,4 +43,6 @@ public interface IOrderService {
      * @return
      */
     List<ReviewOrderVO> list(ReviewOrderVO reviewOrder);
+
+    PreOrderVO createEvalCodePrePayOrder(ReviewOrderVO reviewOrder);
 }

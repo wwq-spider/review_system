@@ -10,6 +10,7 @@ public class EvalCodeEntity implements Serializable {
 
     private String userId;
     private String evalCode;
+    private String price;
 
 
     public String getUserId() {
@@ -28,4 +29,11 @@ public class EvalCodeEntity implements Serializable {
         this.evalCode = evalCode;
     }
 
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
 }

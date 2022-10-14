@@ -281,9 +281,11 @@ public class OrderServiceImpl implements IOrderService {
                 "       o.class_name                                      className, " +
                 "       o.class_id                                        classId, " +
                 "       DATE_FORMAT(o.operate_time, '%Y-%m-%e %H:%i:%S') as operateTime, " +
-                "       c.banner_img                                      bannerImg " +
+                "       c.banner_img                                      bannerImg, " +
+                "       (select count(1) from review_class rc where rc.class_id = o.class_id) AS isExistClass" +
                 " from review_order o " +
-                "         inner join review_class c on o.class_id = c.class_id " +
+                /*"         inner join review_class c on o.class_id = c.class_id " +*/
+                "         left join review_class c on o.class_id = c.class_id " +
                 " where user_id = :userId ");
         sql.append("and o.status in (")
            .append(Constants.OrderStatus.PRE_SUCCESS).append(",")
@@ -292,6 +294,97 @@ public class OrderServiceImpl implements IOrderService {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("userId", reviewOrder.getUserId());
         return reviewOrderService.getObjectList(sql.toString(), paramMap, ReviewOrderVO.class);
+    }
+
+    /**
+     * 栋梁测评码购买订单
+     * @param reviewOrder
+     * @return
+     */
+    @Override
+    public PreOrderVO createEvalCodePrePayOrder(ReviewOrderVO reviewOrder) {
+
+        if (StrUtil.isBlank(reviewOrder.getClassId()) || StrUtil.isBlank(reviewOrder.getUserId())) {
+            logger.warn("classId or userID is null");
+            return null;
+        }
+        //判断订单是否已存在
+        ReviewOrderVO reviewOrderVO = reviewOrderService.findOneOrder(reviewOrder.getClassId(), reviewOrder.getUserId());
+        if (reviewOrderVO != null && StrUtil.isNotBlank(reviewOrderVO.getPayId()) && reviewOrderVO.getStatus() != Constants.OrderStatus.PAY_EXPIRED) {
+            PreOrderVO preOrder = new PreOrderVO();
+            preOrder.setPrePayID(reviewOrderVO.getPayId());
+            preOrder.setPackageStr("prepay_id=" + preOrder.getPrePayID());
+            if (Constants.OrderStatus.SUCCESS == reviewOrderVO.getStatus() || Constants.OrderStatus.PRE_SUCCESS == reviewOrderVO.getStatus()) {
+                preOrder.setReturnCode("FAIL");
+                preOrder.setReturnMsg("订单已支付，无需重复创建");
+                return preOrder;
+            } else {
+                Date now = new Date();
+                Date createTime = DateUtil.parse(reviewOrderVO.getCreateTime());
+                long diffMinutes = DateUtil.between(createTime, now, DateUnit.MINUTE);
+                if (diffMinutes >= 60) { //超时1个小时 该订单就已过期 重新创建订单
+                    //更新订单状态为已过期
+                    StringBuilder updSql = new StringBuilder("update review_order set status=?, operate_time=? where id=?");
+                    reviewOrderService.executeSql(updSql.toString(), new Object[]{Constants.OrderStatus.PAY_EXPIRED, now, reviewOrderVO.getId()});
+                } else {
+                    String nonceStr = IdUtil.simpleUUID();
+                    preOrder.setNonceStr(nonceStr);
+                    long timstamp = System.currentTimeMillis() / 1000;
+                    preOrder.setTimeStamp(timstamp + "");
+                    preOrder.setPaySign(WxAppletsUtils.paySign(nonceStr, preOrder.getPrePayID(), timstamp));
+                    preOrder.setReturnCode("SUCCESS");
+                    return preOrder;
+                }
+            }
+        }
+        //生成订单号
+        long orderNo = IdUtil.getSnowflake(0, 0).nextId();
+        String key = reviewOrder.getClassId() + reviewOrder.getUserId();
+        synchronized (key.intern()) {
+            try{
+                //封装订单信息
+                ReviewOrderEntity orderEntity = new ReviewOrderEntity();
+                MyBeanUtils.copyBeanNotNull2Bean(reviewOrder, orderEntity);
+                orderEntity.setOrderNo(orderNo);
+                orderEntity.setClassName("栋梁测评码");
+                orderEntity.setCreateTime(new Date());
+                orderEntity.setOperateTime(orderEntity.getCreateTime());
+                orderEntity.setOrderAmount(orderEntity.getOrgAmount());
+                /*orderEntity.setOrgAmount(orderEntity.getOrgAmount());
+                orderEntity.setOrderAmount(orderEntity.getOrgAmount());*/
+                //如果金额为0
+                if (orderEntity.getOrderAmount() == null || orderEntity.getOrderAmount().doubleValue() == 0) {
+                    orderEntity.setStatus(Constants.OrderStatus.SUCCESS);
+                    orderEntity.setPayId("000");
+                    reviewOrderService.save(orderEntity);
+                    PreOrderVO preOrderVO = new PreOrderVO();
+                    preOrderVO.setPrePayID("000");
+                    return preOrderVO;
+                }
+                orderEntity.setStatus(Constants.OrderStatus.PRE_PAY);
+                //创建微信预支付订单
+                PreOrderVO preOrder = this.generatePrePayOrder(reviewOrder.getOpenid(), reviewOrder.getIpAddr(),
+                        orderEntity.getOrderNo(), orderEntity.getOrderAmount(), orderEntity.getClassName());
+
+                if (Constants.WX_PAY_STATUS_SUCCESS.equals(preOrder.getResultCode())) {
+                    orderEntity.setPayId(preOrder.getPrePayID());
+                    reviewOrderService.save(orderEntity);
+                    //记录支付日志
+                    preOrder.getReviewPayLog().setOrderId(orderEntity.getId());
+                    preOrder.getReviewPayLog().setBroswer(reviewOrder.getBroswer());
+                    preOrder.getReviewPayLog().setUserId(reviewOrder.getUserId());
+                    preOrder.getReviewPayLog().setOperator(reviewOrder.getOperator());
+                    reviewPayLogService.save(preOrder.getReviewPayLog());
+                    return preOrder;
+                }else {
+                    String sql = "update review_eval_code set status=1 where eval_code = ?";
+                    reviewOrderService.executeSql(sql,reviewOrder.getClassId());
+                }
+            } catch (Exception e) {
+                logger.error("createPrePayOrder error, ", e);
+            }
+        }
+        return null;
     }
 
     public static void main(String[] args) {

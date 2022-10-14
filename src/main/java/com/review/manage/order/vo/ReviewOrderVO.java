@@ -57,6 +57,8 @@ public class ReviewOrderVO implements Serializable {
 
     private Long expertId;
 
+    private Integer isExistClass;
+
     public Long getId() {
         return id;
     }
@@ -249,5 +251,13 @@ public class ReviewOrderVO implements Serializable {
 
     public void setExpertId(Long expertId) {
         this.expertId = expertId;
+    }
+
+    public Integer getIsExistClass() {
+        return isExistClass;
+    }
+
+    public void setIsExistClass(Integer isExistClass) {
+        this.isExistClass = isExistClass;
     }
 }

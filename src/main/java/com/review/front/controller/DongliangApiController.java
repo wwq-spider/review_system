@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -103,10 +104,6 @@ public class DongliangApiController extends BaseController {
         CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
     }
 
-    public void getReportUrl(HttpServletRequest request,HttpServletResponse response){
-
-    }
-
     /**
      * 获取pdf文件流
      * @param request
@@ -131,4 +128,50 @@ public class DongliangApiController extends BaseController {
             input.close();
         }
     }
+    @RequestMapping(value = "getEvalCode", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void getEvalCode(HttpServletResponse response){
+
+        List<EvalCodeEntity> list = dongLiangTestService.getEvalCode();
+        net.sf.json.JSONObject json = new net.sf.json.JSONObject();
+        if (list.size() != 0 && list != null){
+            json.put("code",200);
+            json.put("evalCode",list.get(0).getEvalCode());
+            json.put("msg", "获取测评码成功");
+        }else {
+            json.put("code",0);
+            json.put("msg", "库存不足");
+        }
+        CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+    }
+
+    @RequestMapping(value = "updateEvalCodeStock", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void updateEvalCodeStock(HttpServletResponse response, @RequestBody EvalCodeEntity evalCodeEntity){
+
+        String sql = "update review_eval_code set status=1 where eval_code = ?";
+        Integer count = dongLiangTestService.executeSql(sql,evalCodeEntity.getEvalCode());
+        net.sf.json.JSONObject json = new net.sf.json.JSONObject();
+        if (count != 0){
+            json.put("code",200);
+            json.put("msg", "该订单未成功支付");
+        }else {
+            json.put("code",0);
+            json.put("msg", "支付异常");
+        }
+        CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+    }
+
+    @RequestMapping(value = "getEvalPrice", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void getEvalPrice(HttpServletResponse response, @RequestBody EvalCodeEntity evalCodeEntity){
+
+        String price = dongLiangTestService.getEvalPrice(evalCodeEntity);
+        net.sf.json.JSONObject json = new net.sf.json.JSONObject();
+        json.put("code",200);
+        json.put("price",price);
+        json.put("msg", "获取测评码价格成功");
+        CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+    }
+
 }

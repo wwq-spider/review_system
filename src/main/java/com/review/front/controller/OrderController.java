@@ -109,6 +109,39 @@ public class OrderController extends BaseController {
     }
 
     /**
+     * 创建预支付订单--栋梁测评码购买
+     * @param response
+     * @param reviewOrder
+     */
+    @RequestMapping(value = "createEvalCodePrePayOrder", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void createEvalCodePrePayOrder(HttpServletResponse response, @RequestBody ReviewOrderVO reviewOrder) {
+
+        JSONObject json = new JSONObject();
+
+        ReviewUserEntity reviewUser = (ReviewUserEntity) ContextHolderUtils.getSession().getAttribute(Constants.REVIEW_LOGIN_USER);
+        reviewOrder.setUserId(reviewUser.getUserId());
+        reviewOrder.setOperator(reviewUser.getUserName());
+        reviewOrder.setGroupId(reviewUser.getGroupId());
+        reviewOrder.setOpenid(reviewUser.getOpenid());
+        reviewOrder.setIpAddr(IpUtil.getIpAddr(ContextHolderUtils.getRequest()));
+        reviewOrder.setBroswer(BrowserUtils.checkBrowse(ContextHolderUtils.getRequest()));
+        reviewOrder.setMobilePhone(reviewUser.getMobilePhone());
+
+        //创建预支付订单
+        PreOrderVO preOrderVO = orderService.createEvalCodePrePayOrder(reviewOrder);
+        if (preOrderVO == null) {
+            json.put("code", 400);
+            json.put("msg", "创建失败");
+        } else {
+            json.put("code", 200);
+            json.put("data", preOrderVO);
+            json.put("msg", "创建成功");
+        }
+        CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+    }
+
+    /**
      * 更新订单状态
      * @param response
      * @param reviewOrder

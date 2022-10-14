@@ -163,8 +163,8 @@
             "endTime" : endTime
         };
         $.post(url, param, function (data) {
-            var d = $.parseJSON(data);
-            if (d.success) {
+            //var d = $.parseJSON(data);
+            if (data.success) {
                 history.go(0);
             }
         });

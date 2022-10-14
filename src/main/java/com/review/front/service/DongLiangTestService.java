@@ -6,6 +6,7 @@ import com.review.front.entity.TestRecord;
 import com.review.manage.userManage.entity.ReviewUserEntity;
 import org.jeecgframework.core.common.service.CommonService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -19,4 +20,8 @@ public interface DongLiangTestService extends CommonService {
     void handleData(DongliangTestQuestionVO[] dongliangTestQuestionVO);
 
     void handleBusinessData(DongliangTestQuestionVO[] dongliangTestQuestionVO, ReviewUserEntity reviewUser);
+
+    List<EvalCodeEntity> getEvalCode();
+
+    String getEvalPrice(EvalCodeEntity evalCodeEntity);
 }
