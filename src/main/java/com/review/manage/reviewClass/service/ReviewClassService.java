@@ -70,4 +70,6 @@ public interface ReviewClassService extends CommonService{
 	 * @return
 	 */
 	boolean projectContainsClass(Long projectId, String classId);
+
+	Integer getIsShowClass(Long projectId);
 }
