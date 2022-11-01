@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.collections.Lists;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -227,6 +228,8 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 		List<String> resultCombine = new ArrayList<>();
 		Integer levelGradeTotal = 0;
 
+		List<Double> variateTotalGradeTemp = new ArrayList<>();
+
 		//遍历因子
 		for(Entry<String, Double> entry : map.entrySet()) {	
 			variateEntity = this.get(ReviewVariateEntity.class, entry.getKey());
@@ -243,6 +246,8 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 			variateTotalGrade = calVariateGrade(variateEntity.getCalSymbol(), variateTotalGrade, variateEntity.getCalTotal());
 
 			//System.out.println("3："+variateTotalGrade);
+
+			variateTotalGradeTemp.add(variateTotalGrade);
 
 			int levelGrade = 0;
 
@@ -291,11 +296,16 @@ public class ReviewFrontServiceImpl extends CommonServiceImpl implements ReviewF
 			reportResult = new ReviewReportResultEntity();
 			
 			reportVariateList = this.findByProperty(ReviewReportVariateEntity.class, "reportId", report.getReportId());
-			for(ReviewReportVariateEntity reportVariate : reportVariateList) {
+			/*for(ReviewReportVariateEntity reportVariate : reportVariateList) {
 				if(map.get(reportVariate.getVariateId()) != null) {
 					grade = Arith.add(grade, map.get(reportVariate.getVariateId()));
 				}
+			}*/
+
+			for (int i = 0; i < reportVariateList.size() - 1; i++) {
+				grade = calVariateGrade(reportVariateList.get(i).getCalSymbol(),variateTotalGradeTemp.get(i),variateTotalGradeTemp.get(i+1));
 			}
+			grade = new BigDecimal(grade).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
 
 			int levelGrade = 0;
 
