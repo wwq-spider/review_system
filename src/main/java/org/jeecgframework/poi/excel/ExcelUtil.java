@@ -710,11 +710,14 @@ public final class ExcelUtil {
 								}
 								setMethod.invoke(tObject, valBool);
 							} else if (xclass.equals("class java.lang.Integer")) {
-								Integer valInt;
+								Integer valInt = null;
 								if (Cell.CELL_TYPE_NUMERIC == cell.getCellType()) {
 									valInt = (new Double(cell.getNumericCellValue())).intValue();
 								} else {// 全认为是  Cell.CELL_TYPE_STRING
-									valInt = new Integer(cell.getStringCellValue());
+									if(!"".equals(cell.getStringCellValue())){
+										valInt = new Integer(cell.getStringCellValue());
+									}
+									//valInt = new Integer(cell.getStringCellValue());
 								}
 								setMethod.invoke(tObject, valInt);
 							} else if (xclass.equals("class java.lang.Long")) {
