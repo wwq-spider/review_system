@@ -60,6 +60,14 @@ public class ReviewClassVO {
 	 * 测评次数
 	 */
 	private Integer reviewTimes;
+	/**
+	 * 项目描述
+	 */
+	private String projectDesc;
+	/**
+	 * 首页是否显示量表
+	 */
+	private String showClass;
 
 	private List<ReviewReportTemplateEntity> reportTemplateList;
 
@@ -261,5 +269,21 @@ public class ReviewClassVO {
 
 	public void setReviewTimes(Integer reviewTimes) {
 		this.reviewTimes = reviewTimes;
+	}
+
+	public String getProjectDesc() {
+		return projectDesc;
+	}
+
+	public void setProjectDesc(String projectDesc) {
+		this.projectDesc = projectDesc;
+	}
+
+	public String getShowClass() {
+		return showClass;
+	}
+
+	public void setShowClass(String showClass) {
+		this.showClass = showClass;
 	}
 }
