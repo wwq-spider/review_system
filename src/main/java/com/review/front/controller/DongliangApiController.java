@@ -38,7 +38,13 @@ import java.util.List;
 public class DongliangApiController extends BaseController {
 
     //栋梁测评提交接口地址
-    private static final String dongLiangApiurl = "http://www.zhuxinkang.com:9999/api/commitTest";
+    /*private static final String dongLiangApiurlStu = "http://www.zhuxinkang.com:9999/api/commitTest";
+
+    private static final String dongLiangApiurlPro = "http://www.zhuxinkang.com:9998/api/commitTest";*/
+
+    private static final String dongLiangApiurlStu = "http://localhost:9999/api/commitTest";
+
+    private static final String dongLiangApiurlPro = "http://localhost:9998/api/commitTest";
 
     private static final String reportUrl = "https://www.zhuxinkang.com/review/upload2";
 
@@ -55,6 +61,12 @@ public class DongliangApiController extends BaseController {
     @ResponseBody
     public void commitTest(HttpServletResponse response, HttpServletRequest request,@RequestBody DongliangTestQuestionVO[] dongliangTestQuestionVO) throws Exception{
 
+        String dongLiangApiurl = "";
+        if (dongliangTestQuestionVO[0].getVersion() == 1){
+            dongLiangApiurl = dongLiangApiurlStu;
+        }else if (dongliangTestQuestionVO[0].getVersion() == 2){
+            dongLiangApiurl = dongLiangApiurlPro;
+        }
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         ReviewUserEntity user = (ReviewUserEntity) request.getSession().getAttribute(Constants.REVIEW_LOGIN_USER);
@@ -62,6 +74,8 @@ public class DongliangApiController extends BaseController {
         dongLiangTestService.handleData(dongliangTestQuestionVO);
         String param = JSON.toJSONString(dongliangTestQuestionVO);
         String paramSub = param.substring(1,param.length()-1);
+        System.out.println("调用接口入参");
+        System.out.println(paramSub);
         //调用栋梁答题提交接口
         String resultJson = HttpClientUtils.doPost(dongLiangApiurl,JSONObject.parseObject(paramSub),"utf-8");
         if (resultJson != null && !"".equals(resultJson)){
@@ -73,6 +87,8 @@ public class DongliangApiController extends BaseController {
                 //业务数据处理
                 dongLiangTestService.handleBusinessData(dongliangTestQuestionVO,new ReviewUserEntity());
                 json.put("pdfUrl",pdfUrlView);
+                CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+            }else {
                 CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
             }
         }else {
