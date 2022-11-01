@@ -100,7 +100,13 @@ public class ReviewClassServiceImpl extends CommonServiceImpl implements ReviewC
 		if (projectId == null || projectId == 0) {
 			sb.append(" (select count(o.id) from review_order o where o.class_id=c.class_id and status in(2,3)) buyCount,");
 		}
-		sb.append("   c.`guide` ");
+		sb.append("   c.`guide`");
+		if (projectId != null && projectId != 0) {
+			sb.append("   ,rp.project_desc projectDesc");
+			sb.append("   ,rp.show_class showClass");
+		}else {
+			sb.append("   ,'1' showClass");
+		}
 		sb.append(" FROM  ");
 		HashMap<String, Object> paramMap = new HashMap<>();
 		if (projectId == null || projectId == 0) {
@@ -108,8 +114,8 @@ public class ReviewClassServiceImpl extends CommonServiceImpl implements ReviewC
 			sb.append(" WHERE c.`status`=1");
 		} else {
 			paramMap.put("projectId", projectId);
-			sb.append("   review_class c,review_project_class pc");
-			sb.append(" WHERE c.`status`=1 and c.`class_id`=pc.class_id and pc.project_id=:projectId");
+			sb.append("   review_class c,review_project_class pc,review_project rp");
+			sb.append(" WHERE c.`status`=1 and c.`class_id`=pc.class_id and pc.project_id=:projectId and pc.project_id = rp.id");
 		}
 		sb.append(" ORDER BY c.`sort_id` ASC, c.create_time desc");
 		return this.getObjectList(sb.toString(), paramMap, ReviewClassVO.class);
@@ -143,5 +149,20 @@ public class ReviewClassServiceImpl extends CommonServiceImpl implements ReviewC
 	public boolean projectContainsClass(Long projectId, String classId) {
 		long count = this.getCountForJdbcParam("select count(pc.id) from review_project_class pc where pc.class_id=? and pc.project_id=?", new Object[]{classId, projectId});
 		return count > 0;
+	}
+
+	@Override
+	public Integer getIsShowClass(Long projectId) {
+		if (projectId != null && projectId != 0) {
+			String sql = "select count(id) show_class from review_project where id = ? and show_class=2";
+			long count = this.getCountForJdbcParam(sql,new Object[]{projectId});
+			if (count > 0){
+				return 2;
+			}else {
+				return 1;
+			}
+		}else {
+			return 1;
+		}
 	}
 }
