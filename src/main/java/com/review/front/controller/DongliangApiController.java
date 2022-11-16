@@ -46,7 +46,9 @@ public class DongliangApiController extends BaseController {
 
     private static final String dongLiangApiurlPro = "http://localhost:9998/api/commitTest";
 
-    private static final String reportUrl = "https://www.zhuxinkang.com/review/upload2";
+    //private static final String reportUrl = "https://www.zhuxinkang.com/review/upload2";
+
+    private static final String reportUrl = "https://www.xinzhaitongxing.com/review/upload2";
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 

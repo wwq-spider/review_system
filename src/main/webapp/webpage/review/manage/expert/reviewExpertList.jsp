@@ -179,7 +179,8 @@
         });
     }
     function dosearch(params) {
-        var jsonparams = $.parseJSON(params);
+        //var jsonparams = $.parseJSON(params);
+        var jsonparams = params;
         $('#reviewExpertList').datagrid({
             url: 'reviewExpertController.do?datagrid&field=id,expertName,sex,age,mobilePhone,jobTitle,workOrgName,createTime,updateTime,creator,',
             queryParams: jsonparams

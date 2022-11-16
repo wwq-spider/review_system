@@ -512,7 +512,8 @@ function deleteALLSelect(title,url,gname) {
 					},
 					cache : false,
 					success : function(data) {
-						var d = $.parseJSON(data);
+						//var d = $.parseJSON(data);
+						var d = data;
 						if (d.success) {
 							var msg = d.msg;
 							tip(msg);
@@ -628,7 +629,8 @@ function deluploadify(url, id) {
 		error : function() {// 请求失败处理函数
 		},
 		success : function(data) {
-			var d = $.parseJSON(data);
+			//var d = $.parseJSON(data);
+			var d = data;
 			if (d.success) {
 				$("#" + id).remove();// 移除SPAN
 				m.remove(id);// 移除MAP对象内字符串
@@ -1078,7 +1080,8 @@ function doSubmit(url,name,data) {
 		error : function() {// 请求失败处理函数
 		},
 		success : function(data) {
-			var d = $.parseJSON(data);
+			//var d = $.parseJSON(data);
+			var d = data;
 			if (d.success) {
 				var msg = d.msg;
 				tip(msg);
@@ -1507,7 +1510,8 @@ function doAjaxSubmit(url,callback){
  			doError();
 		},
 		success : function(data) {
-			var d = $.parseJSON(data);
+			//var d = $.parseJSON(data);
+			var d = data;
 			callback(d);
 		}
 	});

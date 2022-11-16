@@ -182,7 +182,8 @@
 				});
 			}
 			function dosearch(params) {
-				var jsonparams = $.parseJSON(params);
+				//var jsonparams = $.parseJSON(params);
+				var jsonparams = params;
 				$('#reviewOrderList').datagrid({
 					url: 'reviewOrder.do?datagrid&field=id,userId,mobilePhone,className,orderAmount,orgAmount,orderNo,transactionId,status,payId,payId,payTime,createTime,operateTime,operator,',
 					queryParams: jsonparams

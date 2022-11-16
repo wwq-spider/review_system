@@ -251,7 +251,8 @@
 							return true;
 						},
 						success : function(data) {
-							var d = $.parseJSON(data);
+							//var d = $.parseJSON(data);
+							var d = data;
 							var win = frameElement.api.opener;
 							window.top.$.messager.progress('close');
 							if (d.success == true) {

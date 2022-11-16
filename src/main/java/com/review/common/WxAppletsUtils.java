@@ -18,9 +18,9 @@ public class WxAppletsUtils {
 
     public static Logger logger = LoggerFactory.getLogger(WxAppletsUtils.class);
 
-    public final static String appId = "wxe1e9802d7d62c6d4";
+    public final static String appId = "wx3d03d72c4fc3614f";
 
-    public final static String appSecret = "d061ed674d5557bb9a862c7d1aea9bf8";
+    public final static String appSecret = "f95e7676a11f1fbcd2be34f8ea01fed5";
 
     public final static String mchID = "1616597518";
 

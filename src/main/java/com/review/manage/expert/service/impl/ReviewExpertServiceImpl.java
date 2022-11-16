@@ -294,7 +294,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
                     "left join review_expert re ON rer.expert_id = re.id\n"+
                     "left join review_user ru ON rer.user_id = ru.user_id\n"+
                     "LEFT JOIN review_order ro ON rer.user_id = ro.user_id AND ro.class_id = rer.id\n"+
-                    "where rer.user_id = :userId and rer.del_flag = 1 order by rec.visit_date DESC,rec.begin_time"
+                    "where rer.user_id = :userId and rer.del_flag = 1 order by visitDate DESC,rec.begin_time"
             );
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("userId", consultationVO.getUserId());
@@ -334,6 +334,7 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
                         "rec.week_day weekDay,\n"+
                         "DATE_FORMAT(rec.visit_date, '%Y-%m-%e') AS visitDate,\n" +
                         "rer.status status,\n"+
+                        "rer.create_time createTime,\n"+
                         "case rer.status\n"+
                         "when 1 then '待问诊' when 2 then '问诊结束' when 3 then '已取消'\n"+
                         "end statusName,\n"+

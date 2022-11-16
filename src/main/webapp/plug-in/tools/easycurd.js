@@ -164,7 +164,8 @@ function changeStatus(url, index) {
 		error : function() {// 请求失败处理函数
 		},
 		success : function(data) {
-			var d = $.parseJSON(data);
+			//var d = $.parseJSON(data);
+			var d = JSON.parse(data);
 			if (d.success) {
 				$.messager.show({
 					title : '提示消息',
@@ -192,7 +193,8 @@ function delSubmit(url, index) {
 		error : function() {// 请求失败处理函数
 		},
 		success : function(data) {
-			var d = $.parseJSON(data);
+			//var d = $.parseJSON(data);
+			var d = JSON.parse(data);
 			if (d.success) {
 				$.messager.show({
 					title : '提示消息',

@@ -212,7 +212,8 @@
             onSubmit: function () {
             },
             success: function (data) {
-                var jsonData = $.parseJSON(data);
+                //var jsonData = $.parseJSON(data);
+                var jsonData = data;
                 if (jsonData.success == true){
                     alert("保存成功");
                 }

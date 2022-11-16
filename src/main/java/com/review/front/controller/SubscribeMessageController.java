@@ -50,7 +50,8 @@ public class SubscribeMessageController {
         //wxSubscribeMsg.setPage("pages/index/index");
         //int roomID = this.threadRandom();
         String roomID = RandomUtil.randomNumbers(4);
-        wxSubscribeMsg.setPage("pages/room/room?userID=oE_EL5h8HblfVYnWntOocxdT3G-s&template=grid&roomID="+roomID+"&debugMode=false&cloudenv=PRO&consulId="+wxSubscribeMsg.getConsulId()+"&mobilePhone="+wxSubscribeMsg.getMobilePhone());
+        //wxSubscribeMsg.setPage("pages/room/room?userID=oGvzT5cBpAiP48NzKwX7HeqlbI2Q&template=grid&roomID="+roomID+"&debugMode=false&cloudenv=PRO&consulId="+wxSubscribeMsg.getConsulId()+"&mobilePhone="+wxSubscribeMsg.getMobilePhone());
+        wxSubscribeMsg.setPage("pages/room/room?userID=" + wxSubscribeMsg.getUserId() + "&template=grid&roomID=" + roomID+"&debugMode=false&cloudenv=PRO&consulId="+wxSubscribeMsg.getConsulId()+"&mobilePhone="+wxSubscribeMsg.getMobilePhone());
         //开发版
         //wxSubscribeMsg.setMiniprogram_state("developer");
         //跳转体验版
@@ -87,15 +88,4 @@ public class SubscribeMessageController {
         logger.info("调用微信模板消息回调结果："+jsonObject);
         CommonUtils.responseDatagrid(response, jsonObject, MediaType.APPLICATION_JSON_VALUE);
     }
-
-    /**
-     * 生成一个1~999999999之间的随机数
-     * @return
-     */
-    /*public int threadRandom(){
-        int min = 1;
-        int max = 9999;
-        int getRandomValue = ThreadLocalRandom.current().nextInt(min,max) + min;
-        return getRandomValue;
-    }*/
 }

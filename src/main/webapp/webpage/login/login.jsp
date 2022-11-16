@@ -75,7 +75,7 @@ label.iPhoneCheckLabelOn span {
 <body class="wrapper">
     <div id="alertMessage"></div>
     <div id="successLogin"></div>
-    <div class="text_success"><img src="plug-in/login/images/loader_green.gif" alt="Please wait" /> <span>登陆成功!请稍后....</span></div>
+    <div class="text_success"><img src="plug-in/login/images/loader_green.gif" alt="Please wait" /> <span>登录成功!请稍后....</span></div>
     <div style="position: absolute; top: 24%; left: 11%;"><img src="plug-in/login/images/logo4.png" style="width: 75%"/></div>
     <div id="login">
 <%--        <div class="ribbon" style="background-image: url(plug-in/login/images/typelogin2.png);"></div>--%>
@@ -106,7 +106,7 @@ label.iPhoneCheckLabelOn span {
                         <div style="float: right; padding: 3px 0; margin-right: -12px;">
                             <div>
                                 <ul class="uibutton-group">
-                                    <li><a class="uibutton normal" href="#" id="but_login">登陆</a></li>
+                                    <li><a class="uibutton normal" href="#" id="but_login">登录</a></li>
                                     <li><a class="uibutton normal" href="#" id="forgetpass">重置</a></li>
                                 </ul>
                             </div>

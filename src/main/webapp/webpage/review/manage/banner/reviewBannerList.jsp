@@ -172,7 +172,8 @@
                 });
             }
             function dosearch(params) {
-                var jsonparams = $.parseJSON(params);
+                //var jsonparams = $.parseJSON(params);
+                var jsonparams = params;
                 $('#reviewBannerList').datagrid({
                     url: 'reviewBanner.do?datagrid&field=id,title,imgUrl,targetUrl,status,createTime,operateTime,operator,',
                     queryParams: jsonparams

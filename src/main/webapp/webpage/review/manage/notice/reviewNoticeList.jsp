@@ -161,7 +161,8 @@
                 });
             }
             function dosearch(params) {
-                var jsonparams = $.parseJSON(params);
+                //var jsonparams = $.parseJSON(params);
+				var jsonparams = params;
                 $('#reviewNoticeList').datagrid({
                     url: 'reviewNotice.do?datagrid&field=id,noticeName,status,operator,createTime,updateTime,',
                     queryParams: jsonparams

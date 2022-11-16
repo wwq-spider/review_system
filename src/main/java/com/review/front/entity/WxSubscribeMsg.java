@@ -31,4 +31,6 @@ public class WxSubscribeMsg {
 
     private String consulId;
     private String mobilePhone;
+
+    private String userId;
 }

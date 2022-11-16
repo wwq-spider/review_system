@@ -120,6 +120,8 @@ public class ConsultationVO implements Serializable {
     private String payStatusName;
     private String roomId;
 
+    private String createTime;
+
     public Integer getId() {
         return id;
     }
@@ -358,5 +360,13 @@ public class ConsultationVO implements Serializable {
 
     public void setRoomId(String roomId) {
         this.roomId = roomId;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 }
