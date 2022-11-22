@@ -697,9 +697,15 @@ public class ReviewController extends BaseController{
 			CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
 			return;
 		}
-		ReviewResultEntity result = reportService.get(ReviewResultEntity.class, reviewResult.getResultId());
-		json.put("code", 200);
-		json.put("result", result);
+		if (reviewResult.getProjectId() == 0){
+			ReviewResultEntity result = reportService.get(ReviewResultEntity.class, reviewResult.getResultId());
+			json.put("code", 200);
+			json.put("result", result);
+		}else {
+			List<ReviewResultVO> result = reportService.getReviewResult(reviewResult);
+			json.put("code", 200);
+			json.put("result", result);
+		}
 		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
 	}
 

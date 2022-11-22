@@ -2,8 +2,7 @@ package com.review.manage.report.service;
 
 import java.util.List;
 import java.util.Map;
-
-import com.review.front.entity.ReviewReportResultEntity;
+import com.review.front.vo.ReviewResultVO;
 import net.sf.json.JSONArray;
 
 import org.jeecgframework.core.common.model.json.DataGrid;
@@ -107,4 +106,6 @@ public interface ReportService extends CommonService {
 	 * @return
 	 */
 	String getClassName(String reportId);
+
+    List<ReviewResultVO> getReviewResult(ReviewResultVO reviewResult);
 }

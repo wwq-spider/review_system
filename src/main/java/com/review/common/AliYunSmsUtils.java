@@ -56,10 +56,10 @@ public class AliYunSmsUtils {
     public static SendSmsResponseBody sendMsg(String code, String mobilePhone) throws Exception {
         SendSmsRequest sendSmsRequest = new SendSmsRequest()
                 .setPhoneNumbers(mobilePhone)
-                .setSignName("筑心康")
-                .setTemplateCode("SMS_228360174")
+                .setSignName("心宅同行")
+                .setTemplateCode("SMS_259430450")
                 .setTemplateParam(String.format("{\"code\":\"%s\"}", code));
-        SendSmsResponse smsResponse = getClient(accessKey, accessKeySecert).sendSms(sendSmsRequest);
+        SendSmsResponse smsResponse = getClient("LTAI5tD2NpYHjyifEH3AeJYf", "cXyibhYW9hjTv4M2dBvUNg48wHbyJ6").sendSms(sendSmsRequest);
         if (smsResponse != null) {
             logger.info("mobilePhone:{}, sendMsgResp:{}", mobilePhone, JSONObject.toJSONString(smsResponse));
             return smsResponse.getBody();

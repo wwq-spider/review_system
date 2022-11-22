@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.review.front.vo.ReviewResultVO;
 import net.sf.json.JSONArray;
 
 import org.apache.commons.lang.StringUtils;
@@ -252,5 +253,27 @@ public class ReportServiceImpl extends CommonServiceImpl implements ReportServic
 		} else {
 			return "";
 		}
+	}
+
+	@Override
+	public List<ReviewResultVO> getReviewResult(ReviewResultVO reviewResult) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(" SELECT  ");
+		sb.append("   r.`result_id` resultId,");
+		sb.append("   c.`title` title,");
+		sb.append("   DATE_FORMAT(r.`create_time`,'%Y-%m-%e %H:%i:%S') createTime,");
+		sb.append("   r.`review_result` reviewResult,");
+		sb.append("   r.`grade_total` gradeTotal ");
+		sb.append(" FROM review_result r,review_class c   ");
+		sb.append(" WHERE r.`class_id` = c.`class_id`");
+		sb.append(" AND r.user_id = :userId ");
+		sb.append(" AND r.project_id = :projectId ");
+		sb.append(" ORDER BY r.`create_time` DESC");
+		sb.append(" LIMIT :pCount");
+		Map map = new HashMap<String, String>();
+		map.put("userId", reviewResult.getUserId());
+		map.put("projectId", reviewResult.getProjectId());
+		map.put("pCount", reviewResult.getpCount());
+		return this.getObjectList(sb.toString(),map,ReviewResultVO.class);
 	}
 }
