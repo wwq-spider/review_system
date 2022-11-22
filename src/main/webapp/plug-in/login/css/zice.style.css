@@ -673,10 +673,10 @@ label.iPhoneCheckLabelOff span {
 	position:absolute;
     /*update-begin--Author:zhangguoming  Date:20140226 for：添加验证码*/
 	/*top:50%;*/
-	top:44%;
+	top:42%;
     /*update-begin--Author:zhangguoming  Date:20140226 for：添加验证码*/
 	left:43%;
-	margin-left:-110px;
+	margin-left:-135px;
 	margin-top:-148px;
 	opacity:0;
 	filter:alpha(opacity=0);
