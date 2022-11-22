@@ -154,8 +154,8 @@ label.disabled {
 .f_help {
 	display:block;
 	font-size:10px;
-	padding:4px 0;
-	color:#a3a3a3
+	padding:8px 0;
+	color:#6FA5DB;
 }
 .f_help span {
 	color:#F00
@@ -666,7 +666,7 @@ label.iPhoneCheckLabelOff span {
 	width:600px;
     /*update-begin--Author:zhangguoming  Date:20140226 for：添加验证码*/
 	/*height:284px;*/
-	height:353px;
+	height:312px;
     /*update-end--Author:zhangguoming  Date:20140226 for：添加验证码*/
 	margin:20px auto;
 	
@@ -676,16 +676,16 @@ label.iPhoneCheckLabelOff span {
 	top:44%;
     /*update-begin--Author:zhangguoming  Date:20140226 for：添加验证码*/
 	left:43%;
-	margin-left:-200px;
+	margin-left:-110px;
 	margin-top:-148px;
 	opacity:0;
 	filter:alpha(opacity=0);
 	
 	/*border: 5px #f4f4f4 solid;*/
-	border: 5px #f0e4c8 solid;
+	border: 1px #61CAD0 solid;
 	min-width:200px;
-	border-radius: 15px;
-	-webkit-border-radius: 15px;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
 }
 #login .ribbon {
 	position: absolute;
@@ -707,11 +707,11 @@ label.iPhoneCheckLabelOff span {
 }
 #login .inner {
 	/*background-color:#FFF;*/
-	background-color: #fdfcf7;
+	background-color: #ffffff;
 	/*border: 1px #cccccc solid;*/
     /*update-begin--Author:zhangguoming  Date:20140226 for：添加验证码*/
 	/*min-height: 230px;*/
-	min-height: 350px;
+	min-height: 320px;
     /*update-end--Author:zhangguoming  Date:20140226 for：添加验证码*/
 	overflow: hidden;
 	border-radius: 10px;
@@ -730,7 +730,7 @@ label.iPhoneCheckLabelOff span {
 	margin-left: -95px;
 	z-index: 11;
 	/*background-color: #FFF;*/
-	background-color: #fdfcf7;
+	background-color: #FFFFFF;
 }
 #login .formLogin {
 	width:100%;

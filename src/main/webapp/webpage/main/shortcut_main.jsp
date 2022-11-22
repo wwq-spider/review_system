@@ -129,22 +129,22 @@ a:hover {
 </head>
 <body class="easyui-layout" style="overflow-y: hidden" scroll="no">
 <!-- 顶部-->
-<div region="north" border="false" title="" style="BACKGROUND: #fef8df; height: 100px; padding: 1px; overflow: hidden;">
+<div region="north" border="false" title="" style="BACKGROUND: #F3FFFF; height: 100px; padding: 1px; overflow: hidden;">
     <table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
-		<td align="left" style="vertical-align: text-bottom"><img src="plug-in/weixin/logo/logozxk.png" style="width: 180px; margin-left: 20px; text-align: center;"> <!--
+		<td align="left" style="vertical-align: text-bottom"><img src="plug-in/weixin/logo/headlogo.png" style="width: 180px; margin-left: 20px; text-align: center;"> <!--
 		        <img src="plug-in/login/images/toplogo.png" width="550" height="52" alt="">-->
 		</td>
 		<td align="right" nowrap>
 		<table border="0" cellpadding="0" cellspacing="0">
 			<tr style="height: 25px;" align="right">
 				<td style="" colspan="2">
-				<div style="background: linear-gradient(#fafbee, #e9d6a8); float: right;">
-				<div style="float: left; line-height: 25px; margin-left: 70px;"><span style="color: #386780">当前用户:</span> <span style="color: #FFFFFF">${userName }</span>&nbsp;&nbsp;&nbsp;&nbsp; <span
-					style="color: #386780">职务:</span> <span style="color: #FFFFFF">${roleName }</span></div>
+				<div style="background: linear-gradient(#D3F5F0, #90D6CF); float: right;">
+				<div style="float: left; line-height: 25px; margin-left: 70px;"><span style="color: #386780">当前用户:</span> <span style="color: #000000">${userName }</span>&nbsp;&nbsp;&nbsp;&nbsp; <span
+					style="color: #386780">职务:</span> <span style="color: #000000">${roleName }</span></div>
 				<div style="float: left; margin-left: 18px;">
-				<div style="right: 0px; bottom: 0px;"><a href="javascript:void(0);" class="easyui-menubutton" menu="#layout_north_kzmbMenu" iconCls="icon-comturn" style="color: #FFFFFF">控制面板</a>&nbsp;&nbsp;<a
-					href="javascript:void(0);" class="easyui-menubutton" menu="#layout_north_zxMenu" iconCls="icon-exit" style="color: #FFFFFF">注销</a></div>
+				<div style="right: 0px; bottom: 0px;"><a href="javascript:void(0);" class="easyui-menubutton" menu="#layout_north_kzmbMenu" iconCls="icon-comturn" style="color: #000000">控制面板</a>&nbsp;&nbsp;<a
+					href="javascript:void(0);" class="easyui-menubutton" menu="#layout_north_zxMenu" iconCls="icon-exit" style="color: #000000">注销</a></div>
 				<div id="layout_north_kzmbMenu" style="width: 100px; display: none;">
 					<div onclick="openwindow('用户信息','userController.do?userinfo')">个人信息</div>
 					<div class="menu-sep"></div>
@@ -182,7 +182,7 @@ a:hover {
 <div id="mainPanle" region="center" style="overflow: hidden;">
 <div id="maintabs" class="easyui-tabs" fit="true" border="false">
 <div class="easyui-tab" title="首页" style="padding: 2px; overflow: hidden;">
-	<image src="plug-in/login/images/welcome.jpeg" width="100%" height="100%"></image>
+	<image src="plug-in/login/images/welcomenew.jpg" width="100%" height="100%"></image>
 </div>
 <c:if test="${map=='1'}">
 	<div class="easyui-tab" title="地图" style="padding: 1px; overflow: hidden;"><iframe name="myMap" id="myMap" scrolling="no" frameborder="0" src="mapController.do?map"

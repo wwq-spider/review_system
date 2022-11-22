@@ -19,8 +19,12 @@
 <link href="plug-in/login/css/icon.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="plug-in/login/css/tipsy.css" media="all" />
 <style type="text/css">
-html {
+/*html {
 	background-image: none;
+}*/
+body {
+    background-image: url(plug-in/login/images/backgroundnew.jpg);
+    background-size: cover;
 }
 
 label.iPhoneCheckLabelOn span {
@@ -72,11 +76,11 @@ label.iPhoneCheckLabelOn span {
 }
 </style>
 </head>
-<body class="wrapper">
+<body >
     <div id="alertMessage"></div>
     <div id="successLogin"></div>
     <div class="text_success"><img src="plug-in/login/images/loader_green.gif" alt="Please wait" /> <span>登录成功!请稍后....</span></div>
-    <div style="position: absolute; top: 24%; left: 11%;"><img src="plug-in/login/images/logo4.png" style="width: 75%"/></div>
+    <div style="position: absolute; top: 24%; left: 15%;"><img src="plug-in/login/images/logo5.png" style="width: 65%"/></div>
     <div id="login">
 <%--        <div class="ribbon" style="background-image: url(plug-in/login/images/typelogin2.png);"></div>--%>
         <div class="inner">

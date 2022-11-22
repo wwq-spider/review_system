@@ -126,7 +126,7 @@ a:hover {
 </head>
 <body class="easyui-layout" style="overflow-y: hidden" scroll="no">
 <!-- 顶部-->
-<div region="north" border="false" title="测评系统" style="BACKGROUND: #fef8df; height: 85px; padding: 1px; overflow: hidden;">
+<div region="north" border="false" title="测评系统" style="BACKGROUND: #D3F5F0; height: 85px; padding: 1px; overflow: hidden;">
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td align="left" style="vertical-align: text-bottom;"><img src="plug-in/weixin/logo/logo_weixin.png"></td>
