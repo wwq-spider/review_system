@@ -108,4 +108,6 @@ public interface ReportService extends CommonService {
 	String getClassName(String reportId);
 
     List<ReviewResultVO> getReviewResult(ReviewResultVO reviewResult);
+
+    List<ReviewResultVO> getProjectReviewResult(ReviewResultVO reviewResult);
 }

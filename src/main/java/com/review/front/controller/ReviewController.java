@@ -710,6 +710,21 @@ public class ReviewController extends BaseController{
 	}
 
 	/**
+	 * 获取项目测评报告
+	 * @param response
+	 * @param reviewResult
+	 */
+	@RequestMapping(value = "getProjectReviewCount", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void getProjectReviewCount(HttpServletResponse response, @RequestBody ReviewResultVO reviewResult) {
+		JSONObject json = new JSONObject();
+		List<ReviewResultVO> result = reportService.getProjectReviewResult(reviewResult);
+		json.put("code", 200);
+		json.put("result", result);
+		CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+	}
+
+	/**
 	 * 获取openid
 	 * @param response
 	 * @param paramJson

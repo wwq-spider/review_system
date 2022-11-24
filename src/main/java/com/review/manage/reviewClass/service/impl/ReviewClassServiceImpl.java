@@ -104,6 +104,7 @@ public class ReviewClassServiceImpl extends CommonServiceImpl implements ReviewC
 		if (projectId != null && projectId != 0) {
 			sb.append("   ,rp.project_desc projectDesc");
 			sb.append("   ,rp.show_class showClass");
+			sb.append("   ,rp.project_name projectName");
 		}else {
 			sb.append("   ,'1' showClass");
 		}

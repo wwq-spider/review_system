@@ -269,11 +269,47 @@ public class ReportServiceImpl extends CommonServiceImpl implements ReportServic
 		sb.append(" AND r.user_id = :userId ");
 		sb.append(" AND r.project_id = :projectId ");
 		sb.append(" ORDER BY r.`create_time` DESC");
-		sb.append(" LIMIT :pCount");
 		Map map = new HashMap<String, String>();
+		if (reviewResult.getLimitId() != null && reviewResult.getLimitId() != 0){
+			sb.append(" LIMIT :limitId , :pCount");
+			map.put("limitId", reviewResult.getLimitId());
+		}else {
+			sb.append(" LIMIT :pCount");
+		}
 		map.put("userId", reviewResult.getUserId());
 		map.put("projectId", reviewResult.getProjectId());
 		map.put("pCount", reviewResult.getpCount());
 		return this.getObjectList(sb.toString(),map,ReviewResultVO.class);
+	}
+
+	@Override
+	public List<ReviewResultVO> getProjectReviewResult(ReviewResultVO reviewResult) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(" SELECT  ");
+		sb.append(" class_id classId, ");
+		sb.append(" create_time createTime ");
+		sb.append(" FROM ");
+		sb.append(" review_result ");
+		sb.append(" WHERE ");
+		sb.append(" user_id = :userId ");
+		sb.append(" AND project_id = :projectId ");
+		sb.append(" ORDER BY create_time DESC ");
+		Map map = new HashMap<String, String>();
+		map.put("userId", reviewResult.getUserId());
+		map.put("projectId", reviewResult.getProjectId());
+		List<ReviewResultVO> result = this.getObjectList(sb.toString(),map,ReviewResultVO.class);
+		//该人员该项目下测评总量表数
+		int resultCount = result.size();
+		//该项目测评次数
+		int limit = (int) Math.ceil(resultCount / reviewResult.getpCount().intValue());
+		List<ReviewResultVO> resultVOS = new ArrayList<>();
+		for (int i = 0; i < limit; i++) {
+			ReviewResultVO reviewResultVO = new ReviewResultVO();
+			reviewResultVO.setLimitId(i * reviewResult.getpCount().intValue());
+			reviewResultVO.setClassId(result.get(i * reviewResult.getpCount().intValue()).getClassId());
+			reviewResultVO.setCreateTime(result.get(i * reviewResult.getpCount().intValue()).getCreateTime());
+			resultVOS.add(reviewResultVO);
+		}
+		return resultVOS;
 	}
 }

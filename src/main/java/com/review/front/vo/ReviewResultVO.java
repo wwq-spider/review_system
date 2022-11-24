@@ -43,6 +43,8 @@ public class ReviewResultVO implements Serializable {
 
 	private String reviewResult;
 
+	private Integer limitId;
+
 	public String getClassId() {
 		return classId;
 	}
@@ -193,5 +195,13 @@ public class ReviewResultVO implements Serializable {
 
 	public void setReviewResult(String reviewResult) {
 		this.reviewResult = reviewResult;
+	}
+
+	public Integer getLimitId() {
+		return limitId;
+	}
+
+	public void setLimitId(Integer limitId) {
+		this.limitId = limitId;
 	}
 }
