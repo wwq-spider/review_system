@@ -32,17 +32,17 @@ public class DongLiangTestServiceImpl extends CommonServiceImpl implements DongL
     //logo 背景图地址
     private static final String logoUrl = "https://pcapi.dilighthealth.com/profile/upload/2022/10/09/9b1ff86c-6a28-4496-8b5f-6a2a21570ad1.png";
     //公司名称
-    private static final String companyName = "筑心康科技有限公司";
+    private static final String companyName = "北京心宅同行管理咨询有限公司";
     //二维码地址
     private static final String qrCodeUrl = "https://pcapi.dilighthealth.com/profile/upload/2022/10/10/b69f7e67-65bb-43dc-b02b-8cb5b8e042c6.png";
     //封面标题
     private static final String indexTitle = "生涯发展评估报告";
     //报告撰写
-    private static final String reportWriting = "筑心康科技有限公司";
+    private static final String reportWriting = "北京心宅同行管理咨询有限公司";
     //联系方式
-    private static final String contactPhone = "15201412349";
+    private static final String contactPhone = "18510801311";
     //联系人
-    private static final String contactPeople = "筑心康科技有限公司";
+    private static final String contactPeople = "北京心宅同行管理咨询有限公司";
     //联系地址
     private static final String contactAddress = "北京市石景山区";
 
