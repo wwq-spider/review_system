@@ -22,9 +22,9 @@ public class WxAppletsUtils {
 
     public final static String appSecret = "f95e7676a11f1fbcd2be34f8ea01fed5";
 
-    public final static String mchID = "1616597518";
+    public final static String mchID = "1635457862";
 
-    public final static String payKey = "Zxkkj111111111111111111111111111";
+    public final static String payKey = "xinzhaitongxing18510801311paykey";
 
     public final static String tradeType = "JSAPI";
 
@@ -38,18 +38,18 @@ public class WxAppletsUtils {
 
     public final static String prePayUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
-    public final static String prePayParamFormat = "<xml version='1.0' encoding='gbk'><appid>%s</appid>"
-                                                    + "<body><![CDATA[%s]]></body>"
-                                                    + "<mch_id>%s</mch_id>"
-                                                    + "<nonce_str>%s</nonce_str>"
-                                                    + "<notify_url>%s</notify_url>"
-                                                    + "<openid>%s</openid>"
-                                                    + "<out_trade_no>%s</out_trade_no>"
-                                                    + "<spbill_create_ip>%s</spbill_create_ip>"
-                                                    + "<total_fee>%s</total_fee>"
-                                                    + "<trade_type>%s</trade_type>"
-                                                    + "<sign>%s</sign>"
-                                                    + "</xml>";
+    public final static String prePayParamFormat = "<xml><appid>%s</appid>"
+            + "<body><![CDATA[%s]]></body>"
+            + "<mch_id>%s</mch_id>"
+            + "<nonce_str>%s</nonce_str>"
+            + "<notify_url>%s</notify_url>"
+            + "<openid>%s</openid>"
+            + "<out_trade_no>%s</out_trade_no>"
+            + "<spbill_create_ip>%s</spbill_create_ip>"
+            + "<total_fee>%s</total_fee>"
+            + "<trade_type>%s</trade_type>"
+            + "<sign>%s</sign>"
+            + "</xml>";
 
     /**
      * 获取access_token
