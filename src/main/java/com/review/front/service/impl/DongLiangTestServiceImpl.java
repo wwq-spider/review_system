@@ -30,11 +30,13 @@ public class DongLiangTestServiceImpl extends CommonServiceImpl implements DongL
     //封面背景图地址
     private static final String coverUrl = "https://pcapi.dilighthealth.com/profile/upload/2022/10/09/9b1ff86c-6a28-4496-8b5f-6a2a21570ad1.png";
     //logo 背景图地址
-    private static final String logoUrl = "https://pcapi.dilighthealth.com/profile/upload/2022/10/09/9b1ff86c-6a28-4496-8b5f-6a2a21570ad1.png";
+    //private static final String logoUrl = "https://pcapi.dilighthealth.com/profile/upload/2022/10/09/9b1ff86c-6a28-4496-8b5f-6a2a21570ad1.png";
+    private static final String logoUrl = "https://www.xinzhaitongxing.com/review/plug-in/login/images/logo5.png";
     //公司名称
     private static final String companyName = "北京心宅同行管理咨询有限公司";
     //二维码地址
-    private static final String qrCodeUrl = "https://pcapi.dilighthealth.com/profile/upload/2022/10/10/b69f7e67-65bb-43dc-b02b-8cb5b8e042c6.png";
+    //private static final String qrCodeUrl = "https://pcapi.dilighthealth.com/profile/upload/2022/10/10/b69f7e67-65bb-43dc-b02b-8cb5b8e042c6.png";
+    private static final String qrCodeUrl =  "https://www.xinzhaitongxing.com/review/plug-in/login/images/appLogo.jpg";
     //封面标题
     private static final String indexTitle = "生涯发展评估报告";
     //报告撰写
@@ -113,6 +115,7 @@ public class DongLiangTestServiceImpl extends CommonServiceImpl implements DongL
                 P++;
             }
         }
+        dongliangTestQuestionVO[0].setTestCode(dongliangTestQuestionVO[0].getTestCode() + "==");
         dongliangTestQuestionVO[0].setTestRecord(testRecordList);
         dongliangTestQuestionVO[0].getUserInfo().setSex(dongliangTestQuestionVO[0].getUserInfo().getSex().equals("1") ? "男" : "女");
         String select = dongliangTestQuestionVO[0].getUserInfo().getSelect();
