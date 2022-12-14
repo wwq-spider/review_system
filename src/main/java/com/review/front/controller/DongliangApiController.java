@@ -37,16 +37,14 @@ import java.util.List;
 @RequestMapping("/reviewFront/dongLiang")
 public class DongliangApiController extends BaseController {
 
-    //栋梁测评提交接口地址
-    /*private static final String dongLiangApiurlStu = "http://www.zhuxinkang.com:9999/api/commitTest";
-
-    private static final String dongLiangApiurlPro = "http://www.zhuxinkang.com:9998/api/commitTest";*/
-
+    //栋梁测评提交接口地址--formal
     private static final String dongLiangApiurlStu = "http://localhost:9999/api/commitTest";
 
     private static final String dongLiangApiurlPro = "http://localhost:9998/api/commitTest";
+    //栋梁测评提交接口地址--local
+    /*private static final String dongLiangApiurlStu = "http://www.xinzhaitongxing.com:9999/api/commitTest";
 
-    //private static final String reportUrl = "https://www.zhuxinkang.com/review/upload2";
+    private static final String dongLiangApiurlPro = "http://www.xinzhaitongxing.com:9998/api/commitTest";*/
 
     private static final String reportUrl = "https://www.xinzhaitongxing.com/review/upload2";
 

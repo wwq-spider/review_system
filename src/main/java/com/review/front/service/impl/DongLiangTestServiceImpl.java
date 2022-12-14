@@ -115,7 +115,6 @@ public class DongLiangTestServiceImpl extends CommonServiceImpl implements DongL
                 P++;
             }
         }
-        dongliangTestQuestionVO[0].setTestCode(dongliangTestQuestionVO[0].getTestCode() + "==");
         dongliangTestQuestionVO[0].setTestRecord(testRecordList);
         dongliangTestQuestionVO[0].getUserInfo().setSex(dongliangTestQuestionVO[0].getUserInfo().getSex().equals("1") ? "男" : "女");
         String select = dongliangTestQuestionVO[0].getUserInfo().getSelect();
