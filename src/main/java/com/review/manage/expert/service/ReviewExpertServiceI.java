@@ -100,4 +100,12 @@ public interface ReviewExpertServiceI extends CommonService{
      * @return
      */
     String videoConsultcondition(List<ConsultationVO> reviewExpertReserveList) throws ParseException;
+
+    List<ConsultationVO> getMyAppointList(String expertPhone);
+
+    void confirmAppoint(Integer id);
+
+    String isConfirmByExpert(ConsultationVO consultationVO);
+
+    boolean isExpert(String mobilePhone);
 }

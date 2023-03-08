@@ -5,8 +5,11 @@ import com.review.manage.intake.entity.*;
 import com.review.manage.intake.service.IntakeService;
 import com.review.manage.intake.vo.IntakeVo;
 import com.review.manage.order.vo.ReviewOrderVO;
+import com.review.manage.userManage.service.ReviewUserService;
+import org.apache.commons.lang.StringUtils;
 import org.jeecgframework.core.common.hibernate.qbc.CriteriaQuery;
 import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
+import org.jeecgframework.web.system.pojo.base.TSDepart;
 import org.jeecgframework.web.system.pojo.base.TSTypegroup;
 import org.jeecgframework.web.system.service.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,9 @@ public class IntakeServiceImpl extends CommonServiceImpl implements IntakeServic
     @Autowired
     private SystemService systemService;
 
+    @Autowired
+    private ReviewUserService reviewUserService;
+
     @Override
     public void handleOptions(ModelAndView modelAndView) {
         CriteriaQuery cq = new CriteriaQuery(TSTypegroup.class);
@@ -39,7 +45,9 @@ public class IntakeServiceImpl extends CommonServiceImpl implements IntakeServic
                 modelAndView.addObject("callTypeList",typeGroupList.get(i).getTSTypes());
             }
             if (typeGroupList.get(i).getTypegroupcode().equals(Constants.Options.company.getValue())){
-                modelAndView.addObject("companyList",typeGroupList.get(i).getTSTypes());//公司名称
+                //modelAndView.addObject("companyList",typeGroupList.get(i).getTSTypes());//公司名称
+                List<TSDepart> groupList = reviewUserService.getReviewUserGroup();
+                modelAndView.addObject("companyList",groupList);//公司名称
             }
             if (typeGroupList.get(i).getTypegroupcode().equals(Constants.Options.branch.getValue())){
                 modelAndView.addObject("branchEntityList",typeGroupList.get(i).getTSTypes());//分支机构
@@ -93,7 +101,7 @@ public class IntakeServiceImpl extends CommonServiceImpl implements IntakeServic
     public List<IntakeVo> getIntakeInfo(IntakeVo intakeVo) {
 
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT");
+        /*sql.append("SELECT");
         sql.append(" id AS id,");
         sql.append(" company_name AS companyName,");
         sql.append(" branch AS branchId,");
@@ -105,13 +113,31 @@ public class IntakeServiceImpl extends CommonServiceImpl implements IntakeServic
         sql.append(" FROM review_intake");
         sql.append(" WHERE 1=1");
         Map<String, Object> paramMap = new HashMap<>();
-        if (intakeVo.getEmployeeJobNumber() != null && !"".equals(intakeVo.getEmployeeJobNumber())){
-            sql.append(" and employee_job_number =:employeeJobNumber");
-            paramMap.put("employeeJobNumber",intakeVo.getEmployeeJobNumber());
+        if (intakeVo.getEmployeePhone() != null && !"".equals(intakeVo.getEmployeePhone())){
+            sql.append(" and employee_phone =:employeePhone");
+            paramMap.put("employeePhone",intakeVo.getEmployeePhone());
         }
         if (intakeVo.getEmployeeName() != null && !"".equals(intakeVo.getEmployeeName())){
             sql.append(" and employee_name =:employeeName");
             paramMap.put("employeeName",intakeVo.getEmployeeName());
+        }*/
+        sql.append("SELECT ");
+        sql.append("de.departname AS companyName, ");
+        sql.append("ru.user_name AS employeeName, ");
+        sql.append("de.ID AS id, ");
+        sql.append("CASE ru.sex WHEN 1 THEN '男' WHEN 2 THEN '女' END AS sex ");
+        sql.append("FROM ");
+        sql.append("review_user ru ");
+        sql.append("LEFT JOIN t_s_depart de ON ru.group_id = de.ID ");
+        sql.append("WHERE 1=1 ");
+        Map<String, Object> paramMap = new HashMap<>();
+        if(!StringUtils.isEmpty(intakeVo.getEmployeeName())){
+            sql.append("AND ru.user_name =:employeeName ");
+            paramMap.put("employeeName",intakeVo.getEmployeeName());
+        }
+        if (!StringUtils.isEmpty(intakeVo.getEmployeePhone())){
+            sql.append("AND ru.mobile_phone =:employeePhone");
+            paramMap.put("employeePhone",intakeVo.getEmployeePhone());
         }
         return this.getObjectList(sql.toString(),paramMap,IntakeVo.class);
     }

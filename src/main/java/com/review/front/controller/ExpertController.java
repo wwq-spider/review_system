@@ -140,6 +140,92 @@ public class ExpertController extends BaseController {
     }
 
     /**
+     * 咨询师预约列表
+     * @param response
+     * @param consultationVO
+     */
+    @RequestMapping(value = "queryMyAppoint", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void queryMyAppoint(HttpServletResponse response, @RequestBody ConsultationVO consultationVO) {
+        JSONObject json = new JSONObject();
+        List<ConsultationVO> reviewAppointList = reviewExpertService.getMyAppointList(consultationVO.getExpertPhone());
+        json.put("code", 200);
+        json.put("result", reviewAppointList);
+        json.put("msg", "查询成功");
+        CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+    }
+
+    /**
+     * 咨询师确认预约
+     * @param response
+     * @param consultationVO
+     */
+    @RequestMapping(value = "postConfirmAppoint", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void postConfirmAppoint(HttpServletResponse response, @RequestBody ConsultationVO consultationVO){
+        JSONObject json = new JSONObject();
+        //确认预约
+        reviewExpertService.confirmAppoint(consultationVO.getId());
+        //给咨客发送短信通知：咨询师已确认该预约
+        try {
+            SendSmsResponseBody body = AliYunSmsUtils.sendConfirmMsg(
+                    consultationVO.getPatientName(),consultationVO.getUserPhone(),consultationVO.getTxNumber()
+                    ,consultationVO.getVisitDate(),consultationVO.getBeginTime(),consultationVO.getBeginTime());
+            if (body != null && "ok".equalsIgnoreCase(body.getCode())) {
+                ContextHolderUtils.getSession().setAttribute(consultationVO.getUserPhone() + Constants.MSG_CODE_KEY, consultationVO.getPatientName());
+                json.put("code", 200);
+                json.put("msg", "发送成功");
+            } else {
+                json.put("code", 400);
+                json.put("msg", "发送失败");
+            }
+        } catch (Exception e){
+            logger.error("sendMsg error, ", e);
+            json.put("code", 500);
+            json.put("msg", "短信发送异常，请联系管理员");
+        }
+        logger.info(consultationVO.toString());
+        json.put("code", 200);
+        json.put("id", consultationVO.getId());
+        json.put("msg", "已确认");
+        CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+    }
+
+    /**
+     * 提醒用户支付通知
+     * @param response
+     * @param consultationVO
+     */
+    @RequestMapping(value = "postPayRemind", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void postPayRemind(HttpServletResponse response, @RequestBody ConsultationVO consultationVO){
+        JSONObject json = new JSONObject();
+        //确认预约
+        reviewExpertService.confirmAppoint(consultationVO.getId());
+        //给咨客发送短信通知：咨询师已确认该预约
+        try {
+            SendSmsResponseBody body = AliYunSmsUtils.sendPayRemind(consultationVO.getUserPhone(),consultationVO.getPatientName());
+            if (body != null && "ok".equalsIgnoreCase(body.getCode())) {
+                ContextHolderUtils.getSession().setAttribute(consultationVO.getUserPhone() + Constants.MSG_CODE_KEY, consultationVO.getPatientName());
+                json.put("code", 200);
+                json.put("msg", "发送成功");
+            } else {
+                json.put("code", 400);
+                json.put("msg", "发送失败");
+            }
+        } catch (Exception e){
+            logger.error("sendMsg error, ", e);
+            json.put("code", 500);
+            json.put("msg", "短信发送异常，请联系管理员");
+        }
+        logger.info(consultationVO.toString());
+        json.put("code", 200);
+        json.put("id", consultationVO.getId());
+        json.put("msg", "已确认");
+        CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+    }
+
+    /**
      * 我的问诊详情
      * @param response
      * @param consultationVO
@@ -151,10 +237,13 @@ public class ExpertController extends BaseController {
         List<ConsultationVO> reviewExpertReserveList = reviewExpertService.getMyConsultationDetail(consultationVO);
         //判断当前时间是否可发起视频咨询
         String videoConsultcondition = reviewExpertService.videoConsultcondition(reviewExpertReserveList);
+        //判断该预约是否已经被咨询师确认
+        String isConfirmByExpert = reviewExpertService.isConfirmByExpert(consultationVO);
         json.put("code", 200);
         json.put("result", reviewExpertReserveList);
         json.put("msg", "查询成功");
         json.put("videoConsult",videoConsultcondition);
+        json.put("isConfirmByExpert",isConfirmByExpert);
         CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
     }
 
@@ -188,13 +277,45 @@ public class ExpertController extends BaseController {
     @ResponseBody
     public void isExpert(HttpServletResponse response, @RequestBody ReviewUserEntity reviewUser){
         JSONObject json = new JSONObject();
-
+        boolean isExpert = reviewExpertService.isExpert(reviewUser.getMobilePhone());
         json.put("code", 200);
-        json.put("isExpert", true);
+        json.put("isExpert", isExpert);
         json.put("msg", "取消预约成功");
         CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
     }
 
+    /**
+     * 给专家发送咨客预约成功的短信提醒
+     * @param response
+     * @param request
+     * @param consultationVO
+     */
+    @RequestMapping(value = "sendAppointSuccessMsg", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void sendAppointSuccessMsg(HttpServletResponse response, HttpServletRequest request,@RequestBody ConsultationVO consultationVO){
+        JSONObject json = new JSONObject();
+        if (StrUtil.isBlank(consultationVO.getExpertPhone())) {
+            json.put("code", 300);
+            json.put("msg", "手机号不能为空");
+        } else {
+            try {
+                SendSmsResponseBody body = AliYunSmsUtils.sendAppointMsg(consultationVO.getExpertName(), consultationVO.getExpertPhone());
+                if (body != null && "ok".equalsIgnoreCase(body.getCode())) {
+                    ContextHolderUtils.getSession().setAttribute(consultationVO.getExpertPhone() + Constants.MSG_CODE_KEY, consultationVO.getExpertName());
+                    json.put("code", 200);
+                    json.put("msg", "验证码发送成功");
+                } else {
+                    json.put("code", 400);
+                    json.put("msg", "验证码发送失败");
+                }
+            } catch (Exception e) {
+                logger.error("sendMsg error, ", e);
+                json.put("code", 500);
+                json.put("msg", "验证码发送异常，请联系管理员");
+            }
+        }
+        CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
+    }
     /**
      * 咨客发起视频咨询，给专家发送房间号
      * @param response
@@ -209,7 +330,7 @@ public class ExpertController extends BaseController {
             json.put("msg", "手机号不能为空");
         } else {
             try {
-                SendSmsResponseBody body = AliYunSmsUtils.sendMsg(consultationVO.getRoomId(), consultationVO.getExpertPhone());
+                SendSmsResponseBody body = AliYunSmsUtils.sendRoomIdMsg(consultationVO);
                 if (body != null && "ok".equalsIgnoreCase(body.getCode())) {
                     ContextHolderUtils.getSession().setAttribute(consultationVO.getExpertPhone() + Constants.MSG_CODE_KEY, consultationVO.getRoomId());
                     json.put("code", 200);

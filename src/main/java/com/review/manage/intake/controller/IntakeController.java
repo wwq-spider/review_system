@@ -8,12 +8,15 @@ import com.review.manage.order.entity.ReviewOrderEntity;
 import com.review.manage.project.entity.ReviewProjectEntity;
 import com.review.manage.project.vo.ReviewProjectVO;
 import net.sf.json.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.jeecgframework.core.common.model.json.AjaxJson;
 import org.jeecgframework.core.common.model.json.DataGrid;
 import org.jeecgframework.core.constant.Globals;
 import org.jeecgframework.core.util.ContextHolderUtils;
+import org.jeecgframework.core.util.RoletoJson;
 import org.jeecgframework.core.util.StringUtil;
+import org.jeecgframework.web.system.pojo.base.TSDepart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,26 +51,40 @@ public class IntakeController {
      * @return
      */
     @RequestMapping(params = "addIntake")
-    public ModelAndView addIntake(IntakeDetailEntity intakeDetail,HttpServletRequest request, HttpServletResponse response){
-        if (StringUtil.isNotEmpty(intakeDetail.getId())){
-            intakeDetail = intakeService.getEntity(IntakeDetailEntity.class,intakeDetail.getId());
-        }
+    public ModelAndView addIntake(IntakeVo intakeVo,HttpServletRequest request, HttpServletResponse response){
         ModelAndView modelAndView = new ModelAndView("review/manage/intake/addIntake");
+        if (StringUtil.isNotEmpty(intakeVo.getId())){
+           /* tsDepart = intakeService.getEntity(TSDepart.class,tsDepart.getId());
+            modelAndView.addObject("data",tsDepart);*/
+            modelAndView.addObject("data",intakeVo);
+        }
         //下拉框选项处理
         intakeService.handleOptions(modelAndView);
-        modelAndView.addObject("data",intakeDetail);
         return modelAndView;
     }
 
+    /**
+     * 员工信息验证
+     * @param intakeVo
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(params = "clientInfoVerificat")
     @ResponseBody
     public ModelAndView clientInfoVerificat(IntakeVo intakeVo,HttpServletRequest request, HttpServletResponse response) throws Exception {
         ModelAndView modelAndView = new ModelAndView("review/manage/intake/clientInfoVerificat");
-        modelAndView.addObject("employeeJobNumber",intakeVo.getEmployeeJobNumber());
+        modelAndView.addObject("employeePhone",intakeVo.getEmployeePhone());
         modelAndView.addObject("employeeName",intakeVo.getEmployeeName());
         return modelAndView;
     }
 
+    /**
+     * 获取验证信息
+     * @param intakeVo
+     * @param response
+     */
     @RequestMapping(params = "getClientInfo")
     @ResponseBody
     public void getClientInfo(IntakeVo intakeVo,HttpServletResponse response) {
@@ -89,29 +106,9 @@ public class IntakeController {
     @ResponseBody
     public AjaxJson saveIntakeInfo(IntakeDetailEntity intakeDetail,HttpServletRequest request, HttpServletResponse response){
         AjaxJson ajaxJson = new AjaxJson();
-        String message = "";
-        ajaxJson.setMsg(message);
+        intakeService.save(intakeDetail);
+        ajaxJson.setSuccess(true);
         return ajaxJson;
-
-        /*AjaxJson j = new AjaxJson();
-        String message = "";
-        if (StringUtil.isNotEmpty(reviewExpert.getId())) {
-            message = "测评专家更新成功";
-            try {
-                reviewExpertService.updateExpert(reviewExpert);
-                systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
-            } catch (Exception e) {
-                logger.error("save Expert error,", e);
-                message = "测评专家更新失败";
-            }
-        } else {
-            message = "测评专家添加成功";
-            reviewExpert.setCreator(ContextHolderUtils.getLoginUserName());
-            reviewExpertService.addExpert(reviewExpert);
-            systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
-        }
-        j.setMsg(message);
-        return j;*/
     }
 
     /**

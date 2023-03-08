@@ -37,7 +37,8 @@ public class SubscribeMessageController {
     private ReviewExpertServiceI reviewExpertService;
 
     //模板id
-    private final static String templateId = "tz0qAaZq2v0s3dZbfPnOYwkFy7QOF82XVFNvpLZGTNQ";
+    //private final static String templateId = "tz0qAaZq2v0s3dZbfPnOYwkFy7QOF82XVFNvpLZGTNQ";
+    private final static String templateId = "4IVeiK2tYEmXqTcDJ7IVnXduD2CToUiV9Sz7ZHCObfs";
     private Logger logger = LoggerFactory.getLogger(getClass());
     private final static String requestUrl = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=";
 
@@ -60,21 +61,23 @@ public class SubscribeMessageController {
         wxSubscribeMsg.setMiniprogram_state("formal");
         //模板消息
         Map<String, WxTemplateValue> map = new HashMap<>();
-        WxTemplateValue time1 = new WxTemplateValue();
-        WxTemplateValue time2 = new WxTemplateValue();
-        WxTemplateValue thing4 = new WxTemplateValue();
-        WxTemplateValue thing5 = new WxTemplateValue();
+        WxTemplateValue time6 = new WxTemplateValue();
+        WxTemplateValue time7 = new WxTemplateValue();
+        WxTemplateValue thing2 = new WxTemplateValue();
+        //WxTemplateValue thing5 = new WxTemplateValue();
         WxTemplateValue thing6 = new WxTemplateValue();
-        time1.setValue(wxSubscribeMsg.getVisitDate() + " " + wxSubscribeMsg.getBeginTime());
-        map.put("time1", time1);
-        time2.setValue(wxSubscribeMsg.getVisitDate() + " " + wxSubscribeMsg.getEndTime());
-        map.put("time2", time2);
-        thing4.setValue("1小时");
+
+        time6.setValue(wxSubscribeMsg.getVisitDate() + " " + wxSubscribeMsg.getBeginTime());
+        map.put("time6", time6);
+        time7.setValue(wxSubscribeMsg.getVisitDate() + " " + wxSubscribeMsg.getEndTime());
+        map.put("time7", time7);
+        /*thing4.setValue("1小时");
         map.put("thing4", thing4);
-        thing5.setValue("视频咨询");
-        map.put("thing5", thing5);
+        thing5.setValue("视频咨询");*/
+        thing2.setValue("视频咨询");
+        map.put("thing2", thing2);
         thing6.setValue(wxSubscribeMsg.getExpertName());
-        map.put("thing6", thing6);
+        map.put("thing4", thing6);
         // 推送模板参数
         wxSubscribeMsg.setData(map);
         // 参数转json

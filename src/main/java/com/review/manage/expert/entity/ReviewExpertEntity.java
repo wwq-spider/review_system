@@ -23,7 +23,7 @@ import java.util.Date;
 public class ReviewExpertEntity implements java.io.Serializable {
 	/**id*/
 	private Long id;
-	/**专家姓名*/
+	/**left*/
 	private String expertName;
 	/**性别*/
 	private Integer sex;

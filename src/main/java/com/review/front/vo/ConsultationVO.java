@@ -119,8 +119,18 @@ public class ConsultationVO implements Serializable {
     private Integer payStatus;
     private String payStatusName;
     private String roomId;
+    private String confirmFlag;
+    /**
+     * 发送短信提醒标记
+     */
+    private Integer sendFlag;
 
     private String createTime;
+
+    /**
+     * 腾讯会议码
+     */
+    private String txNumber;
 
     public Integer getId() {
         return id;
@@ -368,5 +378,29 @@ public class ConsultationVO implements Serializable {
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
+    }
+
+    public String getConfirmFlag() {
+        return confirmFlag;
+    }
+
+    public void setConfirmFlag(String confirmFlag) {
+        this.confirmFlag = confirmFlag;
+    }
+
+    public Integer getSendFlag() {
+        return sendFlag;
+    }
+
+    public void setSendFlag(Integer sendFlag) {
+        this.sendFlag = sendFlag;
+    }
+
+    public String getTxNumber() {
+        return txNumber;
+    }
+
+    public void setTxNumber(String txNumber) {
+        this.txNumber = txNumber;
     }
 }

@@ -46,9 +46,6 @@ public class IntakeDetailEntity implements Serializable {
     @Column(name = "case_urgency")
     private String caseUrgency;
 
-    @Column(name = "caller_name")
-    private String callName;
-
     @Column(name = "used_eap")
     private String usedEAP;
 
@@ -58,14 +55,8 @@ public class IntakeDetailEntity implements Serializable {
     @Column(name = "marital_status")
     private String maritalStatus;
 
-    @Column(name = "client_name")
-    private String clientName;
-
     @Column(name = "eap_cognition")
     private String eapCognitionId;
-
-    @Column(name = "client_phone")
-    private String clientPhone;
 
     @Column(name = "employee_birthday")
     private String employeeBirthday;
@@ -82,20 +73,11 @@ public class IntakeDetailEntity implements Serializable {
     @Column(name = "family_phone")
     private String familyPhone;
 
-    @Column(name = "client_age")
-    private String age;
-
     @Column(name = "client_email")
     private String email;
 
-    @Column(name = "caller_relations")
-    private String callerRelations;
-
     @Column(name = "work_type")
     private String workType;
-
-    @Column(name = "consultant_relations")
-    private String consultantRelations;
 
     @Column(name = "employee_position")
     private String employeePosition;
@@ -206,14 +188,6 @@ public class IntakeDetailEntity implements Serializable {
         this.caseUrgency = caseUrgency;
     }
 
-    public String getCallName() {
-        return callName;
-    }
-
-    public void setCallName(String callName) {
-        this.callName = callName;
-    }
-
     public String getUsedEAP() {
         return usedEAP;
     }
@@ -238,28 +212,12 @@ public class IntakeDetailEntity implements Serializable {
         this.maritalStatus = maritalStatus;
     }
 
-    public String getClientName() {
-        return clientName;
-    }
-
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
-    }
-
     public String getEapCognitionId() {
         return eapCognitionId;
     }
 
     public void setEapCognitionId(String eapCognitionId) {
         this.eapCognitionId = eapCognitionId;
-    }
-
-    public String getClientPhone() {
-        return clientPhone;
-    }
-
-    public void setClientPhone(String clientPhone) {
-        this.clientPhone = clientPhone;
     }
 
     public String getEmployeeBirthday() {
@@ -302,14 +260,6 @@ public class IntakeDetailEntity implements Serializable {
         this.familyPhone = familyPhone;
     }
 
-    public String getAge() {
-        return age;
-    }
-
-    public void setAge(String age) {
-        this.age = age;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -318,28 +268,12 @@ public class IntakeDetailEntity implements Serializable {
         this.email = email;
     }
 
-    public String getCallerRelations() {
-        return callerRelations;
-    }
-
-    public void setCallerRelations(String callerRelations) {
-        this.callerRelations = callerRelations;
-    }
-
     public String getWorkType() {
         return workType;
     }
 
     public void setWorkType(String workType) {
         this.workType = workType;
-    }
-
-    public String getConsultantRelations() {
-        return consultantRelations;
-    }
-
-    public void setConsultantRelations(String consultantRelations) {
-        this.consultantRelations = consultantRelations;
     }
 
     public String getEmployeePosition() {

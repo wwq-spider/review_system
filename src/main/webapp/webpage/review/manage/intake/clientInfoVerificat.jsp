@@ -7,14 +7,10 @@
         <table id="infoVerificatList" url="intakeController.do?getClientInfo">
             <thead>
                 <tr>
-                    <th field="id" hidden="hidden"> id</th>
-                    <th field="companyName"> 公司名称</th>
-                    <th field="branchId"> 分支机构</th>
-                    <th field="employeeName"> 员工姓名</th>
-                    <th field="employeeJobNumber"> 员工工号</th>
-                    <th field="station"> 岗位</th>
-                    <th field="employeePosition"> 职位</th>
-                    <th field="clientArea"> 城市</th>
+                    <th field="id" hidden="hidden" width="10px"> id</th>
+                    <th field="companyName" width="50px"> 公司名称</th>
+                    <th field="employeeName" width="30px"> 员工姓名</th>
+                    <th field="sex" width="10px"> 员工性别</th>
                 </tr>
             </thead>
         </table>
@@ -23,23 +19,19 @@
 </div>
 <script type="text/javascript">
     // 编辑初始化数据
-
-
     function getData(data){
         $('.datagrid-header-inner .datagrid-cell ').css("text-align","center");
         let rows = [];
         let total = data.total;
-        for(let i=0; i<data.rows.length; i++){
-            rows.push({
-                id: data.rows[i].id,
-                companyName: data.rows[i].companyName,
-                branchId: data.rows[i].branchId,
-                employeeName: data.rows[i].employeeName,
-                employeeJobNumber: data.rows[i].employeeJobNumber,
-                station: data.rows[i].station,
-                employeePosition: data.rows[i].employeePosition,
-                clientArea: data.rows[i].clientArea
-            });
+        if(data.rows){
+            for(let i=0; i<data.rows.length; i++){
+                rows.push({
+                    id: data.rows[i].id,
+                    companyName: data.rows[i].companyName,
+                    employeeName: data.rows[i].employeeName,
+                    sex: data.rows[i].sex
+                });
+            }
         }
         var newData={"total":total,"rows":rows};
         $('.datagrid-cell-c1-name').css("text-align","center");
@@ -58,7 +50,7 @@
         singleSelect:true,
         fitColumns:true,
         showFooter:true,
-        url:'intakeController.do?getClientInfo&employeeJobNumber='+"${employeeJobNumber}" +'&employeeName=' + "${employeeName}",
+        url:'intakeController.do?getClientInfo&employeePhone='+"${employeePhone}" +'&employeeName=' + "${employeeName}",
         loadFilter: function(data){
             return getData(data);
         },
@@ -86,7 +78,6 @@
         }
     });
     $("#btn_sub").click(function() {
-        debugger;
         var rowsData = $('#infoVerificatList').datagrid('getSelections');
         if (!rowsData || rowsData.length == 0) {
             tip('请选择一条记录');
@@ -97,10 +88,12 @@
             return;
         }
         var id = rowsData[0].id;
+        var companyName = rowsData[0].companyName;
+        var employeeName = rowsData[0].employeeName;
+        var sex = rowsData[0].sex;
         frameElement.api.close();
-        add('接线录入','intakeController.do?addIntake&id='+id,'intakeList', 850, 650);
-
-
+        var url = 'intakeController.do?addIntake&id='+id + "&companyName=" + companyName + "&employeeName=" + employeeName + "&sex=" +sex;
+        add('接线录入',url,'intakeList', 850, 650);
     });
 </script>
 <style>

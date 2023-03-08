@@ -47,7 +47,7 @@
 			</td>
 			<td class="value">
 				<input class="inputxt" id="age" name="age" ignore="ignore"
-					   value="${reviewExpertPage.age}" datatype="n">
+					   value="${reviewExpertPage.age}" datatype="number">
 				<span class="Validform_checktip"  id="ageTip"></span>
 			</td>
 		</tr>
@@ -126,11 +126,52 @@
 				<span class="Validform_checktip"></span>
 			</td>
 		</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">是否收费:</label>
+			</td>
+			<td class="value" colspan="3">
+				<input name="charge" type="radio"
+					   <c:if test="${reviewExpertPage.charge == 0}">checked="checked"</c:if>
+					   value="0">否</input>
+				<input name="charge" type="radio"
+					   <c:if test="${reviewExpertPage.charge == 1}">checked="checked"</c:if>
+					   value="1">是</input>
+				<span class="Validform_checktip" id="chargeTip"></span>
+			</td>
+		</tr>
+		<tr id="chargeTr" <c:if test="${reviewExpertPage.charge != 1}">style="display: none;"</c:if>>
+			<td align="right"><label class="Validform_label">
+				咨询价格: </label></td>
+			<td class="value"><input id="orgPrice" name="orgPrice" value="${reviewExpertPage.orgPrice }"
+									 type="number" style="width: 100px" class="inputxt"><span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">咨询价格</label></td>
+		</tr>
+		<tr id="chargeTrT" <c:if test="${reviewExpertPage.charge != 1}">style="display: none;"</c:if>>
+			<td align="right"><label class="Validform_label">
+				优惠金额: </label></td>
+			<td class="value"><input id="dicountPrice" name="dicountPrice" value="${reviewExpertPage.dicountPrice }"
+									 type="number" style="width: 100px" class="inputxt"><span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">优惠金额</label></td>
+		</tr>
 	</table>
 </form>
 <link rel="stylesheet" href="plug-in/Validform/css/style.css" type="text/css" />
 <link rel="stylesheet" href="plug-in/Validform/css/tablefrom.css" type="text/css" />
 <script type="text/javascript">
+	$(document).ready(function(){
+		$('input[type=radio][name=charge]').change(function() {
+			if (this.value == '1') {
+				$("#chargeTr").show()
+				$("#chargeTrT").show()
+			} else if (this.value == '0') {
+				$("#chargeTr").hide()
+				$("#chargeTrT").hide()
+				$("#orgPrice").val(0)
+				$("#dicountPrice").val(0)
+			}
+		});
+	});
 	//提交form表单
 	$("#btn_sub").click(function(event) {
 		$("#addForm").form(
@@ -210,11 +251,21 @@
 							$("#introductionTip").attr("class", "Validform_checktip Validform_right");
 						}
 
+						let charge = $('input[type=radio][name=charge]:checked').val()
+						if($.trim(charge) == "") {
+							$("#chargeTip").text("请选择是否收费");
+							$("#chargeTip").attr("class","Validform_checktip Validform_wrong");
+							return false;
+						} else {
+							$("#chargeTip").text("通过信息验证");
+							$("#chargeTip").attr("class", "Validform_checktip Validform_right");
+						}
+
 						return true;
 					},
 					success : function(data) {
-						//var d = $.parseJSON(data);
-						var d = data;
+						var d = $.parseJSON(data);
+						//var d = data;
 						var win = frameElement.api.opener;
 						window.top.$.messager.progress('close');
 						if (d.success == true) {

@@ -30,7 +30,7 @@ public class IntakeVo implements Serializable {
     private String eapCognitionId;
     private String clientPhone;
     private String employeeBirthday;
-    private String employeeJobNumber;
+    private String employeePhone;
     private String jobPhone;
     private String clientGender;
     private String familyPhone;
@@ -46,4 +46,5 @@ public class IntakeVo implements Serializable {
     private String expectAppointmentTime;
     private String problemTypeId;
     private String expectationsForConsultants;
+    private String sex;
 }

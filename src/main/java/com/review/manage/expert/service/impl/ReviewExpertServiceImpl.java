@@ -463,6 +463,77 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
         return "N";
     }
 
+    @Override
+    public List<ConsultationVO> getMyAppointList(String expertPhone) {
+        if ("".equals(expertPhone)) {
+            return null;
+        }
+        StringBuilder sql = new StringBuilder(
+                "SELECT rer.id AS id,\n" +
+                        "rer.patient_name AS patientName,\n"+
+                        "rec.visit_date AS visitDate,\n"+
+                        "rec.begin_time AS beginTime,\n"+
+                        "rer.user_id AS userId,\n"+
+                        "re.charge AS charge,\n"+
+                        "CASE rer.confirm_flag WHEN 0 THEN '待确认' WHEN 1 THEN '已确认' END confirmFlag,\n"+
+                        "rec.end_time AS endTime,\n"+
+                        " ru.mobile_phone AS userPhone\n"+
+                        " FROM review_expert re,review_expert_calendar rec,review_expert_reserve rer,review_user ru \n"+
+                        "WHERE re.id = rec.expert_id AND rer.calendar_id = rec.id AND rer.user_id = ru.user_id AND re.mobile_phone = :expertPhone" +
+                        " ORDER BY rer.confirm_flag ASC,rec.visit_date DESC,rec.begin_time ASC"
+        );
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("expertPhone", expertPhone);
+        List<ConsultationVO> list = null;
+        list = this.getObjectList(sql.toString(), paramMap, ConsultationVO.class);
+        if (StrUtil.isNotBlank(list.get(0).getUserId()) && list.get(0).getCharge() == Constants.ClassCharge) {
+            //判断用户是否支付了问诊费用
+            list.get(0).setBuy(this.userBuy(list.get(0).getId().toString(), list.get(0).getUserId()));
+        }
+        return this.beginAndEndTimehandle(list);
+    }
+
+    @Override
+    public void confirmAppoint(Integer id) {
+        String sql = "update review_expert_reserve set confirm_flag=1 where id = ?";
+        executeSql(sql,new Object[]{id});
+    }
+
+    @Override
+    public String isConfirmByExpert(ConsultationVO consultationVO) {
+        //String sql = "select confirm_flag as confirmFlag from review_expert_reserve where id = :id and confirm_flag = 0";
+        StringBuilder sql = new StringBuilder(
+                "select confirm_flag as confirmFlag\n" +
+                " from review_expert_reserve where id = :id and confirm_flag = 1"
+        );
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("id", consultationVO.getId());
+        List<ConsultationVO> list = null;
+        list = this.getObjectList(sql.toString(), paramMap, ConsultationVO.class);
+        if (list.size() > 0){
+            return "Y";
+        }else {
+            return "N";
+        }
+    }
+
+    @Override
+    public boolean isExpert(String mobilePhone) {
+        StringBuilder sql = new StringBuilder(
+                "select expert_name as expertName\n" +
+                        " from review_expert where mobile_phone = :mobilePhone"
+        );
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("mobilePhone", mobilePhone);
+        List<ConsultationVO> list = null;
+        list = this.getObjectList(sql.toString(), paramMap, ConsultationVO.class);
+        if (list.size() > 0){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
     /**
      * 时间处理
      * @param list
