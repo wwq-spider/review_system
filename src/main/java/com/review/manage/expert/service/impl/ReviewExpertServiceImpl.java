@@ -344,7 +344,8 @@ public class ReviewExpertServiceImpl extends CommonServiceImpl implements Review
                         "re.charge charge,\n"+
                         "re.org_price orgPrice,\n"+
                         "re.dicount_price dicountPrice,\n"+
-                        "(re.org_price - re.dicount_price) as realPrice\n"+
+                        "(re.org_price - re.dicount_price) as realPrice,\n"+
+                        "re.avatar avatar\n"+
                         "from review_expert_reserve rer \n"+
                         "left join review_expert_calendar rec ON rer.calendar_id = rec.id\n"+
                         "left join review_expert re ON rer.expert_id = re.id\n"+

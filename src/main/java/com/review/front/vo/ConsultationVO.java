@@ -48,6 +48,7 @@ public class ConsultationVO implements Serializable {
      * 专家电话
      */
     private String expertPhone;
+    private String avatar;
     /**
         预约人姓名
      */
@@ -402,5 +403,13 @@ public class ConsultationVO implements Serializable {
 
     public void setTxNumber(String txNumber) {
         this.txNumber = txNumber;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }
