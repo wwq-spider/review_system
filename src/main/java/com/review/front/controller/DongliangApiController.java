@@ -23,10 +23,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -61,6 +64,9 @@ public class DongliangApiController extends BaseController {
     @ResponseBody
     public void commitTest(HttpServletResponse response, HttpServletRequest request,@RequestBody DongliangTestQuestionVO[] dongliangTestQuestionVO) throws Exception{
 
+        Date date = new Date();
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime  = sdf.format(date);
         String dongLiangApiurl = "";
         if (dongliangTestQuestionVO[0].getVersion() == 1){
             dongLiangApiurl = dongLiangApiurlStu;
@@ -74,10 +80,12 @@ public class DongliangApiController extends BaseController {
         dongLiangTestService.handleData(dongliangTestQuestionVO);
         String param = JSON.toJSONString(dongliangTestQuestionVO);
         String paramSub = param.substring(1,param.length()-1);
-        System.out.println("调用接口入参");
+        System.out.println("调用接口入参--测评人：" + dongliangTestQuestionVO[0].getUserInfo().getName());
         System.out.println(paramSub);
         //调用栋梁答题提交接口
+        Integer flag = 1;
         String resultJson = HttpClientUtils.doPost(dongLiangApiurl,JSONObject.parseObject(paramSub),"utf-8");
+        logger.info("dongliangCommitMsg：",resultJson);
         if (resultJson != null && !"".equals(resultJson)){
             net.sf.json.JSONObject json = net.sf.json.JSONObject.fromObject(resultJson);
             if ((Integer) json.get("code") == 200){
@@ -85,16 +93,20 @@ public class DongliangApiController extends BaseController {
                 String pdfUrlView = reportUrl + pdfUrl;
                 dongliangTestQuestionVO[0].setReportUrl(pdfUrlView);
                 //业务数据处理
-                dongLiangTestService.handleBusinessData(dongliangTestQuestionVO,new ReviewUserEntity());
+                dongLiangTestService.handleBusinessData(flag,currentTime,json.toString(),dongliangTestQuestionVO,new ReviewUserEntity());
                 json.put("pdfUrl",pdfUrlView);
                 CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
             }else {
+                flag = 2;
+                dongLiangTestService.handleBusinessData(flag,currentTime,json.toString(),dongliangTestQuestionVO,new ReviewUserEntity());
                 CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
             }
         }else {
+            flag = 2;
             net.sf.json.JSONObject json = new net.sf.json.JSONObject();
             json.put("code", 500);
-            json.put("msg", "提交失败");
+            json.put("msg", "提交失败~");
+            dongLiangTestService.handleBusinessData(flag,currentTime,json.toString(),dongliangTestQuestionVO,new ReviewUserEntity());
             CommonUtils.responseDatagrid(response, json, MediaType.APPLICATION_JSON_VALUE);
         }
     }

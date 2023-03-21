@@ -19,7 +19,7 @@ public interface DongLiangTestService extends CommonService {
 
     void handleData(DongliangTestQuestionVO[] dongliangTestQuestionVO);
 
-    void handleBusinessData(DongliangTestQuestionVO[] dongliangTestQuestionVO, ReviewUserEntity reviewUser);
+    void handleBusinessData(Integer flag,String date,String json,DongliangTestQuestionVO[] dongliangTestQuestionVO, ReviewUserEntity reviewUser);
 
     List<EvalCodeEntity> getEvalCode();
 

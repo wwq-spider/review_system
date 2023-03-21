@@ -11,6 +11,7 @@ import com.review.front.vo.SelectVO;
 import com.review.manage.project.entity.ReviewProjectEntity;
 import com.review.manage.project.service.IReviewProjectService;
 import com.review.manage.userManage.entity.ReviewUserEntity;
+import jodd.util.StringUtil;
 import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -87,8 +88,8 @@ public class DongLiangTestServiceImpl extends CommonServiceImpl implements DongL
                 TestRecord testRecord = new TestRecord();
                 testRecord.setQuesNo("I" + I);
                 testRecord.setAnswer(testRecordListOld.get(i).getAnswer());
-                testRecord.setScoreA(testRecordListOld.get(i).getScoreA());
-                testRecord.setScoreB(testRecordListOld.get(i).getScoreB());
+                testRecord.setScoreA(StringUtil.isNotBlank(testRecordListOld.get(i).getScoreA()) ? testRecordListOld.get(i).getScoreA() : "1");
+                testRecord.setScoreB(StringUtil.isNotBlank(testRecordListOld.get(i).getScoreB()) ? testRecordListOld.get(i).getScoreB() : "1");
                 testRecordList.add(testRecord);
                 I++;
             } else if (i >= 162 && i < 204){
@@ -101,16 +102,16 @@ public class DongLiangTestServiceImpl extends CommonServiceImpl implements DongL
                 TestRecord testRecord = new TestRecord();
                 testRecord.setQuesNo("A" + A);
                 testRecord.setAnswer(testRecordListOld.get(i).getAnswer());
-                testRecord.setScoreA(testRecordListOld.get(i).getScoreA());
-                testRecord.setScoreB(testRecordListOld.get(i).getScoreB());
+                testRecord.setScoreA(StringUtil.isNotBlank(testRecordListOld.get(i).getScoreA()) ? testRecordListOld.get(i).getScoreA() : "1");
+                testRecord.setScoreB(StringUtil.isNotBlank(testRecordListOld.get(i).getScoreB()) ? testRecordListOld.get(i).getScoreB() : "1");
                 testRecordList.add(testRecord);
                 A++;
             } else if ( i >= 336 ){
                 TestRecord testRecord = new TestRecord();
                 testRecord.setQuesNo("P" + P);
                 testRecord.setAnswer(testRecordListOld.get(i).getAnswer());
-                testRecord.setScoreA(testRecordListOld.get(i).getScoreA());
-                testRecord.setScoreB(testRecordListOld.get(i).getScoreB());
+                testRecord.setScoreA(StringUtil.isNotBlank(testRecordListOld.get(i).getScoreA()) ? testRecordListOld.get(i).getScoreA() : "1");
+                testRecord.setScoreB(StringUtil.isNotBlank(testRecordListOld.get(i).getScoreB()) ? testRecordListOld.get(i).getScoreB() : "1");
                 testRecordList.add(testRecord);
                 P++;
             }
@@ -136,6 +137,35 @@ public class DongLiangTestServiceImpl extends CommonServiceImpl implements DongL
 
     public void handleQuestNo(List<TestRecord> testRecordListOld, int i, List<TestRecord> testRecordList,int M,String MNtype) {
         if (testRecordListOld.get(i).getAnswer().equals("A")){
+            TestRecord testRecord = new TestRecord();
+            testRecord.setQuesNo(MNtype + M);
+            testRecord.setAnswer("A");
+            testRecord.setScoreA("0");
+            testRecord.setScoreB("3");
+            testRecordList.add(testRecord);
+        }else if (testRecordListOld.get(i).getAnswer().equals("B")){
+            TestRecord testRecord = new TestRecord();
+            testRecord.setQuesNo(MNtype + M);
+            testRecord.setAnswer("B");
+            testRecord.setScoreA("1");
+            testRecord.setScoreB("2");
+            testRecordList.add(testRecord);
+        }else if (testRecordListOld.get(i).getAnswer().equals("C")){
+            TestRecord testRecord = new TestRecord();
+            testRecord.setQuesNo(MNtype + M);
+            testRecord.setAnswer("C");
+            testRecord.setScoreA("2");
+            testRecord.setScoreB("1");
+            testRecordList.add(testRecord);
+        }else if (testRecordListOld.get(i).getAnswer().equals("D")){
+            TestRecord testRecord = new TestRecord();
+            testRecord.setQuesNo(MNtype + M);
+            testRecord.setAnswer("D");
+            testRecord.setScoreA("3");
+            testRecord.setScoreB("0");
+            testRecordList.add(testRecord);
+        }
+        /*if (testRecordListOld.get(i).getAnswer().equals("A")){
             TestRecord testRecordA = new TestRecord();
             testRecordA.setQuesNo(MNtype + M);
             testRecordA.setAnswer("A");
@@ -187,7 +217,7 @@ public class DongLiangTestServiceImpl extends CommonServiceImpl implements DongL
             testRecordB.setScoreB("0");
             testRecordList.add(testRecordA);
             testRecordList.add(testRecordB);
-        }
+        }*/
     }
 
     /**
@@ -195,20 +225,23 @@ public class DongLiangTestServiceImpl extends CommonServiceImpl implements DongL
      * @param dongliangTestQuestionVO
      */
     @Override
-    public void handleBusinessData(DongliangTestQuestionVO[] dongliangTestQuestionVO, ReviewUserEntity reviewUser) {
+    public void handleBusinessData(Integer flag,String date,String json,DongliangTestQuestionVO[] dongliangTestQuestionVO, ReviewUserEntity reviewUser) {
         /*String sql = "update review_eval_code set status=2 where user_id= ? and eval_code = ?";
         this.executeSql(sql, new Object[]{dongliangTestQuestionVO[0].getUserInfo().getUserId(),dongliangTestQuestionVO[0].getTestCode()});*/
-        String sql = "update review_eval_code set status=2 where eval_code = ?";
-        this.executeSql(sql, new Object[]{dongliangTestQuestionVO[0].getTestCode()});
-        //添加测评结果
-        ReviewResultEntity reviewResult = new ReviewResultEntity();
-        reviewResult.setUserId(dongliangTestQuestionVO[0].getUserInfo().getUserId());
-        reviewResult.setClassId(dongliangTestQuestionVO[0].getClassId());
-        reviewResult.setCreateTime(new Date());
-        reviewResult.setCreateBy(dongliangTestQuestionVO[0].getUserInfo().getName());
-        reviewResult.setProjectId(dongliangTestQuestionVO[0].getProjectId()); //项目id
-        reviewResult.setReviewResult(dongliangTestQuestionVO[0].getReportUrl());
-        this.save(reviewResult);
+        String sql = "update review_eval_code set status = 2,userName = ?,user_id = ?,operate_time = ?,msg = ? where eval_code = ?";
+        this.executeSql(sql, new Object[]{dongliangTestQuestionVO[0].getUserInfo().getName(),
+                dongliangTestQuestionVO[0].getUserInfo().getUserId(),date,json,dongliangTestQuestionVO[0].getTestCode()});
+        if (flag == 1){
+            //添加测评结果
+            ReviewResultEntity reviewResult = new ReviewResultEntity();
+            reviewResult.setUserId(dongliangTestQuestionVO[0].getUserInfo().getUserId());
+            reviewResult.setClassId(dongliangTestQuestionVO[0].getClassId());
+            reviewResult.setCreateTime(new Date());
+            reviewResult.setCreateBy(dongliangTestQuestionVO[0].getUserInfo().getName());
+            reviewResult.setProjectId(dongliangTestQuestionVO[0].getProjectId()); //项目id
+            reviewResult.setReviewResult(dongliangTestQuestionVO[0].getReportUrl());
+            this.save(reviewResult);
+        }
     }
 
     @Override
